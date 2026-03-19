@@ -9,12 +9,29 @@
 
 # COMMAND ----------
 
-datasync_task_settings               = read_json_and_decode(f"settings/*task_settings/*datasync_settings.json")
-bronze_task_settings                 = read_json_and_decode(f"settings/*task_settings/*bronze_settings.json")
-silver_task_settings                 = read_json_and_decode(f"settings/*task_settings/*silver_settings.json")
-gold_task_settings                   = read_json_and_decode(f"settings/*task_settings/*gold_settings.json")
-file_version_history_task_settings   = read_json_and_decode(f"settings/*task_settings/*file_version_history_settings.json")
-transaction_history_task_settings    = read_json_and_decode(f"settings/*task_settings/*transaction_history_settings.json")
+def read_task_settings_json(workspace_path):
+    import json
+    import os
+    import base64
+    from databricks.sdk import WorkspaceClient
+    from databricks.sdk.service import workspace
+
+    client = WorkspaceClient()
+    response = client.workspace.export(
+        path=f"{os.getcwd()}/{workspace_path}",
+        format=workspace.ExportFormat.AUTO,
+    )
+
+    return json.loads(base64.b64decode(response.content).decode("utf-8"))
+
+# COMMAND ----------
+
+datasync_task_settings               = read_task_settings_json("settings/00_task_settings/01_datasync_settings.json")
+bronze_task_settings                 = read_task_settings_json("settings/00_task_settings/02_bronze_settings.json")
+silver_task_settings                 = read_task_settings_json("settings/00_task_settings/03_silver_settings.json")
+gold_task_settings                   = read_task_settings_json("settings/00_task_settings/04_gold_settings.json")
+file_version_history_task_settings   = read_task_settings_json("settings/00_task_settings/05_file_version_history_settings.json")
+transaction_history_task_settings    = read_task_settings_json("settings/00_task_settings/06_transaction_history_settings.json")
 
 # COMMAND ----------
 
