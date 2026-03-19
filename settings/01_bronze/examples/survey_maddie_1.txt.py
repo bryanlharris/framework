@@ -1,0 +1,23 @@
+# Databricks notebook source
+{
+    "dst_table_name": "staging.sod_raw.survey_maddie_1",
+    "readStream_load": "staging.sod_raw.survey_maddie_test",
+    "readStreamOptions": {
+        "badRecordsPath": "/Volumes/staging/sod_raw/utility/survey_maddie_1/_badRecords/",
+        "treatEmptyValuesAsNulls": "true"
+    },
+    "writeStream_format": "delta",
+    "writeStreamOptions": {
+        "mergeSchema": "true",
+        "checkpointLocation": "/Volumes/staging/sod_raw/utility/survey_maddie_1/_checkpoints/",
+        "delta.columnMapping.mode": "name"
+    },
+    "writeStream_outputMode": "append",
+    "bronze_function": "bronze_function_to_delta_table",
+    "source_type": "table",
+    "transform_functions": {
+        "addSourceMetadata": ["source_metadata"],
+        "addTimestampColumn": ["ingest_time"]
+    },
+    "trigger_type": {"availableNow": true}
+}

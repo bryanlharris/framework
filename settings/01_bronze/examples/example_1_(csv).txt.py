@@ -1,0 +1,36 @@
+# Databricks notebook source
+{
+    "bronze_function": "example_1",
+    "dst_table_name": "CATALOG.SCHEMA_RAW.TABLE_NAME",
+    "readStream_load": "/Volumes/staging/SCHEMA_RAW/landing/data_files/",
+    "trigger_type": {"availableNow": "true"},
+    "source_type": "cloudfiles",
+    "readStreamOptions": {
+        "header": "true",
+        "quote": "\"",
+        "escape": "\"",
+        "delimiter": ",",
+        "pathGlobFilter": "FILENAME.csv",
+        "encoding": "UTF-8",
+        "cloudFiles.format": "csv",
+        "cloudFiles.inferColumnTypes": "false",
+        "cloudFiles.inferSchema": "false",
+        "cloudFiles.schemaLocation": "/Volumes/staging/SCHEMA_RAW/utility/TABLE_NAME/_schema/",
+        "cloudFiles.schemaEvolutionMode": "none",
+        "cloudFiles.useNotifications": "false",
+        "cloudFiles.useIncrementalListing": "auto",
+        "cloudFiles.validateOptions": "true",
+        "badRecordsPath": "/Volumes/staging/SCHEMA_RAW/utility/TABLE_NAME/_badRecords/",
+        "multiLine": "true",
+        "ignoreLeadingWhiteSpace": "false",
+        "ignoreTrailingWhiteSpace": "false",
+        "treatEmptyValuesAsNulls": "true"
+    },
+    "writeStream_format": "delta",
+    "writeStreamOptions": {
+        "mergeSchema": "true",
+        "checkpointLocation": "/Volumes/staging/SCHEMA_RAW/utility/TABLE_NAME/_checkpoints/",
+        "delta.columnMapping.mode": "name"
+    },
+    "writeStream_outputMode": "append"
+}

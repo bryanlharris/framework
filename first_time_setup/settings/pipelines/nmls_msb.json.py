@@ -1,0 +1,56 @@
+# Databricks notebook source
+{
+    "bronze_schema_name": "nmls_msb_raw",
+    "silver_schema_name": "nmls_msb",
+    "gold_schema_name": "nmls_msb_gold",
+    "dms_schema_name": "nmls_msb_dms",
+    "copy_into": [
+        {
+            "old_schema_name": "msb",
+            "migration_volume_name": "ppas_prod_files_parquet",
+            "schema_name": "nmls_msb_dms"
+        },
+        {
+            "old_schema_name": "msb",
+            "migration_volume_name": "ppas_prod_files_parquet",
+            "schema_name": "nmls_msb_val"
+        }
+    ],
+    "bronze": {
+        "tables": [
+            "company",
+            "country_code_reference",
+            "msb_filing",
+            "msb_line_item_reference",
+            "msbcr_data",
+            "transaction_history",
+            "file_version_history"
+        ],
+        "custom_sql_commands": "",
+        "path_glob_map": {
+            "company": "Company.txt",
+            "country_code_reference": "Country Code Reference.txt",
+            "msb_filing": "MSB Filing.txt",
+            "msb_line_item_reference": "MSB Line Item Reference.txt",
+            "msbcr_data": "MSBCR Data.txt"
+        }
+    },
+    "silver": {
+        "tables_in_dms": [
+            "company",
+            "country_code_reference",
+            "msb_filing",
+            "msb_line_item_reference",
+            "msbcr_data"
+        ],
+        "tables_with_custom_types": [
+        ],
+        "tables_not_in_dms": [
+        ],
+        "identity_columns": []
+    },
+    "gold": {
+        "tables": [
+        ]
+    }
+}

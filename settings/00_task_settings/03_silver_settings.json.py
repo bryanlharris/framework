@@ -1,0 +1,5 @@
+# Databricks notebook source
+[
+    { "full_table_name": "catalog.schema.table1" },
+    { "full_table_name": "catalog.schema.table2" }
+]

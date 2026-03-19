@@ -1,0 +1,40 @@
+# Databricks notebook source
+{
+    "dst_table_name": "staging.sod_raw.survey_maddie_2",
+    "readStream_load": "/Volumes/staging/test_mnr/landing_test/bk_mpo/",
+    "readStreamOptions": {
+        "header": false,
+        "quote": "\"",
+        "escape": "\"",
+        "delimiter": ",",
+        "pathGlobFilter": "*Loan.txt",
+        "encoding": "UTF-8",
+        "cloudFiles.format": "csv",
+        "cloudFiles.inferColumnTypes": "false",
+        "cloudFiles.inferSchema": "false",
+        "cloudFiles.schemaLocation": "/Volumes/staging/sod_raw/utility/survey_maddie_2/_schema/",
+        "cloudFiles.schemaEvolutionMode": "none",
+        "cloudFiles.useNotifications": "false",
+        "cloudFiles.useIncrementalListing": "auto",
+        "cloudFiles.validateOptions": "true",
+        "badRecordsPath": "/Volumes/staging/sod_raw/utility/survey_maddie_2/_badRecords/",
+        "multiLine": "true",
+        "ignoreLeadingWhiteSpace": "false",
+        "ignoreTrailingWhiteSpace": "false",
+        "treatEmptyValuesAsNulls": "true"
+    },
+    "writeStream_format": "delta",
+    "writeStreamOptions": {
+        "mergeSchema": "true",
+        "checkpointLocation": "/Volumes/staging/sod_raw/utility/survey_maddie_2/_checkpoints/",
+        "delta.columnMapping.mode": "name"
+    },
+    "writeStream_outputMode": "append",
+    "bronze_function": "bronze_function_to_delta_table",
+    "source_type": "cloudFiles",
+    "transform_functions": {
+        "addSourceMetadata": ["source_metadata"],
+        "addTimestampColumn": ["ingest_time"]
+    },
+    "trigger_type": {"availableNow": true}
+}

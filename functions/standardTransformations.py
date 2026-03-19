@@ -1,0 +1,150 @@
+# Databricks notebook source
+from pyspark.sql.functions import lit, sha2, concat_ws, current_timestamp, col, coalesce
+
+# COMMAND ----------
+
+def addRowShaChecksum(df, checksum_col_name = 'row_checksum', hash_cols = "all", bitlength=256 ):
+    """ 
+    Adds a SHA checksum column to a DataFrame. 
+    This function takes a Spark DataFrame and a list of column names, and adds a new column that contains the SHA checksum (using the SHA-2 hashing function) of the specified columns. The resulting checksum column is appended to the DataFrame. 
+    
+    Args: 
+        df (pyspark.sql.DataFrame): The input DataFrame. 
+        hash_cols (list): List of column names to be concatenated and hashed. 
+        checksum_col_name (str, optional): Name of the new checksum column. Defaults to 'row_checksum'.
+        bitlength (int, optional): The bit length of the SHA-2 hash function. Defaults to 256. Possible values are 224, 256, 384, or 512. 
+    Returns: pyspark.sql.DataFrame: A new DataFrame with the added checksum column.
+    """
+    if hash_cols.lower() == "all":
+        cols = df.columns
+    else:
+        cols = hash_cols.split(",")
+
+    new_df = df.withColumn(checksum_col_name, sha2(concat_ws('', *cols), bitlength))
+    return new_df
+
+# COMMAND ----------
+
+def addRowShaChecksumWithSep(df, checksum_col_name = 'row_checksum', hash_cols = "all", seperator = '', bitlength=256 ):
+    """ 
+    Adds a SHA checksum column to a DataFrame. 
+    This function takes a Spark DataFrame and a list of column names, and adds a new column that contains the SHA checksum (using the SHA-2 hashing function) of the specified columns. The resulting checksum column is appended to the DataFrame. In case if a column is null, it will take "-" as the column value to create the hash
+    
+    Args: 
+        df (pyspark.sql.DataFrame): The input DataFrame. 
+        hash_cols (list): List of column names to be concatenated and hashed. 
+        checksum_col_name (str, optional): Name of the new checksum column. Defaults to 'row_checksum'.
+        seperator (str, optional): Delimiter between the columns to use in concat 
+        bitlength (int, optional): The bit length of the SHA-2 hash function. Defaults to 256. Possible values are 224, 256, 384, or 512. 
+    Returns: pyspark.sql.DataFrame: A new DataFrame with the added checksum column.
+    """
+    if hash_cols.lower() == "all":
+        cols = df.columns
+    else:
+        cols = hash_cols.split(",")
+
+    new_df = df.withColumn(checksum_col_name, sha2(concat_ws(seperator, *[coalesce(col(c), lit("-")) for c in cols ]), bitlength))
+    return new_df
+
+# COMMAND ----------
+
+def addTimestampColumn(df, colName ):
+    """
+    Adds a current timestamp column to a DataFrame. 
+    This function takes a Spark DataFrame and adds a new column with the current timestamp to each row. The new timestamp column is appended to the DataFrame under the specified column name. 
+    
+    Args: 
+        df (pyspark.sql.DataFrame): The input DataFrame. 
+        colName (str): The name of the new column that will store the current timestamp. 
+    Returns: pyspark.sql.DataFrame: A new DataFrame with the added timestamp column.
+    """
+    
+    new_df = df.withColumn(colName, current_timestamp())
+    return new_df
+
+# COMMAND ----------
+
+def addSourceMetadata(df, colName ):
+    """ 
+    Adds or renames a column in the DataFrame using the existing `_metadata` column. This function selects all columns from the DataFrame and renames the `_metadata` column to the specified column name. If `_metadata` is part of the DataFrame's schema, it will be added as a new column or renamed to the desired name. 
+    
+    Args: 
+        df (pyspark.sql.DataFrame): The input DataFrame. 
+        colName (str): The name of the new column to replace `_metadata`. 
+    Returns: pyspark.sql.DataFrame: A new DataFrame with the renamed `_metadata` column.
+    """
+    new_df = df.selectExpr("*", f"_metadata as {colName}")
+    return new_df
+
+# COMMAND ----------
+
+from pyspark.sql.functions import col
+
+def rename_columns(df, column_map):
+    """
+        Renames colums in a DataFrame based on a provided mapping.
+    Parameters:
+        df (DataFrame): The DataFrame containing the colums to be renamed.
+        column_map (dict): A dictionary where keys are the current column names and values are the new column names.
+    Returns: DataFrame: A new DataFrame with the columns renamed.
+    """
+    renamed_columns = [col(old).alias(new) for old, new in column_map.items()]
+
+    for column_name in df.columns:
+        if column_name not in column_map:
+            renamed_columns.append(col(column_name))
+
+    df = df.select(renamed_columns)
+ 
+    return df
+
+# COMMAND ----------
+
+from pyspark.sql.functions import when, col, to_timestamp, to_date, regexp_replace
+
+def cast_data_types(df, data_type_map):
+    """
+        Casts the data types of specified columns in a DataFrame based on a provided mapping.
+    Parameters:
+        df (DataFrame): The DataFrame containing the columns to be cast.
+        data_type_map (dict): A dictionary where keys are the column names and values are the target data types.
+        settings (dict): A dictionary that contains a data_type_map.
+    Returns: DataFrame: A new DataFrame with the columns cast to the specified data types.
+    """
+    selected_columns = []
+
+    for column_name, data_type in data_type_map.items():
+        if column_name in df.columns:
+            if data_type in ["integer", "double", "short", "float"]:
+                selected_columns.append(col(column_name).cast(data_type).alias(column_name))
+            elif data_type.startswith("decimal("):
+                selected_columns.append(regexp_replace(col(column_name), '[$,]', '').cast(data_type).alias(column_name))
+            elif data_type.startswith("numeric("):
+                selected_columns.append(regexp_replace(col(column_name), '[$,]', '').cast(data_type).alias(column_name))
+            elif data_type == "date":
+                selected_columns.append(
+                    when(col(column_name).rlike(r'\d{1,2}/\d{1,2}/\d{4}'), to_date(col(column_name), 'M/d/yyyy'))
+                    .when(col(column_name).rlike(r'\d{1,2}-\d{1,2}-\d{4}'), to_date(col(column_name), 'd-M-yyyy'))
+                    .when(col(column_name).rlike(r'\d{4}-\d{1,2}-\d{1,2}'), to_date(col(column_name), 'yyyy-M-d'))
+                    .alias(column_name)
+                )
+            elif data_type == "timestamp":
+                selected_columns.append(
+                    when(col(column_name).rlike(r'\d{1,2}/\d{1,2}/\d{4}'), to_date(col(column_name), 'M/d/yyyy'))
+                    .when(col(column_name).rlike(r'\d{1,2}-\d{1,2}-\d{4}'), to_date(col(column_name), 'd-M-yyyy'))
+                    .otherwise(to_timestamp(col(column_name)))
+                    .alias(column_name)
+                )
+            else:
+                selected_columns.append(col(column_name).alias(column_name))  # Keep column unchanged (in case it was not recognized)
+
+    # Not sure if I want to include or not
+    # Maybe need an option
+    # I think I needed this for metadata columns that were not part of the data, but I didn't want to lose
+    for column_name in df.columns:
+        if column_name not in data_type_map:
+            selected_columns.append(col(column_name))
+
+    df = df.select(selected_columns)
+
+    return df

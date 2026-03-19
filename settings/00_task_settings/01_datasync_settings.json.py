@@ -1,0 +1,6 @@
+# Databricks notebook source
+[
+    {
+        "task_arn": "arn:aws:datasync:us-east-1:897365772259:task/task-xxxxxxxxxxxxxxxxxxx"
+    }
+]
