@@ -1,9 +1,6 @@
 # Databricks notebook source
 import json
 
-# Treat `functions/` as a normal package via `functions/__init__.py`.
-# Import the expected top-level helpers directly so existing unqualified
-# function references keep working without dynamic notebook loading.
 from functions.commonFunctions import *
 from functions.ingestFunctions import *
 from functions.standardTransformations import *
