@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import json
 import re
-import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -39,18 +38,6 @@ def get_latest_file_path(volume_path: str, date_pattern: str) -> str | None:
 
     return latest_file[0].split("/")[-1]
 
-
-def getCmd(command: str, useShell: bool = True) -> str:
-    """Run a shell command and return stripped standard output."""
-    result = subprocess.run(
-        command,
-        shell=useShell,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-        check=False,
-    )
-    return result.stdout.strip()
 
 
 def read_json_and_decode(workspace_path: str | Path) -> Any:
