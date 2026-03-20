@@ -68,15 +68,11 @@ def bronze_function_to_delta_table(settings):
             func = TRANSFORM_REGISTRY.get(function_name)
 
             if func is None:
-                fallback_func = globals().get(function_name)
-                if fallback_func is not None:
-                    func = fallback_func
-                else:
-                    available_transforms = ", ".join(sorted(TRANSFORM_REGISTRY.keys()))
-                    raise KeyError(
-                        f"Transform '{function_name}' was not found in TRANSFORM_REGISTRY or globals(). "
-                        f"Available registry transforms: {available_transforms}"
-                    )
+                available_transforms = ", ".join(sorted(TRANSFORM_REGISTRY.keys()))
+                raise KeyError(
+                    f"Transform '{function_name}' was not found in TRANSFORM_REGISTRY. "
+                    f"Available transforms: {available_transforms}"
+                )
 
             df_data = applyTransformFunction(df_data, func, parameters)
 
