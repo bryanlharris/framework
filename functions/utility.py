@@ -125,32 +125,24 @@ def read_json_and_decode(workspace_path):
     import json
     import base64
     from databricks.sdk import WorkspaceClient
-    from databricks.sdk.service import workspace
 
     client = WorkspaceClient()
 
-    # Allows workspace_path to be something like /Workspace/EDA/pipeline/settings/*task_settings/*datasync_settings.json
     if "*" in workspace_path:
         interpret_globs = getCmd(f"dir -1 {workspace_path}")
         if "\n" in interpret_globs:
             raise Exception("Found more than one file after interpreting globs in workspace path.")
-        else:
-            workspace_path = interpret_globs
+        workspace_path = interpret_globs
 
-    # Allows workspace_path to optionally start with a "/" character
     try:
         if workspace_path.startswith("/"):
-            response = client.workspace.export(path=workspace_path, format=workspace.ExportFormat.SOURCE)
+            response = client.workspace.export(path=workspace_path)
         else:
-            response = client.workspace.export(path=f"{os.getcwd()}/{workspace_path}", format=workspace.ExportFormat.SOURCE)
+            response = client.workspace.export(path=f"{os.getcwd()}/{workspace_path}")
     except Exception as e:
         print("Caught RESOURCE_DOES_NOT_EXIST:", e)
 
-    variable = base64.b64decode(response.content).decode('utf-8')
-    variable = variable.replace("# Databricks notebook source\n", "")
-    variable = json.loads(variable)
-
-    return variable
+    return json.loads(base64.b64decode(response.content).decode("utf-8"))
 
 # COMMAND ----------
 

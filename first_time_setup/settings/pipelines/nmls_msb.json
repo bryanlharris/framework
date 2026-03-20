@@ -1,4 +1,3 @@
-# Databricks notebook source
 {
     "bronze_schema_name": "nmls_msb_raw",
     "silver_schema_name": "nmls_msb",
@@ -43,14 +42,11 @@
             "msb_line_item_reference",
             "msbcr_data"
         ],
-        "tables_with_custom_types": [
-        ],
-        "tables_not_in_dms": [
-        ],
+        "tables_with_custom_types": [],
+        "tables_not_in_dms": [],
         "identity_columns": []
     },
     "gold": {
-        "tables": [
-        ]
+        "tables": []
     }
 }

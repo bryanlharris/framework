@@ -1,4 +1,3 @@
-# Databricks notebook source
 {
     "bronze_schema_name": "nmls_mcr_raw",
     "silver_schema_name": "nmls_mcr",
@@ -73,9 +72,18 @@
             {
                 "name": "line_item_filter",
                 "columns": [
-                    { "name": "line_item", "type": "string" },
-                    { "name": "group_by", "type": "string" },
-                    { "name": "sequence", "type": "integer" }
+                    {
+                        "name": "line_item",
+                        "type": "string"
+                    },
+                    {
+                        "name": "group_by",
+                        "type": "string"
+                    },
+                    {
+                        "name": "sequence",
+                        "type": "integer"
+                    }
                 ]
             }
         ]

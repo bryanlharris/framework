@@ -1,4 +1,3 @@
-# Databricks notebook source
 {
     "dst_table_name": "staging.sod_raw.survey_maddie_xml_multiplefile_test",
     "readStream_load": "/Volumes/staging/y9_raw/landing/fdt_bhcf01_nc/2025/1/29/",
@@ -26,10 +25,16 @@
     "bronze_function": "bronze_function_to_delta_table",
     "source_type": "cloudFiles",
     "transform_functions": {
-        "addSourceMetadata": ["source_metadata"],
-        "addTimestampColumn": ["ingest_time"]
+        "addSourceMetadata": [
+            "source_metadata"
+        ],
+        "addTimestampColumn": [
+            "ingest_time"
+        ]
     },
-    "trigger_type": {"availableNow": true},
+    "trigger_type": {
+        "availableNow": true
+    },
     "duplicatefiles_flag": true,
     "date_pattern": "([0-9]{8})[0-9]{6}"
 }
