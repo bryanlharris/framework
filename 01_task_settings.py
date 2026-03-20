@@ -4,7 +4,7 @@
 # MAGIC Task settings
 
 # COMMAND ----------
-# Treat `functions/` as a normal package via `functions/__init__.py`.
+
 from functions.utility import read_json_and_decode
 
 # COMMAND ----------
