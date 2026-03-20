@@ -1,16 +1,4 @@
 # Databricks notebook source
-def merge_dicts(dict1, dict2):
-    """ 
-    Merges two dictionaries into one. 
-    This function takes two dictionaries as input and returns a new dictionary that contains all the key-value pairs from both dictionaries.
-    Args: 
-        dict1 (dict): The first dictionary. 
-        dict2 (dict): The second dictionary. 
-    Returns: dict: A new dictionary containing the merged key-value pairs from dict1 and dict2. 
-    """
-    return dict1 | dict2
-
-# COMMAND ----------
 
 def get_table_schema(table_name, columns_to_drop = []):
     """
@@ -34,31 +22,6 @@ def get_table_schema(table_name, columns_to_drop = []):
     else:
         schema = df.schema
     return schema
-
-# COMMAND ----------
-
-def get_column_list(table_name, columns_to_drop = []):
-    """ 
-    Retrieves the list of columns from a given table in a Spark DataFrame, with an option to drop specific columns from the result. 
-    
-    Parameters: 
-    ---------- 
-        table_name : str 
-            The name of the table to retrieve the column list from. 
-        columns_to_drop : list, optional 
-            A list of column names to exclude from the result. Default is an empty list, which means no columns will be dropped. 
-    Returns: 
-    ------- 
-        list 
-            A list of column names from the table after dropping the specified columns, if any. Otherwise, returns the full list of columns.
-    """
-
-    df = spark.read.table(table_name)
-    if len(columns_to_drop) > 0:
-        columns = df.drop(*columns_to_drop).columns
-    else:
-        columns = df.columns
-    return columns
 
 # COMMAND ----------
 
