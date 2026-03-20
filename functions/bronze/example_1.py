@@ -19,11 +19,11 @@ def example_1(settings):
     trigger_type = settings["trigger_type"]
     source_type = settings["source_type"]
 
-    df_data = streaming_read(source_type, readStreamOptions, readStream_load)
-    df_data = addTimestampColumn(df_data, "ingest_time")
-    df_data = addSourceMetadata(df_data, "source_metadata")
-    df_data = addRowShaChecksum(
-        df_data,
+    df = streaming_read(source_type, readStreamOptions, readStream_load)
+    df = addTimestampColumn(df, "ingest_time")
+    df = addSourceMetadata(df, "source_metadata")
+    df = addRowShaChecksum(
+        df,
         checksum_col_name="row_checksum",
         hash_cols="all",
         bitlength=256,
@@ -31,7 +31,7 @@ def example_1(settings):
 
     query_name = f"{catalog_name}_{bronze_schema}_{table}"
     streaming_write(
-        df_data,
+        df,
         dst_table_name,
         writeStream_format,
         writeStream_outputMode,
