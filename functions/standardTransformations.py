@@ -1,18 +1,29 @@
-# Databricks notebook source
-from pyspark.sql.functions import lit, sha2, concat_ws, current_timestamp, col, coalesce
+"""Standard DataFrame transformations for the ``functions`` package."""
 
-# COMMAND ----------
+from pyspark.sql.functions import (
+    coalesce,
+    col,
+    concat_ws,
+    current_timestamp,
+    lit,
+    regexp_replace,
+    sha2,
+    to_date,
+    to_timestamp,
+    when,
+)
+
 
 def addRowShaChecksum(df, checksum_col_name = 'row_checksum', hash_cols = "all", bitlength=256 ):
-    """ 
-    Adds a SHA checksum column to a DataFrame. 
-    This function takes a Spark DataFrame and a list of column names, and adds a new column that contains the SHA checksum (using the SHA-2 hashing function) of the specified columns. The resulting checksum column is appended to the DataFrame. 
-    
-    Args: 
-        df (pyspark.sql.DataFrame): The input DataFrame. 
-        hash_cols (list): List of column names to be concatenated and hashed. 
+    """
+    Adds a SHA checksum column to a DataFrame.
+    This function takes a Spark DataFrame and a list of column names, and adds a new column that contains the SHA checksum (using the SHA-2 hashing function) of the specified columns. The resulting checksum column is appended to the DataFrame.
+
+    Args:
+        df (pyspark.sql.DataFrame): The input DataFrame.
+        hash_cols (list): List of column names to be concatenated and hashed.
         checksum_col_name (str, optional): Name of the new checksum column. Defaults to 'row_checksum'.
-        bitlength (int, optional): The bit length of the SHA-2 hash function. Defaults to 256. Possible values are 224, 256, 384, or 512. 
+        bitlength (int, optional): The bit length of the SHA-2 hash function. Defaults to 256. Possible values are 224, 256, 384, or 512.
     Returns: pyspark.sql.DataFrame: A new DataFrame with the added checksum column.
     """
     if hash_cols.lower() == "all":
@@ -23,19 +34,18 @@ def addRowShaChecksum(df, checksum_col_name = 'row_checksum', hash_cols = "all",
     new_df = df.withColumn(checksum_col_name, sha2(concat_ws('', *cols), bitlength))
     return new_df
 
-# COMMAND ----------
 
 def addRowShaChecksumWithSep(df, checksum_col_name = 'row_checksum', hash_cols = "all", seperator = '', bitlength=256 ):
-    """ 
-    Adds a SHA checksum column to a DataFrame. 
+    """
+    Adds a SHA checksum column to a DataFrame.
     This function takes a Spark DataFrame and a list of column names, and adds a new column that contains the SHA checksum (using the SHA-2 hashing function) of the specified columns. The resulting checksum column is appended to the DataFrame. In case if a column is null, it will take "-" as the column value to create the hash
-    
-    Args: 
-        df (pyspark.sql.DataFrame): The input DataFrame. 
-        hash_cols (list): List of column names to be concatenated and hashed. 
+
+    Args:
+        df (pyspark.sql.DataFrame): The input DataFrame.
+        hash_cols (list): List of column names to be concatenated and hashed.
         checksum_col_name (str, optional): Name of the new checksum column. Defaults to 'row_checksum'.
-        seperator (str, optional): Delimiter between the columns to use in concat 
-        bitlength (int, optional): The bit length of the SHA-2 hash function. Defaults to 256. Possible values are 224, 256, 384, or 512. 
+        seperator (str, optional): Delimiter between the columns to use in concat
+        bitlength (int, optional): The bit length of the SHA-2 hash function. Defaults to 256. Possible values are 224, 256, 384, or 512.
     Returns: pyspark.sql.DataFrame: A new DataFrame with the added checksum column.
     """
     if hash_cols.lower() == "all":
@@ -46,39 +56,34 @@ def addRowShaChecksumWithSep(df, checksum_col_name = 'row_checksum', hash_cols =
     new_df = df.withColumn(checksum_col_name, sha2(concat_ws(seperator, *[coalesce(col(c), lit("-")) for c in cols ]), bitlength))
     return new_df
 
-# COMMAND ----------
 
 def addTimestampColumn(df, colName ):
     """
-    Adds a current timestamp column to a DataFrame. 
-    This function takes a Spark DataFrame and adds a new column with the current timestamp to each row. The new timestamp column is appended to the DataFrame under the specified column name. 
-    
-    Args: 
-        df (pyspark.sql.DataFrame): The input DataFrame. 
-        colName (str): The name of the new column that will store the current timestamp. 
+    Adds a current timestamp column to a DataFrame.
+    This function takes a Spark DataFrame and adds a new column with the current timestamp to each row. The new timestamp column is appended to the DataFrame under the specified column name.
+
+    Args:
+        df (pyspark.sql.DataFrame): The input DataFrame.
+        colName (str): The name of the new column that will store the current timestamp.
     Returns: pyspark.sql.DataFrame: A new DataFrame with the added timestamp column.
     """
-    
+
     new_df = df.withColumn(colName, current_timestamp())
     return new_df
 
-# COMMAND ----------
 
 def addSourceMetadata(df, colName ):
-    """ 
-    Adds or renames a column in the DataFrame using the existing `_metadata` column. This function selects all columns from the DataFrame and renames the `_metadata` column to the specified column name. If `_metadata` is part of the DataFrame's schema, it will be added as a new column or renamed to the desired name. 
-    
-    Args: 
-        df (pyspark.sql.DataFrame): The input DataFrame. 
-        colName (str): The name of the new column to replace `_metadata`. 
+    """
+    Adds or renames a column in the DataFrame using the existing `_metadata` column. This function selects all columns from the DataFrame and renames the `_metadata` column to the specified column name. If `_metadata` is part of the DataFrame's schema, it will be added as a new column or renamed to the desired name.
+
+    Args:
+        df (pyspark.sql.DataFrame): The input DataFrame.
+        colName (str): The name of the new column to replace `_metadata`.
     Returns: pyspark.sql.DataFrame: A new DataFrame with the renamed `_metadata` column.
     """
     new_df = df.selectExpr("*", f"_metadata as {colName}")
     return new_df
 
-# COMMAND ----------
-
-from pyspark.sql.functions import col
 
 def rename_columns(df, column_map):
     """
@@ -95,12 +100,9 @@ def rename_columns(df, column_map):
             renamed_columns.append(col(column_name))
 
     df = df.select(renamed_columns)
- 
+
     return df
 
-# COMMAND ----------
-
-from pyspark.sql.functions import when, col, to_timestamp, to_date, regexp_replace
 
 def cast_data_types(df, data_type_map):
     """
