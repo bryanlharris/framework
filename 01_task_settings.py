@@ -9,19 +9,14 @@
 
 # COMMAND ----------
 
-def read_task_settings_json(file_path):
-    return read_json_and_decode(file_path)
-
-# COMMAND ----------
-
 task_settings_root = "settings/00_task_settings"
 
-datasync_task_settings               = read_task_settings_json(f"{task_settings_root}/01_datasync_settings.json")
-bronze_task_settings                 = read_task_settings_json(f"{task_settings_root}/02_bronze_settings.json")
-silver_task_settings                 = read_task_settings_json(f"{task_settings_root}/03_silver_settings.json")
-gold_task_settings                   = read_task_settings_json(f"{task_settings_root}/04_gold_settings.json")
-file_version_history_task_settings   = read_task_settings_json(f"{task_settings_root}/05_file_version_history_settings.json")
-transaction_history_task_settings    = read_task_settings_json(f"{task_settings_root}/06_transaction_history_settings.json")
+datasync_task_settings               = read_json_and_decode(f"{task_settings_root}/01_datasync_settings.json")
+bronze_task_settings                 = read_json_and_decode(f"{task_settings_root}/02_bronze_settings.json")
+silver_task_settings                 = read_json_and_decode(f"{task_settings_root}/03_silver_settings.json")
+gold_task_settings                   = read_json_and_decode(f"{task_settings_root}/04_gold_settings.json")
+file_version_history_task_settings   = read_json_and_decode(f"{task_settings_root}/05_file_version_history_settings.json")
+transaction_history_task_settings    = read_json_and_decode(f"{task_settings_root}/06_transaction_history_settings.json")
 
 # COMMAND ----------
 
