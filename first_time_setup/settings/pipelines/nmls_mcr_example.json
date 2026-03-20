@@ -51,20 +51,12 @@
                 "table_name": "line_item_data",
                 "view_name": "line_item_data_dms_view",
                 "columns": [
-                    {
-                        "name": "prior_four_quarter_average",
-                        "type": "decimal(38,18)"
-                    },
-                    {
-                        "name": "ratio_of_current_to_prior_4_avg",
-                        "type": "decimal(38,18)"
-                    }
+                    { "name": "prior_four_quarter_average", "type": "decimal(38,18)" },
+                    { "name": "ratio_of_current_to_prior_4_avg", "type": "decimal(38,18)" }
                 ]
             }
         ],
-        "tables_not_in_dms": [
-            "table_counts"
-        ],
+        "tables_not_in_dms": [ "table_counts" ],
         "identity_columns": []
     },
     "gold": {
@@ -72,18 +64,9 @@
             {
                 "name": "line_item_filter",
                 "columns": [
-                    {
-                        "name": "line_item",
-                        "type": "string"
-                    },
-                    {
-                        "name": "group_by",
-                        "type": "string"
-                    },
-                    {
-                        "name": "sequence",
-                        "type": "integer"
-                    }
+                    { "name": "line_item", "type": "string" },
+                    { "name": "group_by", "type": "string" },
+                    { "name": "sequence", "type": "integer" }
                 ]
             }
         ]

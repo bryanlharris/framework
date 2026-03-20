@@ -25,22 +25,10 @@
             {
                 "table_name": "survey",
                 "columns": [
-                    {
-                        "name": "depsumbr",
-                        "type": "numeric(38,10)"
-                    },
-                    {
-                        "name": "asset",
-                        "type": "numeric(38,10)"
-                    },
-                    {
-                        "name": "depsum",
-                        "type": "numeric(38,10)"
-                    },
-                    {
-                        "name": "depdom",
-                        "type": "numeric(38,10)"
-                    }
+                    { "name": "depsumbr", "type": "numeric(38,10)" },
+                    { "name": "asset", "type": "numeric(38,10)" },
+                    { "name": "depsum", "type": "numeric(38,10)" },
+                    { "name": "depdom", "type": "numeric(38,10)" }
                 ]
             }
         ],
