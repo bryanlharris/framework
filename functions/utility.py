@@ -18,7 +18,6 @@ def get_latest_file_path(volume_path, date_pattern):
         return None
 
     files_with_dates = [(f.path ,extract_datetime(f.name)) for f in files if extract_datetime(f.name) is not None]
-    print(len(files_with_dates))
     latest_file = max(files_with_dates, key = lambda x: x[1], default = None)
 
     if latest_file:
