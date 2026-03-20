@@ -67,7 +67,7 @@ def bronze_function_to_delta_table(settings):
                     f"Available transforms: {available_transforms}"
                 )
 
-            df = applyTransformFunction(df, func, parameters)
+            df = df.transform(func, *parameters)
 
     query_name = f"{catalog_name}_{bronze_schema}_{table}"
     streaming_write(
