@@ -53,32 +53,6 @@ def import_notebook(path):
 
 # COMMAND ----------
 
-"""
-Runs a multi-line string or list of SQL commands.
-Each command needs to end with a semi-colon if it's string type.
-"""
-def run_sql_commands(sql_commands = None, dry_run = False):
-
-    if sql_commands == None:
-        raise Exception("""
-                        Error: You ran the ``run_sql_commands'' function but did not supply any SQL commands.
-                        The value of ``sql_commands'' was None or not supplied.
-                        """)
-    elif isinstance(sql_commands, str):
-        sql_commands_list = sql_commands.split(';')
-    elif isinstance(sql_commands, list):
-        sql_commands_list = sql_commands 
-
-    for sql_command in sql_commands_list:
-        sql_command = sql_command.strip()
-        if sql_command:
-            print(sql_command)
-            if not dry_run:
-                spark.sql(sql_command)
-    print()
-
-# COMMAND ----------
-
 import subprocess
 
 """
