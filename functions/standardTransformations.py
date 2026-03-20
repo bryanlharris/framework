@@ -23,26 +23,11 @@ def addTimestampColumn(df, colName ):
 
 
 def addSourceMetadata(df, colName ):
-    """
-    Adds or renames a column in the DataFrame using the existing `_metadata` column. This function selects all columns from the DataFrame and renames the `_metadata` column to the specified column name. If `_metadata` is part of the DataFrame's schema, it will be added as a new column or renamed to the desired name.
-
-    Args:
-        df (pyspark.sql.DataFrame): The input DataFrame.
-        colName (str): The name of the new column to replace `_metadata`.
-    Returns: pyspark.sql.DataFrame: A new DataFrame with the renamed `_metadata` column.
-    """
     new_df = df.selectExpr("*", f"_metadata as {colName}")
     return new_df
 
 
 def rename_columns(df, column_map):
-    """
-        Renames colums in a DataFrame based on a provided mapping.
-    Parameters:
-        df (DataFrame): The DataFrame containing the colums to be renamed.
-        column_map (dict): A dictionary where keys are the current column names and values are the new column names.
-    Returns: DataFrame: A new DataFrame with the columns renamed.
-    """
     renamed_columns = [col(old).alias(new) for old, new in column_map.items()]
 
     for column_name in df.columns:
@@ -55,14 +40,6 @@ def rename_columns(df, column_map):
 
 
 def cast_data_types(df, data_type_map):
-    """
-        Casts the data types of specified columns in a DataFrame based on a provided mapping.
-    Parameters:
-        df (DataFrame): The DataFrame containing the columns to be cast.
-        data_type_map (dict): A dictionary where keys are the column names and values are the target data types.
-        settings (dict): A dictionary that contains a data_type_map.
-    Returns: DataFrame: A new DataFrame with the columns cast to the specified data types.
-    """
     selected_columns = []
 
     for column_name, data_type in data_type_map.items():
