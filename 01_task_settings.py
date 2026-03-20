@@ -1,7 +1,7 @@
 # Databricks notebook source
 # MAGIC %md
 # MAGIC
-# MAGIC Framework v0.04.
+# MAGIC Task settings
 
 # COMMAND ----------
 
