@@ -1,4 +1,4 @@
-"""Standard DataFrame transformations for the ``functions`` package."""
+
 
 from pyspark.sql.functions import (
     coalesce,
