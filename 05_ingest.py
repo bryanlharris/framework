@@ -4,7 +4,7 @@ import json
 from functions.commonFunctions import *
 from functions.ingestFunctions import *
 from functions.standardTransformations import *
-from functions.bronze import bronze_function_to_delta_table
+from functions.bronze import bronze_function_to_delta_table, example_1
 from functions.utility import getCmd, import_notebook, read_json_and_decode
 
 # Variables
@@ -27,6 +27,7 @@ if stop_here == "True":
 
 STATIC_FUNCTIONS = {
     "bronze_function_to_delta_table": bronze_function_to_delta_table,
+    "example_1": example_1,
 }
 
 function_name = settings[f"{color}_function"]
