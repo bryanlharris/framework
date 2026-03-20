@@ -1,0 +1,9 @@
+from functions.bronze import STATIC_FUNCTIONS as BRONZE_FUNCTIONS
+from functions.silver import STATIC_FUNCTIONS as SILVER_FUNCTIONS
+
+FUNCTION_REGISTRIES = {
+    "bronze": BRONZE_FUNCTIONS,
+    "silver": SILVER_FUNCTIONS,
+}
+
+__all__ = ["FUNCTION_REGISTRIES", "BRONZE_FUNCTIONS", "SILVER_FUNCTIONS"]

@@ -1,11 +1,8 @@
 # Databricks notebook source
 import json
 
-from functions.commonFunctions import *
-from functions.ingestFunctions import *
-from functions.standardTransformations import *
-from functions.bronze import STATIC_FUNCTIONS
-from functions.utility import getCmd, import_notebook, read_json_and_decode
+from functions.registry import FUNCTION_REGISTRIES
+from functions.utility import read_json_and_decode
 
 # Variables
 pipeline            = dbutils.widgets.get("pipeline")
@@ -26,18 +23,8 @@ if stop_here == "True":
     raise Exception("Stop here per task settings.")
 
 function_name = settings[f"{color}_function"]
-function = STATIC_FUNCTIONS.get(function_name)
-
-if function is None:
-    # User `functions/*/*.function.py` notebooks still load dynamically through
-    # `import_notebook(...)` and register callables in `globals()`, which is how
-    # settings-driven lookups continue to resolve them.
-    files = getCmd(fr"find functions/*{color} -type f -regex '.*\.functions?'").split('\n')
-    for file in files:
-        if file:
-            import_notebook(file)
-
-    function = globals().get(function_name)
+function_registry = FUNCTION_REGISTRIES.get(color, {})
+function = function_registry.get(function_name)
 
 # Call ingest function
 if callable(function):
