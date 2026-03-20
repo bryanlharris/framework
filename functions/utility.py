@@ -41,24 +41,8 @@ def get_latest_file_path(volume_path: str, date_pattern: str) -> str | None:
 
 
 def read_json_and_decode(workspace_path: str | Path) -> Any:
-    """Read JSON from a local path or simple glob and decode it."""
-    if isinstance(workspace_path, Path):
-        resolved_path = workspace_path
-    else:
-        workspace_path = str(workspace_path)
-        if "*" in workspace_path:
-            matches = sorted(Path().glob(workspace_path))
-            if len(matches) != 1:
-                raise ValueError(
-                    "Expected exactly one file after interpreting globs in workspace path."
-                )
-            resolved_path = matches[0]
-        else:
-            candidate_path = Path(workspace_path)
-            resolved_path = (
-                candidate_path
-                if candidate_path.is_absolute()
-                else Path.cwd() / candidate_path
-            )
-
-    return json.loads(resolved_path.read_text(encoding="utf-8"))
+    """Read JSON from a local path and decode it."""
+    path = Path(workspace_path)
+    if not path.is_absolute():
+        path = Path.cwd() / path
+    return json.loads(path.read_text(encoding="utf-8"))
