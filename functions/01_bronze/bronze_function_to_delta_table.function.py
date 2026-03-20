@@ -7,6 +7,7 @@ from pyspark.sql.functions import col, expr
 from pyspark.sql.functions import current_timestamp
 from pyspark.sql.functions import when, col, to_timestamp, to_date, lit
 from pyspark.sql.types import StringType, StructType
+from functions.transform_registry import TRANSFORM_REGISTRY
 
 # COMMAND ----------
 
@@ -60,7 +61,19 @@ def bronze_function_to_delta_table(settings):
     # get and apply the transformation functions from config table
     if transform_functions != None:
         for function_name, parameters in transform_functions.items():
-            func =  globals()[function_name]
+            func = TRANSFORM_REGISTRY.get(function_name)
+
+            if func is None:
+                fallback_func = globals().get(function_name)
+                if fallback_func is not None:
+                    func = fallback_func
+                else:
+                    available_transforms = ", ".join(sorted(TRANSFORM_REGISTRY.keys()))
+                    raise KeyError(
+                        f"Transform '{function_name}' was not found in TRANSFORM_REGISTRY or globals(). "
+                        f"Available registry transforms: {available_transforms}"
+                    )
+
             df_data = applyTransformFunction(df_data, func, parameters)
 
     # if duplicatefiles_flag == True:
