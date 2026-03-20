@@ -3,25 +3,22 @@
 Build a dictionary based on a folder structure + json files.
 """
 def build_dictionary(name):
-    import os
-    import json
+    from pathlib import Path
 
     dictionary = {}
-    json_files = getCmd(f"cd {name} && find . -type f -name '*.json'").split("\n")
-    for path in json_files:
-        path = path.removeprefix("./")
-        if path:
-            data = read_json_and_decode(f"{os.getcwd()}/{name}/{path}")
-            parts = path.split("/")
-            top = parts[0]
-            if top.endswith(".json"):
-                top = top.removesuffix(".json")
-                current_level = dictionary
-            else:
-                current_level = dictionary.setdefault(top, {})
-            for folder in parts[1:-1]:
-                current_level = current_level.setdefault(folder, {})
-            current_level[parts[-1].rsplit('.', 1)[0]] = data
+    root = Path(name)
+    for json_path in root.rglob("*.json"):
+        data = read_json_and_decode(json_path)
+        parts = json_path.relative_to(root).parts
+        top = parts[0]
+        if top.endswith(".json"):
+            top = top.removesuffix(".json")
+            current_level = dictionary
+        else:
+            current_level = dictionary.setdefault(top, {})
+        for folder in parts[1:-1]:
+            current_level = current_level.setdefault(folder, {})
+        current_level[parts[-1].rsplit('.', 1)[0]] = data
     
     return dictionary
 
@@ -118,54 +115,42 @@ def getCmd(command, useShell=True):
 # COMMAND ----------
 
 """
-Read a json file from the workspace and then decode it into a variable.
+Read a json file from the local filesystem and decode it into a variable.
 """
 def read_json_and_decode(workspace_path):
-    import os
     import json
-    import base64
-    from databricks.sdk import WorkspaceClient
+    import os
+    from pathlib import Path
 
-    client = WorkspaceClient()
-
-    if "*" in workspace_path:
-        interpret_globs = getCmd(f"dir -1 {workspace_path}")
-        if "\n" in interpret_globs:
-            raise Exception("Found more than one file after interpreting globs in workspace path.")
-        workspace_path = interpret_globs
-
-    try:
-        if workspace_path.startswith("/"):
-            response = client.workspace.export(path=workspace_path)
+    if isinstance(workspace_path, Path):
+        resolved_path = workspace_path
+    else:
+        workspace_path = str(workspace_path)
+        if "*" in workspace_path:
+            matches = sorted(Path().glob(workspace_path))
+            if len(matches) != 1:
+                raise Exception("Expected exactly one file after interpreting globs in workspace path.")
+            resolved_path = matches[0]
+        elif workspace_path.startswith("/"):
+            resolved_path = Path(workspace_path)
         else:
-            response = client.workspace.export(path=f"{os.getcwd()}/{workspace_path}")
-    except Exception as e:
-        print("Caught RESOURCE_DOES_NOT_EXIST:", e)
+            resolved_path = Path(os.getcwd()) / workspace_path
 
-    return json.loads(base64.b64decode(response.content).decode("utf-8"))
+    return json.loads(resolved_path.read_text(encoding="utf-8"))
 
 # COMMAND ----------
 
 """
-Encode a variable as json and save it as a json file in the workspace.
+Encode a variable as json and save it as a plain json file.
 """
 def encode_and_save_as_json(variable, workspace_path):
     import json
-    import base64
+    import os
     from pathlib import Path
-    from databricks.sdk import WorkspaceClient
-    from databricks.sdk.service import workspace
 
-    json_string = json.dumps(variable, indent=4)
-    encoded_content = base64.b64encode(json_string.encode()).decode()
-    path = str(Path(workspace_path).parent)
+    resolved_path = Path(workspace_path)
+    if not resolved_path.is_absolute():
+        resolved_path = Path(os.getcwd()) / resolved_path
 
-    client = WorkspaceClient()
-    client.workspace.mkdirs(path)
-
-    client.workspace.import_(
-        content=encoded_content,
-        format=workspace.ImportFormat.AUTO,
-        overwrite=True,
-        path=workspace_path
-    )
+    resolved_path.parent.mkdir(parents=True, exist_ok=True)
+    resolved_path.write_text(json.dumps(variable, indent=4), encoding="utf-8")

@@ -21,7 +21,7 @@ full_table_name     = task_settings['full_table_name']
 catalog_name        = full_table_name.split(".")[0]
 schema_name         = full_table_name.split(".")[1]
 table               = full_table_name.split(".")[2]
-settings            = read_json_and_decode(f"settings/*{color}/{table}.json")
+settings            = read_json_and_decode(f"settings/{color}/{table}.json")
 
 # Skip or stop
 if skip == "True":

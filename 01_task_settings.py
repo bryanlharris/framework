@@ -9,16 +9,8 @@
 
 # COMMAND ----------
 
-def read_task_settings_json(workspace_path):
-    import json
-    import os
-    import base64
-    from databricks.sdk import WorkspaceClient
-
-    client = WorkspaceClient()
-    response = client.workspace.export(path=f"{os.getcwd()}/{workspace_path}")
-
-    return json.loads(base64.b64decode(response.content).decode("utf-8"))
+def read_task_settings_json(file_path):
+    return read_json_and_decode(file_path)
 
 # COMMAND ----------
 
