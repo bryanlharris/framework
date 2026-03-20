@@ -114,19 +114,3 @@ def read_json_and_decode(workspace_path):
 
     return json.loads(resolved_path.read_text(encoding="utf-8"))
 
-# COMMAND ----------
-
-"""
-Encode a variable as json and save it as a plain json file.
-"""
-def encode_and_save_as_json(variable, workspace_path):
-    import json
-    import os
-    from pathlib import Path
-
-    resolved_path = Path(workspace_path)
-    if not resolved_path.is_absolute():
-        resolved_path = Path(os.getcwd()) / resolved_path
-
-    resolved_path.parent.mkdir(parents=True, exist_ok=True)
-    resolved_path.write_text(json.dumps(variable, indent=4), encoding="utf-8")
