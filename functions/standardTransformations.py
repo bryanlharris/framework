@@ -1,73 +1,23 @@
 
 
-from pyspark.sql.functions import (
-    coalesce,
-    col,
-    concat_ws,
-    current_timestamp,
-    lit,
-    regexp_replace,
-    sha2,
-    to_date,
-    to_timestamp,
-    when,
-)
+
+from pyspark.sql.functions import current_timestamp, regexp_replace
+from pyspark.sql.functions import to_date, to_timestamp, when
+from pyspark.sql.functions import sha2, concat_ws, coalesce, col, lit
 
 
-def addRowShaChecksum(df, checksum_col_name = 'row_checksum', hash_cols = "all", bitlength=256 ):
-    """
-    Adds a SHA checksum column to a DataFrame.
-    This function takes a Spark DataFrame and a list of column names, and adds a new column that contains the SHA checksum (using the SHA-2 hashing function) of the specified columns. The resulting checksum column is appended to the DataFrame.
-
-    Args:
-        df (pyspark.sql.DataFrame): The input DataFrame.
-        hash_cols (list): List of column names to be concatenated and hashed.
-        checksum_col_name (str, optional): Name of the new checksum column. Defaults to 'row_checksum'.
-        bitlength (int, optional): The bit length of the SHA-2 hash function. Defaults to 256. Possible values are 224, 256, 384, or 512.
-    Returns: pyspark.sql.DataFrame: A new DataFrame with the added checksum column.
-    """
+def addRowShaChecksum(df, checksum_col_name='row_checksum', hash_cols="all", seperator='-', bitlength=256):
     if hash_cols.lower() == "all":
         cols = df.columns
     else:
         cols = hash_cols.split(",")
 
-    new_df = df.withColumn(checksum_col_name, sha2(concat_ws('', *cols), bitlength))
-    return new_df
+    cols_expr = [coalesce(col(c).cast("string"), lit("-")) for c in cols]
 
-
-def addRowShaChecksumWithSep(df, checksum_col_name = 'row_checksum', hash_cols = "all", seperator = '', bitlength=256 ):
-    """
-    Adds a SHA checksum column to a DataFrame.
-    This function takes a Spark DataFrame and a list of column names, and adds a new column that contains the SHA checksum (using the SHA-2 hashing function) of the specified columns. The resulting checksum column is appended to the DataFrame. In case if a column is null, it will take "-" as the column value to create the hash
-
-    Args:
-        df (pyspark.sql.DataFrame): The input DataFrame.
-        hash_cols (list): List of column names to be concatenated and hashed.
-        checksum_col_name (str, optional): Name of the new checksum column. Defaults to 'row_checksum'.
-        seperator (str, optional): Delimiter between the columns to use in concat
-        bitlength (int, optional): The bit length of the SHA-2 hash function. Defaults to 256. Possible values are 224, 256, 384, or 512.
-    Returns: pyspark.sql.DataFrame: A new DataFrame with the added checksum column.
-    """
-    if hash_cols.lower() == "all":
-        cols = df.columns
-    else:
-        cols = hash_cols.split(",")
-
-    new_df = df.withColumn(checksum_col_name, sha2(concat_ws(seperator, *[coalesce(col(c), lit("-")) for c in cols ]), bitlength))
-    return new_df
+    return df.withColumn(checksum_col_name, sha2(concat_ws(seperator, *cols_expr), bitlength))
 
 
 def addTimestampColumn(df, colName ):
-    """
-    Adds a current timestamp column to a DataFrame.
-    This function takes a Spark DataFrame and adds a new column with the current timestamp to each row. The new timestamp column is appended to the DataFrame under the specified column name.
-
-    Args:
-        df (pyspark.sql.DataFrame): The input DataFrame.
-        colName (str): The name of the new column that will store the current timestamp.
-    Returns: pyspark.sql.DataFrame: A new DataFrame with the added timestamp column.
-    """
-
     new_df = df.withColumn(colName, current_timestamp())
     return new_df
 
