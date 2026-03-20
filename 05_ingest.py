@@ -1,9 +1,7 @@
 # Databricks notebook source
-# MAGIC %run ./functions/utility
-
-# COMMAND ----------
-
 import json
+
+from functions.utility import getCmd, import_notebook, read_json_and_decode
 
 # Import framework functions
 files = getCmd(f"[ -d functions ] && find functions -mindepth 1 -maxdepth 1 -type f -and ! -name utility").split('\n')
