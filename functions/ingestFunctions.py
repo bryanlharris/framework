@@ -74,23 +74,13 @@ def streaming_write(df, target_table, table_format, output_mode, query_name, tri
             - {"continuous": "1 second"} for continuous processing every second. 
             - {"processingTime": "10 seconds"} for processing batches every 10 seconds. 
         writestream_options : dict 
-            A dictionary of options to configure the streaming write (e.g., "checkpointLocation" for state management). 
+            A dictionary of options to configure the streaming write (e.g., "checkpointLocation" for state management).
+
     Returns: 
     ------- 
         pyspark.sql.streaming.StreamingQuery 
             A `StreamingQuery` object that represents the streaming query. This can be used to monitor the status or stop the query.
     """
-    # def writeBatch(batch_df, batch_id):
-    #     batch_df.write
-    #     .saveAsTable(target_table)
-
-    # query = (df.writeStream)
-    #             .format(table_format)
-    #             .foreachBatch(writeBatch)
-    #             .outputMode(output_mode)
-    #             .queryName(query_name)
-    #             .options(**writestream_options)
-    #             .trigger(**trigger_type)
 
     query = (
         df.writeStream
