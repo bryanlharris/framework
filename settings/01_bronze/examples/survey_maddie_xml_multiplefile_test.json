@@ -24,17 +24,8 @@
     "writeStream_outputMode": "append",
     "bronze_function": "bronze_function_to_delta_table",
     "source_type": "cloudFiles",
-    "transform_functions": {
-        "addSourceMetadata": [
-            "source_metadata"
-        ],
-        "addTimestampColumn": [
-            "ingest_time"
-        ]
-    },
-    "trigger_type": {
-        "availableNow": true
-    },
+    "transform_functions": { "addSourceMetadata": [ "source_metadata" ], "addTimestampColumn": [ "ingest_time" ] },
+    "trigger_type": { "availableNow": true },
     "duplicatefiles_flag": true,
     "date_pattern": "([0-9]{8})[0-9]{6}"
 }
