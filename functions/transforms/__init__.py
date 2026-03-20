@@ -8,6 +8,7 @@ from functions.standardTransformations import (
 )
 from functions.transforms.registry import TRANSFORM_REGISTRY
 
+# Stable public import path: import TRANSFORM_REGISTRY from functions.transforms.
 __all__ = [
     "TRANSFORM_REGISTRY",
     "addRowShaChecksum",
