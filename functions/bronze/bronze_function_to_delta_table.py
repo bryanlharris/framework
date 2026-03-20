@@ -2,7 +2,7 @@ import json
 
 from functions.commonFunctions import applyTransformFunction, get_table_schema
 from functions.ingestFunctions import streaming_read, streaming_write
-from functions.transform_registry import TRANSFORM_REGISTRY
+from functions.transforms import TRANSFORM_REGISTRY
 from functions.utility import get_latest_file_path
 
 

@@ -1,17 +1,3 @@
-from functions.standardTransformations import (
-    addRowShaChecksum,
-    addRowShaChecksumWithSep,
-    addSourceMetadata,
-    addTimestampColumn,
-    cast_data_types,
-    rename_columns,
-)
+from functions.transforms.registry import TRANSFORM_REGISTRY
 
-TRANSFORM_REGISTRY = {
-    "addRowShaChecksum": addRowShaChecksum,
-    "addRowShaChecksumWithSep": addRowShaChecksumWithSep,
-    "addSourceMetadata": addSourceMetadata,
-    "addTimestampColumn": addTimestampColumn,
-    "cast_data_types": cast_data_types,
-    "rename_columns": rename_columns,
-}
+__all__ = ["TRANSFORM_REGISTRY"]
