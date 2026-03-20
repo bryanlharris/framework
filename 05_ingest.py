@@ -2,17 +2,12 @@
 import json
 
 # Treat `functions/` as a normal package via `functions/__init__.py`.
-# Proof of concept: utility helpers now use normal package imports, while
-# transformation notebooks still load dynamically through `import_notebook(...)`.
+# Import the expected top-level helpers directly so existing unqualified
+# function references keep working without dynamic notebook loading.
+from functions.commonFunctions import *
+from functions.ingestFunctions import *
+from functions.standardTransformations import *
 from functions.utility import getCmd, import_notebook, read_json_and_decode
-
-# Keep `commonFunctions.py`, `ingestFunctions.py`, and
-# `standardTransformations.py` on dynamic loading for now so Databricks can
-# continue resolving them from the workspace before we attempt a broader migration.
-files = getCmd(f"[ -d functions ] && find functions -mindepth 1 -maxdepth 1 -type f -and ! -name utility").split('\n')
-for file in files:
-    if file:
-        import_notebook(file)
 
 # Variables
 pipeline            = dbutils.widgets.get("pipeline")
