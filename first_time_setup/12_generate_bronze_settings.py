@@ -107,4 +107,4 @@ for table_name, path_glob in path_glob_map.items():
 
     import json
     print(json.dumps(settings[table_name], indent=4))
-    # encode_and_save_as_json(settings[table_name], f"/Workspace/EDA/{pipeline}/settings/bronze/{table_name}.json")
+    # encode_and_save_as_json(settings[table_name], f"settings/01_bronze/{table_name}.json")

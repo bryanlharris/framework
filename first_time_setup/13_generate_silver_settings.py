@@ -211,5 +211,5 @@ for table in bronze_tables:
     settings[databricks_silver_schema_name]["table_settings"][table]["data_type_map"] = data_type_map
 
 for table in settings[databricks_silver_schema_name]["table_settings"].keys():
-    # encode_and_save_as_json(settings[databricks_silver_schema_name]["table_settings"][table], f"/Workspace/EDA/{pipeline}/settings/silver/{table}.json")
+    # encode_and_save_as_json(settings[databricks_silver_schema_name]["table_settings"][table], f"settings/02_silver/{table}.json")
     print(json.dumps(settings[databricks_silver_schema_name]["table_settings"][table], indent=4))
