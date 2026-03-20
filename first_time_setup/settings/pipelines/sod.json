@@ -1,4 +1,3 @@
-# Databricks notebook source
 {
     "bronze_schema_name": "sod_raw",
     "silver_schema_name": "sod",

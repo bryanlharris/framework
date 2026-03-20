@@ -1,8 +1,11 @@
-# Databricks notebook source
 {
-    "bronze_function": "example_2",
+    "bronze_function": "example_1",
     "dst_table_name": "CATALOG.SCHEMA_RAW.TABLE_NAME",
     "readStream_load": "/Volumes/staging/SCHEMA_RAW/landing/data_files/",
+    "trigger_type": {
+        "availableNow": "true"
+    },
+    "source_type": "cloudfiles",
     "readStreamOptions": {
         "header": "true",
         "quote": "\"",
