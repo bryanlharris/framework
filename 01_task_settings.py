@@ -5,7 +5,7 @@
 
 # COMMAND ----------
 
-# MAGIC %run ./functions/utility
+from functions.utility import read_json_and_decode
 
 # COMMAND ----------
 
