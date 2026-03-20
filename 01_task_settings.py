@@ -11,7 +11,6 @@
 
 task_settings_root = "settings/00_task_settings"
 
-datasync_task_settings               = read_json_and_decode(f"{task_settings_root}/01_datasync_settings.json")
 bronze_task_settings                 = read_json_and_decode(f"{task_settings_root}/02_bronze_settings.json")
 silver_task_settings                 = read_json_and_decode(f"{task_settings_root}/03_silver_settings.json")
 gold_task_settings                   = read_json_and_decode(f"{task_settings_root}/04_gold_settings.json")
@@ -20,7 +19,6 @@ transaction_history_task_settings    = read_json_and_decode(f"{task_settings_roo
 
 # COMMAND ----------
 
-dbutils.jobs.taskValues.set(key = "datasync",               value = datasync_task_settings)
 dbutils.jobs.taskValues.set(key = "bronze",                 value = bronze_task_settings)
 dbutils.jobs.taskValues.set(key = "silver",                 value = silver_task_settings)
 dbutils.jobs.taskValues.set(key = "gold",                   value = gold_task_settings)
