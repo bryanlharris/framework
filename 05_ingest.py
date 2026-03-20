@@ -1,6 +1,7 @@
 # Databricks notebook source
 import json
 
+# Treat `functions/` as a normal package via `functions/__init__.py`.
 from functions.utility import getCmd, import_notebook, read_json_and_decode
 
 # Import framework functions
