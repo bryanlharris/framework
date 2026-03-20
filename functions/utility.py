@@ -1,28 +1,4 @@
 # Databricks notebook source
-"""
-Build a dictionary based on a folder structure + json files.
-"""
-def build_dictionary(name):
-    from pathlib import Path
-
-    dictionary = {}
-    root = Path(name)
-    for json_path in root.rglob("*.json"):
-        data = read_json_and_decode(json_path)
-        parts = json_path.relative_to(root).parts
-        top = parts[0]
-        if top.endswith(".json"):
-            top = top.removesuffix(".json")
-            current_level = dictionary
-        else:
-            current_level = dictionary.setdefault(top, {})
-        for folder in parts[1:-1]:
-            current_level = current_level.setdefault(folder, {})
-        current_level[parts[-1].rsplit('.', 1)[0]] = data
-    
-    return dictionary
-
-# COMMAND ----------
 
 import re
 def get_latest_file_path(volume_path, date_pattern):
