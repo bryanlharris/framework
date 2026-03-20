@@ -49,7 +49,7 @@ def bronze_function_to_delta_table(settings):
     else:
         table_schema = None
 
-    df_data = streaming_read(
+    df = streaming_read(
         source_type=source_type,
         readstream_options=readStreamOptions,
         source=readStream_load,
@@ -67,11 +67,11 @@ def bronze_function_to_delta_table(settings):
                     f"Available transforms: {available_transforms}"
                 )
 
-            df_data = applyTransformFunction(df_data, func, parameters)
+            df = applyTransformFunction(df, func, parameters)
 
     query_name = f"{catalog_name}_{bronze_schema}_{table}"
     streaming_write(
-        df_data,
+        df,
         dst_table_name,
         writeStream_format,
         writeStream_outputMode,
