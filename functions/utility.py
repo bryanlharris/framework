@@ -1,76 +1,60 @@
-# Databricks notebook source
+"""Utility helpers for the ``functions`` package.
 
+This module contains importable Python helpers that are shared across the
+package. It is written for direct package imports in standard Python modules.
+"""
+
+from __future__ import annotations
+
+import json
 import re
-def get_latest_file_path(volume_path, date_pattern):
-    """  
-    This function takes two parameters as input and returns a  filename with max date as string 
-    Args: 
-        volume_path (string): This is the vol path where files are present. 
-        date_pattern (string): This is the regular expression of date pattern in filename. 
-    Returns: string: A filename with max date 
+import subprocess
+from pathlib import Path
+from typing import Any
+
+
+def get_latest_file_path(volume_path: str, date_pattern: str) -> str | None:
+    """Return the latest filename in ``volume_path`` that matches ``date_pattern``.
+
+    The function expects ``date_pattern`` to contain a capture group whose value
+    sorts in the same order as recency, such as ``YYYYMMDD``.
     """
     files = dbutils.fs.ls(volume_path)
 
-    def extract_datetime(filename):
+    def extract_datetime(filename: str) -> str | None:
         match = re.search(date_pattern, filename)
         if match:
             return match.group(1)
         return None
 
-    files_with_dates = [(f.path ,extract_datetime(f.name)) for f in files if extract_datetime(f.name) is not None]
-    latest_file = max(files_with_dates, key = lambda x: x[1], default = None)
+    files_with_dates = [
+        (file_info.path, extract_datetime(file_info.name))
+        for file_info in files
+        if extract_datetime(file_info.name) is not None
+    ]
+    latest_file = max(files_with_dates, key=lambda item: item[1], default=None)
 
-    if latest_file:
-        latest_file_path = latest_file[0].split("/")[-1]
-        return latest_file_path
-    else:
-        print("no valid file found")
+    if latest_file is None:
+        return None
 
-# COMMAND ----------
+    return latest_file[0].split("/")[-1]
 
-"""
-The correct way they want us to do this is to use files instead of notebooks, but for the moment I'm going to do it this way. If you had a file and wanted to import its functions you would put "from file import *" in your code but that doesn't work with notebooks. Accessing the workspace through the sdk allows me to pull in functions from a notebook. During a clone process, notebooks are cloned, but files are not. I like %run better, but there is no way to use %run programmatically, such as loading any files that happen to exist in some subfolder at runtime, which is another thing I may end up doing.
-"""
-def import_notebook(path):
-    import os
-    import base64
-    from databricks.sdk import WorkspaceClient
-    from databricks.sdk.service import workspace
 
-    client = WorkspaceClient()
-
-    try:
-        if path.startswith("/"):
-            response = client.workspace.export(path=path)
-        else:
-            response = client.workspace.export(path=f"{os.getcwd()}/{path}")
-    except Exception as e:
-        print("Caught RESOURCE_DOES_NOT_EXIST:", e)
-
-    notebook_content = base64.b64decode(response.content).decode('utf-8')
-    exec(notebook_content, globals())
-
-# COMMAND ----------
-
-import subprocess
-
-"""
-Runs a shell command and returns the output so it can be used.
-"""
-def getCmd(command, useShell=True):
-    result = subprocess.run(command, shell=useShell, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+def getCmd(command: str, useShell: bool = True) -> str:
+    """Run a shell command and return stripped standard output."""
+    result = subprocess.run(
+        command,
+        shell=useShell,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        check=False,
+    )
     return result.stdout.strip()
 
-# COMMAND ----------
 
-"""
-Read a json file from the local filesystem and decode it into a variable.
-"""
-def read_json_and_decode(workspace_path):
-    import json
-    import os
-    from pathlib import Path
-
+def read_json_and_decode(workspace_path: str | Path) -> Any:
+    """Read JSON from a local path or simple glob and decode it."""
     if isinstance(workspace_path, Path):
         resolved_path = workspace_path
     else:
@@ -78,12 +62,16 @@ def read_json_and_decode(workspace_path):
         if "*" in workspace_path:
             matches = sorted(Path().glob(workspace_path))
             if len(matches) != 1:
-                raise Exception("Expected exactly one file after interpreting globs in workspace path.")
+                raise ValueError(
+                    "Expected exactly one file after interpreting globs in workspace path."
+                )
             resolved_path = matches[0]
-        elif workspace_path.startswith("/"):
-            resolved_path = Path(workspace_path)
         else:
-            resolved_path = Path(os.getcwd()) / workspace_path
+            candidate_path = Path(workspace_path)
+            resolved_path = (
+                candidate_path
+                if candidate_path.is_absolute()
+                else Path.cwd() / candidate_path
+            )
 
     return json.loads(resolved_path.read_text(encoding="utf-8"))
-
