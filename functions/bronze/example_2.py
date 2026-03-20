@@ -1,13 +1,7 @@
-import json
-
 from pyspark.sql.functions import current_timestamp, expr
 
 
 def example_2(settings):
-    pipeline = dbutils.widgets.get("pipeline")
-    task_settings = json.loads(dbutils.widgets.get("task_settings"))
-    full_table_name = task_settings["full_table_name"]
-
     dst_table_name = settings["dst_table_name"]
     catalog_name = settings["dst_table_name"].split(".")[0]
     bronze_schema = settings["dst_table_name"].split(".")[1]

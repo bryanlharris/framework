@@ -1,5 +1,3 @@
-import json
-
 from functions.ingestFunctions import streaming_read, streaming_write
 from functions.standardTransformations import (
     addRowShaChecksum,
@@ -9,10 +7,6 @@ from functions.standardTransformations import (
 
 
 def example_1(settings):
-    pipeline = dbutils.widgets.get("pipeline")
-    task_settings = json.loads(dbutils.widgets.get("task_settings"))
-    full_table_name = task_settings["full_table_name"]
-
     dst_table_name = settings["dst_table_name"]
     catalog_name = settings["dst_table_name"].split(".")[0]
     bronze_schema = settings["dst_table_name"].split(".")[1]

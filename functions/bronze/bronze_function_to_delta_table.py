@@ -1,5 +1,3 @@
-import json
-
 from functions.commonFunctions import applyTransformFunction, get_table_schema
 from functions.ingestFunctions import streaming_read, streaming_write
 from functions.transforms import TRANSFORM_REGISTRY
@@ -7,11 +5,6 @@ from functions.utility import get_latest_file_path
 
 
 def bronze_function_to_delta_table(settings):
-    pipeline = dbutils.widgets.get("pipeline")
-    task_settings = json.loads(dbutils.widgets.get("task_settings"))
-    full_table_name = task_settings["full_table_name"]
-    schema_name = full_table_name.split(".")[1]
-
     dst_table_name = settings["dst_table_name"]
     catalog_name = settings["dst_table_name"].split(".")[0]
     bronze_schema = settings["dst_table_name"].split(".")[1]
@@ -76,7 +69,7 @@ def bronze_function_to_delta_table(settings):
 
             df_data = applyTransformFunction(df_data, func, parameters)
 
-    query_name = f"{catalog_name}_{schema_name}_{table}"
+    query_name = f"{catalog_name}_{bronze_schema}_{table}"
     streaming_write(
         df_data,
         dst_table_name,
