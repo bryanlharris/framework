@@ -13,9 +13,7 @@
         "tables": [
             "survey",
             "file_version_history",
-            "transaction_history",
-            "datasync_verified_reports",
-            "file_router_history"
+            "transaction_history"
         ],
         "custom_sql_commands": ""
     },
