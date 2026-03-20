@@ -1,10 +1,4 @@
-"""Utility helpers for the ``functions`` package.
 
-This module contains importable Python helpers that are shared across the
-package. It is written for direct package imports in standard Python modules.
-"""
-
-from __future__ import annotations
 
 import json
 import re
