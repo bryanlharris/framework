@@ -4,7 +4,7 @@ import json
 from functions.commonFunctions import *
 from functions.ingestFunctions import *
 from functions.standardTransformations import *
-from functions.bronze import bronze_function_to_delta_table, example_1
+from functions.bronze import STATIC_FUNCTIONS
 from functions.utility import getCmd, import_notebook, read_json_and_decode
 
 # Variables
@@ -24,11 +24,6 @@ if skip == "True":
     dbutils.notebook.exit("Skipping per Workflow task settings.")
 if stop_here == "True":
     raise Exception("Stop here per task settings.")
-
-STATIC_FUNCTIONS = {
-    "bronze_function_to_delta_table": bronze_function_to_delta_table,
-    "example_1": example_1,
-}
 
 function_name = settings[f"{color}_function"]
 function = STATIC_FUNCTIONS.get(function_name)
