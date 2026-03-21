@@ -2,7 +2,7 @@ from pyspark.sql.functions import col, current_timestamp
 
 from functions.ingestFunctions import streaming_read, upsertToDeltaWithPK
 from functions.standardTransformations import (
-    addRowShaChecksumWithSep,
+    addRowShaChecksum,
     cast_data_types,
     rename_columns,
 )
@@ -16,6 +16,7 @@ def upsert_with_pk_columns_checksum(settings):
     writeStreamOptions  = settings["writeStreamOptions"]
     pk                  = settings["pk"]["name"]
     pk_columns          = settings["pk"]["columns"]
+    pk_columns_str      = ",".join(pk_columns) if isinstance(pk_columns, list) else pk_columns
     source_type         = settings["source_type"]
     readStreamOptions   = settings["readStreamOptions"]
 
@@ -35,9 +36,9 @@ def upsert_with_pk_columns_checksum(settings):
             current_timestamp().alias("ingest_time"),
         )
         .transform(
-            addRowShaChecksumWithSep,
+            addRowShaChecksum,
             checksum_col_name=pk,
-            hash_cols=pk_columns,
+            hash_cols=pk_columns_str,
             seperator="",
             bitlength=256,
         )
