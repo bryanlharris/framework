@@ -24,7 +24,7 @@
     "writeStream_outputMode": "append",
     "bronze_function": "ingest_bronze",
     "source_type": "cloudFiles",
-    "transform_functions": { "addSourceMetadata": [ "source_metadata" ], "addTimestampColumn": [ "ingest_time" ] },
+    "transform_functions": { "add_source_metadata": [ "source_metadata" ], "add_timestamp_column": [ "ingest_time" ] },
     "trigger_type": { "availableNow": true },
     "duplicatefiles_flag": true,
     "date_pattern": "([0-9]{8})[0-9]{6}"
