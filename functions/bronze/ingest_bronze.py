@@ -5,18 +5,18 @@ from functions.utility import get_latest_file_path
 
 
 def ingest_bronze(settings):
-    dst_table_name = settings["dst_table_name"]
-    catalog_name = settings["dst_table_name"].split(".")[0]
-    bronze_schema = settings["dst_table_name"].split(".")[1]
-    table = settings["dst_table_name"].split(".")[2]
-    readStreamOptions = settings["readStreamOptions"]
-    writeStreamOptions = settings["writeStreamOptions"]
-    readStream_load = settings["readStream_load"]
-    writeStream_format = settings["writeStream_format"]
-    writeStream_outputMode = settings["writeStream_outputMode"]
-    source_type = settings["source_type"]
-    transform_functions = settings["transform_functions"]
-    trigger_type = settings["trigger_type"]
+    dst_table_name          = settings["dst_table_name"]
+    catalog_name            = settings["dst_table_name"].split(".")[0]
+    bronze_schema           = settings["dst_table_name"].split(".")[1]
+    table                   = settings["dst_table_name"].split(".")[2]
+    readStreamOptions       = settings["readStreamOptions"]
+    writeStreamOptions      = settings["writeStreamOptions"]
+    readStream_load         = settings["readStream_load"]
+    writeStream_format      = settings["writeStream_format"]
+    writeStream_outputMode  = settings["writeStream_outputMode"]
+    source_type             = settings["source_type"]
+    transform_functions     = settings["transform_functions"]
+    trigger_type            = settings["trigger_type"]
 
     try:
         duplicatefiles_flag = settings["duplicatefiles_flag"]
