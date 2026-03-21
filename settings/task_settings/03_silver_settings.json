@@ -1,4 +1,4 @@
 [
-  { "full_table_name": "catalog.schema.table1" },
-  { "full_table_name": "catalog.schema.table2" }
+  { "settings_file": "settings/silver/table1.json" },
+  { "settings_file": "settings/silver/table2.json" }
 ]
