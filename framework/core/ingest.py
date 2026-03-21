@@ -1,6 +1,6 @@
-from framework.commonFunctions import applyTransformFunction, get_table_schema
+from framework.core.common import applyTransformFunction, get_table_schema
 from framework.registry import function_registries
-from framework.utility import get_latest_file_path
+from framework.core.utility import get_latest_file_path
 from delta.tables import DeltaTable
 
 
@@ -80,11 +80,6 @@ def ingest_bronze(settings):
         trigger_type,
         writeStreamOptions,
     )
-
-
-
-
-
 
 
 def streaming_read(source_type, readstream_options, source, schema = None):

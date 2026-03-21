@@ -1,9 +1,10 @@
 from framework.bronze.functions import example_1, example_2
-from framework.ingest import ingest_bronze
+from framework.core.ingest import ingest_bronze
 
 bronze_functions = {
     "ingest_bronze": ingest_bronze,
-    "framework.ingest.ingest_bronze": ingest_bronze,
+    "framework.core.ingest.ingest_bronze": ingest_bronze,
+    "framework.ingest.ingest_bronze": ingest_bronze,  # backwards-compat alias
     "example_1": example_1,
     "framework.bronze.functions.example_1": example_1,
     "example_2": example_2,
