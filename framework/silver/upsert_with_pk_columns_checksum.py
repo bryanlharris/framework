@@ -1,7 +1,7 @@
 from pyspark.sql.functions import col, current_timestamp
 
-from functions.ingest import streaming_read, upsertToDeltaWithPK
-from functions.standardTransformations import (
+from framework.ingest import streaming_read, upsertToDeltaWithPK
+from framework.standardTransformations import (
     addRowShaChecksum,
     cast_data_types,
     rename_columns,

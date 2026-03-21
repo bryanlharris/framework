@@ -1,6 +1,6 @@
-from functions.commonFunctions import applyTransformFunction, get_table_schema
-from functions.registry import function_registries
-from functions.utility import get_latest_file_path
+from framework.commonFunctions import applyTransformFunction, get_table_schema
+from framework.registry import function_registries
+from framework.utility import get_latest_file_path
 from delta.tables import DeltaTable
 
 

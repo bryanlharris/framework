@@ -1,6 +1,6 @@
-from functions.bronze import bronze_functions
-from functions.silver import silver_functions
-from functions.transforms import transform_registry
+from framework.bronze import bronze_functions
+from framework.silver import silver_functions
+from framework.transforms import transform_registry
 
 function_registries = {
     "bronze": bronze_functions,
