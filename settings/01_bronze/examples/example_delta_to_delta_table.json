@@ -14,6 +14,6 @@
     "writeStream_outputMode": "append",
     "bronze_function": "ingest_bronze",
     "source_type": "table",
-    "transform_functions": { "addSourceMetadata": [ "source_metadata" ], "addTimestampColumn": [ "ingest_time" ] },
+    "transform_functions": { "add_source_metadata": [ "source_metadata" ], "add_timestamp_column": [ "ingest_time" ] },
     "trigger_type": { "availableNow": true }
 }

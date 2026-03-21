@@ -2,7 +2,7 @@ from pyspark.sql.functions import col, current_timestamp
 
 from framework.core.streaming import streaming_read
 from framework.core.merge import upsertToDeltaWithPK
-from framework.transform.metadata import addRowShaChecksum
+from framework.transform.metadata import add_row_sha_checksum
 from framework.transform.columns import cast_data_types, rename_columns
 
 
@@ -34,7 +34,7 @@ def upsert_with_pk_columns_checksum(settings):
             current_timestamp().alias("ingest_time"),
         )
         .transform(
-            addRowShaChecksum,
+            add_row_sha_checksum,
             checksum_col_name=pk,
             hash_cols=pk_columns_str,
             bitlength=256,

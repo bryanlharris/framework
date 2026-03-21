@@ -2,9 +2,9 @@ from pyspark.sql.functions import current_timestamp, expr
 
 from framework.core.streaming import streaming_read, streaming_write
 from framework.transform.metadata import (
-    addRowShaChecksum,
-    addSourceMetadata,
-    addTimestampColumn,
+    add_row_sha_checksum,
+    add_source_metadata,
+    add_timestamp_column,
 )
 
 
@@ -22,9 +22,9 @@ def example_1(settings):
     source_type             = settings["source_type"]
 
     df = streaming_read(source_type, readStreamOptions, readStream_load)
-    df = addTimestampColumn(df, "ingest_time")
-    df = addSourceMetadata(df, "source_metadata")
-    df = addRowShaChecksum(
+    df = add_timestamp_column(df, "ingest_time")
+    df = add_source_metadata(df, "source_metadata")
+    df = add_row_sha_checksum(
         df,
         checksum_col_name="row_checksum",
         hash_cols="all",
