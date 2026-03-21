@@ -1,7 +1,7 @@
 from delta.tables import DeltaTable
 
 
-def truncateAndUpsertToDeltaWithKeysSQL(mergeKeys, destinationTable):
+def fullSyncMergeSQL(mergeKeys, destinationTable):
     def _do_upsert(microBatchDF, batchId):
         merge_condition = " AND ".join([f"source.{col} = target.{col}" for col in mergeKeys])
 
@@ -19,7 +19,7 @@ def truncateAndUpsertToDeltaWithKeysSQL(mergeKeys, destinationTable):
     return _do_upsert
 
 
-def truncateAndUpsertToDeltaWithKeys(mergeKeys, destinationTable):
+def fullSyncMerge(mergeKeys, destinationTable):
     def _do_upsert(microBatchDF, batchId):
         deltaTable = DeltaTable.forName(spark, destinationTable)
 
@@ -35,7 +35,7 @@ def truncateAndUpsertToDeltaWithKeys(mergeKeys, destinationTable):
     return _do_upsert
 
 
-def upsertToDeltaWithPK(sourcePK, destinationTable, destinationPK):
+def upsertByPK(sourcePK, destinationTable, destinationPK):
     def _do_upsert(microBatchDF, batchId):
         deltaTable = DeltaTable.forName(spark, destinationTable)
         (
