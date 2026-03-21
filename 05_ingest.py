@@ -9,11 +9,7 @@ skip            = dbutils.widgets.get("skip")
 stop_here       = dbutils.widgets.get("stop_here")
 color           = dbutils.widgets.get("color")
 task_settings   = json.loads(dbutils.widgets.get("task_settings"))
-full_table_name = task_settings['full_table_name']
-catalog_name    = full_table_name.split(".")[0]
-schema_name     = full_table_name.split(".")[1]
-table           = full_table_name.split(".")[2]
-settings        = read_json_and_decode(f"settings/{color}/{table}.json")
+settings        = read_json_and_decode(task_settings["settings_file"])
 
 # Skip or stop
 if skip == "True":
@@ -21,7 +17,7 @@ if skip == "True":
 if stop_here == "True":
     raise Exception("Stop here per task settings.")
 
-function_name = task_settings["function"]
+function_name = settings[f"{color}_function"]
 function_registry = function_registries.get(color, {})
 function = function_registry.get(function_name)
 

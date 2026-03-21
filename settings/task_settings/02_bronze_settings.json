@@ -1,3 +1,3 @@
 [
-  { "full_table_name": "workspace.default.example", "function": "example_1" }
+  { "settings_file": "settings/bronze/example.json" }
 ]
