@@ -1,7 +1,7 @@
 from pyspark.sql.functions import col, current_timestamp
 
 from framework.core.streaming import streaming_read
-from framework.core.merge import upsertToDeltaWithPK
+from framework.core.merge import upsertByPK
 from framework.transform.metadata import add_row_sha_checksum
 from framework.transform.columns import cast_data_types, rename_columns
 
@@ -45,6 +45,6 @@ def upsert_with_pk_columns_checksum(settings):
         .options(**writeStreamOptions)
         .outputMode("update")
         .trigger(availableNow=True)
-        .foreachBatch(upsertToDeltaWithPK(pk, dst_table_name, pk))
+        .foreachBatch(upsertByPK(pk, dst_table_name, pk))
         .start()
     )
