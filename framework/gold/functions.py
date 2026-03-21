@@ -1,5 +1,3 @@
-from pyspark.sql.functions import col, current_timestamp
-
 from framework.ingest import streaming_read, upsertToDeltaWithPK
 from framework.transforms.functions import (
     addRowShaChecksum,
@@ -8,7 +6,7 @@ from framework.transforms.functions import (
 )
 
 
-def upsert_with_pk_columns_checksum(settings):
+def example_gold(settings):
     src_table_name      = settings["src_table_name"]
     dst_table_name      = settings["dst_table_name"]
     fuzzy_column_map    = settings["fuzzy_column_map"]
@@ -24,17 +22,8 @@ def upsert_with_pk_columns_checksum(settings):
 
     (
         streaming_read(source_type, readStreamOptions, src_table_name)
-        .drop("ingest_time")
         .transform(rename_columns, fuzzy_column_map)
         .transform(cast_data_types, data_type_map)
-        .select(
-            "*",
-            col("source_metadata.file_path").alias("file_path"),
-            col("source_metadata.file_modification_time").alias(
-                "file_modification_time"
-            ),
-            current_timestamp().alias("ingest_time"),
-        )
         .transform(
             addRowShaChecksum,
             checksum_col_name=pk,
