@@ -1,6 +1,6 @@
 from functions.commonFunctions import applyTransformFunction, get_table_schema
 from functions.ingestFunctions import streaming_read, streaming_write
-from functions.transforms import TRANSFORM_REGISTRY
+from functions.transforms import transform_registry
 from functions.utility import get_latest_file_path
 
 
@@ -58,12 +58,12 @@ def ingest_bronze(settings):
 
     if transform_functions is not None:
         for function_name, parameters in transform_functions.items():
-            func = TRANSFORM_REGISTRY.get(function_name)
+            func = transform_registry.get(function_name)
 
             if func is None:
-                available_transforms = ", ".join(sorted(TRANSFORM_REGISTRY.keys()))
+                available_transforms = ", ".join(sorted(transform_registry.keys()))
                 raise KeyError(
-                    f"Transform '{function_name}' was not found in TRANSFORM_REGISTRY. "
+                    f"Transform '{function_name}' was not found in transform_registry. "
                     f"Available transforms: {available_transforms}"
                 )
 

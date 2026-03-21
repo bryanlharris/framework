@@ -5,11 +5,11 @@ from functions.standardTransformations import (
     cast_data_types,
     rename_columns,
 )
-from functions.transforms.registry import TRANSFORM_REGISTRY
+from functions.transforms.registry import transform_registry
 
-# Stable public import path: import TRANSFORM_REGISTRY from functions.transforms.
+# Stable public import path: import transform_registry from functions.transforms.
 __all__ = [
-    "TRANSFORM_REGISTRY",
+    "transform_registry",
     "addRowShaChecksum",
     "addSourceMetadata",
     "addTimestampColumn",
