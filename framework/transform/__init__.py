@@ -10,14 +10,14 @@ from framework.transform.columns import (
 
 transform_registry = {
     "addRowShaChecksum": addRowShaChecksum,
-    "framework.transform.functions.addRowShaChecksum": addRowShaChecksum,
     "addSourceMetadata": addSourceMetadata,
-    "framework.transform.functions.addSourceMetadata": addSourceMetadata,
     "addTimestampColumn": addTimestampColumn,
-    "framework.transform.functions.addTimestampColumn": addTimestampColumn,
     "cast_data_types": cast_data_types,
-    "framework.transform.functions.cast_data_types": cast_data_types,
     "rename_columns": rename_columns,
+    "framework.transform.functions.addRowShaChecksum": addRowShaChecksum,
+    "framework.transform.functions.addSourceMetadata": addSourceMetadata,
+    "framework.transform.functions.addTimestampColumn": addTimestampColumn,
+    "framework.transform.functions.cast_data_types": cast_data_types,
     "framework.transform.functions.rename_columns": rename_columns,
 }
 
