@@ -1,5 +1,5 @@
 from functions.commonFunctions import applyTransformFunction, get_table_schema
-from functions.transforms import transform_registry
+from functions.registry import function_registries
 from functions.utility import get_latest_file_path
 from delta.tables import DeltaTable
 
@@ -57,11 +57,12 @@ def ingest_bronze(settings):
     )
 
     if transform_functions is not None:
+        transform_reg = function_registries["transforms"]
         for function_name, parameters in transform_functions.items():
-            func = transform_registry.get(function_name)
+            func = transform_reg.get(function_name)
 
             if func is None:
-                available_transforms = ", ".join(sorted(transform_registry.keys()))
+                available_transforms = ", ".join(sorted(transform_reg.keys()))
                 raise KeyError(
                     f"Transform '{function_name}' was not found in transform_registry. "
                     f"Available transforms: {available_transforms}"
