@@ -1,4 +1,4 @@
-from framework.standardTransformations import (
+from framework.transforms.functions import (
     addRowShaChecksum,
     addSourceMetadata,
     addTimestampColumn,
@@ -8,15 +8,15 @@ from framework.standardTransformations import (
 
 transform_registry = {
     "addRowShaChecksum": addRowShaChecksum,
-    "framework.standardTransformations.addRowShaChecksum": addRowShaChecksum,
+    "framework.transforms.functions.addRowShaChecksum": addRowShaChecksum,
     "addSourceMetadata": addSourceMetadata,
-    "framework.standardTransformations.addSourceMetadata": addSourceMetadata,
+    "framework.transforms.functions.addSourceMetadata": addSourceMetadata,
     "addTimestampColumn": addTimestampColumn,
-    "framework.standardTransformations.addTimestampColumn": addTimestampColumn,
+    "framework.transforms.functions.addTimestampColumn": addTimestampColumn,
     "cast_data_types": cast_data_types,
-    "framework.standardTransformations.cast_data_types": cast_data_types,
+    "framework.transforms.functions.cast_data_types": cast_data_types,
     "rename_columns": rename_columns,
-    "framework.standardTransformations.rename_columns": rename_columns,
+    "framework.transforms.functions.rename_columns": rename_columns,
 }
 
 # Stable public import path: import transform_registry from framework.transforms.
