@@ -5,7 +5,6 @@ from framework.registry import function_registries
 from framework.core.utils import read_json_and_decode
 
 # Variables
-pipeline        = dbutils.widgets.get("pipeline")
 skip            = dbutils.widgets.get("skip")
 stop_here       = dbutils.widgets.get("stop_here")
 color           = dbutils.widgets.get("color")
