@@ -1,30 +1,5 @@
-
-
-
-from pyspark.sql.functions import current_timestamp, regexp_replace
+from pyspark.sql.functions import col, regexp_replace
 from pyspark.sql.functions import to_date, to_timestamp, when
-from pyspark.sql.functions import sha2, concat_ws, coalesce, col, lit
-
-
-def addRowShaChecksum(df, checksum_col_name='row_checksum', hash_cols="all", seperator='-', bitlength=256):
-    if hash_cols.lower() == "all":
-        cols = df.columns
-    else:
-        cols = hash_cols.split(",")
-
-    cols_expr = [coalesce(col(c).cast("string"), lit("-")) for c in cols]
-
-    return df.withColumn(checksum_col_name, sha2(concat_ws(seperator, *cols_expr), bitlength))
-
-
-def addTimestampColumn(df, colName ):
-    new_df = df.withColumn(colName, current_timestamp())
-    return new_df
-
-
-def addSourceMetadata(df, colName ):
-    new_df = df.selectExpr("*", f"_metadata as {colName}")
-    return new_df
 
 
 def rename_columns(df, column_map):
@@ -65,11 +40,8 @@ def cast_data_types(df, data_type_map):
                     .alias(column_name)
                 )
             else:
-                selected_columns.append(col(column_name).alias(column_name))  # Keep column unchanged (in case it was not recognized)
+                selected_columns.append(col(column_name).alias(column_name))
 
-    # Not sure if I want to include or not
-    # Maybe need an option
-    # I think I needed this for metadata columns that were not part of the data, but I didn't want to lose
     for column_name in df.columns:
         if column_name not in data_type_map:
             selected_columns.append(col(column_name))

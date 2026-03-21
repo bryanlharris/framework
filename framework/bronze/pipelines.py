@@ -1,5 +1,7 @@
-from framework.ingest import streaming_read, streaming_write
-from framework.transform.functions import (
+from pyspark.sql.functions import current_timestamp, expr
+
+from framework.core.streaming import streaming_read, streaming_write
+from framework.transform.metadata import (
     addRowShaChecksum,
     addSourceMetadata,
     addTimestampColumn,
@@ -39,9 +41,6 @@ def example_1(settings):
         trigger_type,
         writeStreamOptions,
     )
-
-
-from pyspark.sql.functions import current_timestamp, expr
 
 
 def example_2(settings):

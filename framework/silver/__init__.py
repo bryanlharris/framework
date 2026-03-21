@@ -1,4 +1,4 @@
-from framework.silver.functions import upsert_with_pk_columns_checksum
+from framework.silver.pipelines import upsert_with_pk_columns_checksum
 
 silver_functions = {
     "upsert_with_pk_columns_checksum": upsert_with_pk_columns_checksum,
