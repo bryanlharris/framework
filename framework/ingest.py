@@ -57,7 +57,7 @@ def ingest_bronze(settings):
     )
 
     if transform_functions is not None:
-        transform_reg = function_registries["transforms"]
+        transform_reg = function_registries["transform"]
         for function_name, parameters in transform_functions.items():
             func = transform_reg.get(function_name)
 
