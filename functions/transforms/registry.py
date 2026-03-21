@@ -6,7 +6,7 @@ from functions.standardTransformations import (
     rename_columns,
 )
 
-TRANSFORM_REGISTRY = {
+transform_registry = {
     "addRowShaChecksum": addRowShaChecksum,
     "addSourceMetadata": addSourceMetadata,
     "addTimestampColumn": addTimestampColumn,
