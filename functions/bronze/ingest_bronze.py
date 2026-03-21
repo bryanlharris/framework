@@ -4,7 +4,7 @@ from functions.transforms import TRANSFORM_REGISTRY
 from functions.utility import get_latest_file_path
 
 
-def bronze_function_to_delta_table(settings):
+def ingest_bronze(settings):
     dst_table_name = settings["dst_table_name"]
     catalog_name = settings["dst_table_name"].split(".")[0]
     bronze_schema = settings["dst_table_name"].split(".")[1]
