@@ -9,15 +9,15 @@ from functions.standardTransformations import (
 
 
 def upsert_with_pk_columns_checksum(settings):
-    src_table_name = settings["src_table_name"]
-    dst_table_name = settings["dst_table_name"]
-    fuzzy_column_map = settings["fuzzy_column_map"]
-    data_type_map = settings["data_type_map"]
-    writeStreamOptions = settings["writeStreamOptions"]
-    pk = settings["pk"]["name"]
-    pk_columns = settings["pk"]["columns"]
-    source_type = settings["source_type"]
-    readStreamOptions = settings["readStreamOptions"]
+    src_table_name      = settings["src_table_name"]
+    dst_table_name      = settings["dst_table_name"]
+    fuzzy_column_map    = settings["fuzzy_column_map"]
+    data_type_map       = settings["data_type_map"]
+    writeStreamOptions  = settings["writeStreamOptions"]
+    pk                  = settings["pk"]["name"]
+    pk_columns          = settings["pk"]["columns"]
+    source_type         = settings["source_type"]
+    readStreamOptions   = settings["readStreamOptions"]
 
     spark.conf.set("spark.databricks.delta.schema.autoMerge.enabled", "true")
 

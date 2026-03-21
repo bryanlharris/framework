@@ -5,16 +5,16 @@ from functions.registry import function_registries
 from functions.utility import read_json_and_decode
 
 # Variables
-pipeline            = dbutils.widgets.get("pipeline")
-skip                = dbutils.widgets.get("skip")
-stop_here           = dbutils.widgets.get("stop_here")
-color               = dbutils.widgets.get("color")
-task_settings       = json.loads(dbutils.widgets.get("task_settings"))
-full_table_name     = task_settings['full_table_name']
-catalog_name        = full_table_name.split(".")[0]
-schema_name         = full_table_name.split(".")[1]
-table               = full_table_name.split(".")[2]
-settings            = read_json_and_decode(f"settings/{color}/{table}.json")
+pipeline        = dbutils.widgets.get("pipeline")
+skip            = dbutils.widgets.get("skip")
+stop_here       = dbutils.widgets.get("stop_here")
+color           = dbutils.widgets.get("color")
+task_settings   = json.loads(dbutils.widgets.get("task_settings"))
+full_table_name = task_settings['full_table_name']
+catalog_name    = full_table_name.split(".")[0]
+schema_name     = full_table_name.split(".")[1]
+table           = full_table_name.split(".")[2]
+settings        = read_json_and_decode(f"settings/{color}/{table}.json")
 
 # Skip or stop
 if skip == "True":
