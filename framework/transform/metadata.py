@@ -2,7 +2,7 @@ from pyspark.sql.functions import current_timestamp
 from pyspark.sql.functions import sha2, concat_ws, coalesce, col, lit
 
 
-def addRowShaChecksum(df, checksum_col_name='row_checksum', hash_cols="all", seperator='-', bitlength=256):
+def addRowShaChecksum(df, checksum_col_name='row_checksum', hash_cols="all", separator='-', bitlength=256):
     if hash_cols.lower() == "all":
         cols = df.columns
     else:
@@ -10,7 +10,7 @@ def addRowShaChecksum(df, checksum_col_name='row_checksum', hash_cols="all", sep
 
     cols_expr = [coalesce(col(c).cast("string"), lit("-")) for c in cols]
 
-    return df.withColumn(checksum_col_name, sha2(concat_ws(seperator, *cols_expr), bitlength))
+    return df.withColumn(checksum_col_name, sha2(concat_ws(separator, *cols_expr), bitlength))
 
 
 def addTimestampColumn(df, colName):
