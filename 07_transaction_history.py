@@ -8,7 +8,6 @@
 import json
 
 # Workflow parameters and task settings
-pipeline            = dbutils.widgets.get("pipeline")
 skip                = dbutils.widgets.get("skip")
 stop_here           = dbutils.widgets.get("stop_here")
 task_settings       = json.loads(dbutils.widgets.get("task_settings"))
