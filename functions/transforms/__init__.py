@@ -5,7 +5,19 @@ from functions.standardTransformations import (
     cast_data_types,
     rename_columns,
 )
-from functions.transforms.registry import transform_registry
+
+transform_registry = {
+    "addRowShaChecksum": addRowShaChecksum,
+    "functions.standardTransformations.addRowShaChecksum": addRowShaChecksum,
+    "addSourceMetadata": addSourceMetadata,
+    "functions.standardTransformations.addSourceMetadata": addSourceMetadata,
+    "addTimestampColumn": addTimestampColumn,
+    "functions.standardTransformations.addTimestampColumn": addTimestampColumn,
+    "cast_data_types": cast_data_types,
+    "functions.standardTransformations.cast_data_types": cast_data_types,
+    "rename_columns": rename_columns,
+    "functions.standardTransformations.rename_columns": rename_columns,
+}
 
 # Stable public import path: import transform_registry from functions.transforms.
 __all__ = [
