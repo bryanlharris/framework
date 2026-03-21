@@ -1,4 +1,4 @@
-from functions.ingestFunctions import streaming_read, streaming_write
+from functions.ingest import streaming_read, streaming_write
 from functions.standardTransformations import (
     addRowShaChecksum,
     addSourceMetadata,
