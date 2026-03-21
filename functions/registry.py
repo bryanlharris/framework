@@ -1,9 +1,9 @@
 from functions.bronze import bronze_functions
 from functions.silver import silver_functions
 
-FUNCTION_REGISTRIES = {
+function_registries = {
     "bronze": bronze_functions,
     "silver": silver_functions,
 }
 
-__all__ = ["FUNCTION_REGISTRIES"]
+__all__ = ["function_registries"]

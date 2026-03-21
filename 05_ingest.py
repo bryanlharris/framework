@@ -1,7 +1,7 @@
 # Databricks notebook source
 import json
 
-from functions.registry import FUNCTION_REGISTRIES
+from functions.registry import function_registries
 from functions.utility import read_json_and_decode
 
 # Variables
@@ -23,7 +23,7 @@ if stop_here == "True":
     raise Exception("Stop here per task settings.")
 
 function_name = settings[f"{color}_function"]
-function_registry = FUNCTION_REGISTRIES.get(color, {})
+function_registry = function_registries.get(color, {})
 function = function_registry.get(function_name)
 
 # Call ingest function
