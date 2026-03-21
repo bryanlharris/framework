@@ -21,7 +21,7 @@ if skip == "True":
 if stop_here == "True":
     raise Exception("Stop here per task settings.")
 
-function_name = settings[f"{color}_function"]
+function_name = task_settings["function"]
 function_registry = function_registries.get(color, {})
 function = function_registry.get(function_name)
 

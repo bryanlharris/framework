@@ -12,8 +12,7 @@
         "delta.columnMapping.mode": "name"
     },
     "writeStream_outputMode": "append",
-    "bronze_function": "ingest_bronze",
-    "source_type": "table",
+"source_type": "table",
     "transform_functions": { "add_source_metadata": [ "source_metadata" ], "add_timestamp_column": [ "ingest_time" ] },
     "trigger_type": { "availableNow": true }
 }
