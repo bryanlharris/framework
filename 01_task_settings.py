@@ -5,7 +5,7 @@
 
 # COMMAND ----------
 
-from framework.utility import read_json_and_decode
+from framework.spark_utils import read_json_and_decode
 
 # COMMAND ----------
 
