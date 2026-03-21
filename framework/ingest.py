@@ -1,6 +1,5 @@
-from framework.commonFunctions import applyTransformFunction, get_table_schema
+from framework.spark_utils import get_latest_file_path, get_table_schema
 from framework.registry import function_registries
-from framework.utility import get_latest_file_path
 from delta.tables import DeltaTable
 
 

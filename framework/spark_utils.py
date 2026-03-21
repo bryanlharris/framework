@@ -33,10 +33,18 @@ def get_latest_file_path(volume_path: str, date_pattern: str) -> str | None:
     return latest_file[0].split("/")[-1]
 
 
-
 def read_json_and_decode(workspace_path: str | Path) -> Any:
     """Read JSON from a local path and decode it."""
     path = Path(workspace_path)
     if not path.is_absolute():
         path = Path.cwd() / path
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def get_table_schema(table_name, columns_to_drop=[]):
+    df = spark.read.table(table_name)
+    if len(columns_to_drop) > 0:
+        schema = df.drop(*columns_to_drop).schema
+    else:
+        schema = df.schema
+    return schema
