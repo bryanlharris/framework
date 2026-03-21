@@ -1,9 +1,9 @@
-from framework.transform.metadata import (
+from .metadata import (
     add_row_sha_checksum,
     add_source_metadata,
     add_timestamp_column,
 )
-from framework.transform.columns import (
+from .columns import (
     cast_data_types,
     rename_columns,
 )

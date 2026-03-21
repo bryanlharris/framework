@@ -1,5 +1,5 @@
-from framework.bronze.pipelines import example_1, example_2
-from framework.bronze.ingest import ingest_bronze
+from .pipelines import example_1, example_2
+from .ingest import ingest_bronze
 
 bronze_functions = {
     "ingest_bronze": ingest_bronze,
