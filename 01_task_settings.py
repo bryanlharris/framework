@@ -9,7 +9,7 @@ from framework.core.utils import read_json_and_decode
 
 # COMMAND ----------
 
-task_settings_root = "settings/00_task_settings"
+task_settings_root = "settings/task_settings"
 
 bronze_task_settings                 = read_json_and_decode(f"{task_settings_root}/02_bronze_settings.json")
 silver_task_settings                 = read_json_and_decode(f"{task_settings_root}/03_silver_settings.json")
