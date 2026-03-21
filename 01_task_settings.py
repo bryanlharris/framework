@@ -5,7 +5,7 @@
 
 # COMMAND ----------
 
-from functions.utility import read_json_and_decode
+from framework.utility import read_json_and_decode
 
 # COMMAND ----------
 

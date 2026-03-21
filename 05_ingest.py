@@ -1,8 +1,8 @@
 # Databricks notebook source
 import json
 
-from functions.registry import function_registries
-from functions.utility import read_json_and_decode
+from framework.registry import function_registries
+from framework.utility import read_json_and_decode
 
 # Variables
 pipeline        = dbutils.widgets.get("pipeline")
