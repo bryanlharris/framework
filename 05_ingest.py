@@ -2,7 +2,7 @@
 import json
 
 from framework.registry import function_registries
-from framework.spark_utils import read_json_and_decode
+from framework.core.utils import read_json_and_decode
 
 # Variables
 pipeline        = dbutils.widgets.get("pipeline")
