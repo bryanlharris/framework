@@ -2,7 +2,7 @@ from functions.bronze.bronze_function_to_delta_table import bronze_function_to_d
 from functions.bronze.example_1 import example_1
 from functions.bronze.example_2 import example_2
 
-STATIC_FUNCTIONS = {
+bronze_functions = {
     "bronze_function_to_delta_table": bronze_function_to_delta_table,
     "functions.bronze.bronze_function_to_delta_table.bronze_function_to_delta_table": bronze_function_to_delta_table,
     "example_1": example_1,
@@ -12,7 +12,7 @@ STATIC_FUNCTIONS = {
 }
 
 __all__ = [
-    "STATIC_FUNCTIONS",
+    "bronze_functions",
     "bronze_function_to_delta_table",
     "example_1",
     "example_2",
