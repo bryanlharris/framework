@@ -37,7 +37,6 @@ def upsert_with_pk_columns_checksum(settings):
             addRowShaChecksum,
             checksum_col_name=pk,
             hash_cols=pk_columns_str,
-            seperator="",
             bitlength=256,
         )
         .writeStream

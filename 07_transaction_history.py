@@ -27,7 +27,6 @@ if stop_here == "True":
 # COMMAND ----------
 
 from pyspark.sql import functions as F
-import json
 
 # Variables
 catalog_name = full_table_name.split(".")[0]

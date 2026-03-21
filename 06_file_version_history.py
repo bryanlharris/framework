@@ -27,7 +27,6 @@ if stop_here == "True":
 # COMMAND ----------
 
 from pyspark.sql import functions as F
-import json
 
 # Variables
 catalog_name = full_table_name.split(".")[0]
@@ -97,57 +96,3 @@ if len(file_version_history_records) > 0:
                 when matched then update set *
                 when not matched then insert *
             """)
-
-# COMMAND ----------
-
-# from pyspark.sql import DataFrame
-# from pyspark.sql.functions import lit, col, collect_list, struct
-
-# # Empty df
-# df = spark.createDataFrame([], schema="primary_key STRING, file_path: ARRAY<STRING>")
-
-# # Get table history
-# all_version_rows = (
-#     spark.sql(f"describe history {full_table_name}")
-#     .filter((col("operation") == "STREAMING UPDATE") | (col("operation") == "MERGE"))
-#     .select("version")
-#     .sort("version", ascending=False)
-#     .limit(1)
-#     .collect()
-# )
-
-# # Loop through here
-# for row in all_version_rows:
-#     version = row["version"]
-#     print(version)
-
-#     # Read table as of this version
-#     this_version_df = (
-#         spark.read
-#         .format("delta")
-#         .option("versionAsOf", version)
-#         .table(full_table_name)
-#         .withColumn("primary_key", lit(f"{full_table_name}_{version}"))
-#         .withColumn("file_path", col("source_metadata.file_path"))
-#         .select("primary_key", "file_path")
-#         .dropDuplicates()
-#         .groupBy("primary_key")
-#         .agg(collect_list("file_path").alias("file_path"))
-#         .select("primary_key", "file_path")
-#     )
-
-#     # Add to the empty df from above
-#     df = df.union(this_version_df)
-
-# # Turn on schema evolution (will not work on serverless clusters)
-# spark.conf.set("spark.databricks.delta.schema.autoMerge.enabled", "true")
-
-# # Merge
-# df.createOrReplaceTempView("df")
-# spark.sql(f"""
-#             merge WITH SCHEMA EVOLUTION into {file_version_table_name} as target
-#             using df as source
-#             on target.primary_key = source.primary_key
-#             when matched then update set *
-#             when not matched then insert *
-#           """)
