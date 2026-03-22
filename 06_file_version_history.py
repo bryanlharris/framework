@@ -32,10 +32,7 @@ catalog_name = full_table_name.split(".")[0]
 schema_name = full_table_name.split(".")[1]
 
 # Figure out bronze schema name
-if schema_name.endswith("_raw"):
-    bronze_schema = schema_name
-else:
-    bronze_schema = schema_name + "_raw"
+bronze_schema = "bronze"
 
 # Table to write to
 file_version_table_name = f"{catalog_name}.{bronze_schema}.file_version_history"
