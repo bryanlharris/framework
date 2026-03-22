@@ -1,0 +1,20 @@
+{
+    "src_table_name": "workspace.default_raw.edsm_systems",
+    "dst_table_name": "workspace.default.edsm_systems",
+    "silver_function": "framework.silver.functions.upsert_with_pk_columns_checksum",
+    "source_type": "table",
+    "readStreamOptions": {},
+    "writeStreamOptions": {
+        "checkpointLocation": "/Volumes/workspace/default/utility/edsm_silver/_checkpoints/"
+    },
+    "fuzzy_column_map": {},
+    "data_type_map": {
+        "id": "integer",
+        "id64": "long",
+        "date": "timestamp"
+    },
+    "pk": {
+        "name": "system_pk",
+        "columns": ["id"]
+    }
+}
