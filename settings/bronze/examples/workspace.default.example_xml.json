@@ -1,5 +1,5 @@
 {
-    "dst_table_name": "workspace.default.example_xml",
+    "dst_table_name": "workspace.bronze.example_xml",
     "readStream_load": "/Volumes/workspace/default/landing/example/",
     "readStreamOptions": {
         "rowTag": "EXAMPLE_ROW_TAG",

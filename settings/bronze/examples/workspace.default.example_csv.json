@@ -1,5 +1,5 @@
 {
-    "dst_table_name": "workspace.default.example_csv",
+    "dst_table_name": "workspace.bronze.example_csv",
     "readStream_load": "/Volumes/workspace/default/landing/example/",
     "readStreamOptions": {
         "header": true,
