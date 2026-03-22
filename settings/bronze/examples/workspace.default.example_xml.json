@@ -1,30 +1,30 @@
 {
-    "dst_table_name": "staging.sod_raw.survey_maddie_xml_multiplefile_test",
-    "readStream_load": "/Volumes/staging/y9_raw/landing/fdt_bhcf01_nc/2025/1/29/",
+    "dst_table_name": "workspace.default.example_xml",
+    "readStream_load": "/Volumes/workspace/default/landing/example/",
     "readStreamOptions": {
-        "rowTag": "FDT_BHCF01_NC_TRANS",
+        "rowTag": "EXAMPLE_ROW_TAG",
         "mode": "PERMISSIVE",
-        "encoding": "ISO-8859-1",
+        "encoding": "UTF-8",
         "cloudFiles.format": "xml",
         "cloudFiles.inferColumnTypes": "false",
         "cloudFiles.inferSchema": "true",
-        "cloudFiles.schemaLocation": "/Volumes/staging/sod_raw/utility/survey_maddie/_schema/",
+        "cloudFiles.schemaLocation": "/Volumes/workspace/default/utility/example/_schema/",
         "cloudFiles.schemaEvolutionMode": "none",
         "cloudFiles.useNotifications": "false",
         "cloudFiles.useIncrementalListing": "auto",
         "cloudFiles.validateOptions": "true",
-        "badRecordsPath": "/Volumes/staging/sod_raw/utility/survey_maddie/_badRecords/"
+        "badRecordsPath": "/Volumes/workspace/default/utility/example/_badRecords/",
+        "columnNameOfCorruptRecord": "corrupt_record",
+        "rescuedDataColumn": "rescued_data"
     },
     "writeStream_format": "delta",
     "writeStreamOptions": {
         "mergeSchema": "true",
-        "checkpointLocation": "/Volumes/staging/sod_raw/utility/survey_maddie/_checkpoints/",
+        "checkpointLocation": "/Volumes/workspace/default/utility/example/_checkpoints/",
         "delta.columnMapping.mode": "name"
     },
     "writeStream_outputMode": "append",
     "bronze_function": "framework.bronze.pipelines.from_files",
     "source_type": "cloudFiles",
-    "trigger_type": { "availableNow": true },
-    "duplicatefiles_flag": true,
-    "date_pattern": "([0-9]{8})[0-9]{6}"
+    "trigger_type": { "availableNow": true }
 }
