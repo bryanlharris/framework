@@ -1,13 +1,13 @@
 {
-    "src_table_name": "edsm.bronze.systems",
-    "dst_table_name": "edsm.silver.systems",
+    "source_table": "edsm.bronze.systems",
+    "destination_table": "edsm.silver.systems",
     "silver_function": "framework.silver.functions.from_table",
     "source_type": "table",
-    "readStreamOptions": {},
-    "writeStreamOptions": {
+    "readStream_options": {},
+    "writeStream_options": {
         "checkpointLocation": "/Volumes/edsm/silver/utility/_checkpoints/"
     },
-    "fuzzy_column_map": {},
+    "column_map": {},
     "data_type_map": {
         "id": "integer",
         "id64": "long",

@@ -1,7 +1,7 @@
 {
-    "dst_table_name": "workspace.bronze.example_xml",
-    "readStream_load": "/Volumes/workspace/bronze/landing/",
-    "readStreamOptions": {
+    "destination_table": "workspace.bronze.example_xml",
+    "readStream_path": "/Volumes/workspace/bronze/landing/",
+    "readStream_options": {
         "rowTag": "EXAMPLE_ROW_TAG",
         "mode": "PERMISSIVE",
         "encoding": "UTF-8",
@@ -18,7 +18,7 @@
         "rescuedDataColumn": "rescued_data"
     },
     "writeStream_format": "delta",
-    "writeStreamOptions": {
+    "writeStream_options": {
         "mergeSchema": "true",
         "checkpointLocation": "/Volumes/workspace/bronze/utility/_checkpoints/",
         "delta.columnMapping.mode": "name"

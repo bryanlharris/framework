@@ -1,8 +1,8 @@
 {
-    "dst_table_name": "edsm.bronze.systems",
+    "destination_table": "edsm.bronze.systems",
     "bronze_function": "framework.bronze.ingest.from_files",
-    "readStream_load": "/Volumes/edsm/bronze/landing/",
-    "readStreamOptions": {
+    "readStream_path": "/Volumes/edsm/bronze/landing/",
+    "readStream_options": {
         "cloudFiles.format": "json",
         "cloudFiles.inferColumnTypes": "false",
         "cloudFiles.inferSchema": "true",
@@ -17,7 +17,7 @@
         "columnNameOfCorruptRecord": "corrupt_record"
     },
     "writeStream_format": "delta",
-    "writeStreamOptions": {
+    "writeStream_options": {
         "mergeSchema": "true",
         "checkpointLocation": "/Volumes/edsm/bronze/utility/_checkpoints/",
         "delta.columnMapping.mode": "name"

@@ -5,13 +5,13 @@ from framework.transform.metadata import (
 
 
 def from_files(settings):
-    dst_table_name          = settings["dst_table_name"]
-    catalog_name            = settings["dst_table_name"].split(".")[0]
-    bronze_schema           = settings["dst_table_name"].split(".")[1]
-    table                   = settings["dst_table_name"].split(".")[2]
-    readStreamOptions       = settings["readStreamOptions"]
-    writeStreamOptions      = settings["writeStreamOptions"]
-    readStream_load         = settings["readStream_load"]
+    destination_table       = settings["destination_table"]
+    catalog_name            = settings["destination_table"].split(".")[0]
+    bronze_schema           = settings["destination_table"].split(".")[1]
+    table                   = settings["destination_table"].split(".")[2]
+    readStream_options      = settings["readStream_options"]
+    writeStream_options     = settings["writeStream_options"]
+    readStream_path         = settings["readStream_path"]
     writeStream_format      = settings["writeStream_format"]
     writeStream_outputMode  = settings["writeStream_outputMode"]
     source_type             = settings["source_type"]
@@ -30,8 +30,8 @@ def from_files(settings):
     df = (
         spark.readStream
         .format(source_type)
-        .options(**readStreamOptions)
-        .load(readStream_load)
+        .options(**readStream_options)
+        .load(readStream_path)
     )
 
     df = add_timestamp_column(df, "ingest_time")
@@ -44,6 +44,6 @@ def from_files(settings):
         .outputMode(writeStream_outputMode)
         .queryName(query_name)
         .trigger(**trigger_type)
-        .options(**writeStreamOptions)
-        .toTable(dst_table_name)
+        .options(**writeStream_options)
+        .toTable(destination_table)
     )
