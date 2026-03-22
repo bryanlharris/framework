@@ -1,5 +1,6 @@
 {
     "dst_table_name": "edsm.bronze.systems",
+    "bronze_function": "framework.bronze.ingest.from_files",
     "readStream_load": "/Volumes/workspace/default/landing/edsm/",
     "readStreamOptions": {
         "cloudFiles.format": "json",
@@ -22,7 +23,6 @@
         "delta.columnMapping.mode": "name"
     },
     "writeStream_outputMode": "append",
-    "bronze_function": "framework.bronze.ingest.from_files",
     "source_type": "cloudFiles",
     "trigger_type": { "availableNow": true },
     "duplicatefiles_flag": true,
