@@ -1,6 +1,6 @@
 {
     "dst_table_name": "workspace.bronze.example_xml",
-    "readStream_load": "/Volumes/workspace/default/landing/example/",
+    "readStream_load": "/Volumes/workspace/bronze/landing/",
     "readStreamOptions": {
         "rowTag": "EXAMPLE_ROW_TAG",
         "mode": "PERMISSIVE",
@@ -8,19 +8,19 @@
         "cloudFiles.format": "xml",
         "cloudFiles.inferColumnTypes": "false",
         "cloudFiles.inferSchema": "true",
-        "cloudFiles.schemaLocation": "/Volumes/workspace/default/utility/example/_schema/",
+        "cloudFiles.schemaLocation": "/Volumes/workspace/bronze/utility/_schema/",
         "cloudFiles.schemaEvolutionMode": "none",
         "cloudFiles.useNotifications": "false",
         "cloudFiles.useIncrementalListing": "auto",
         "cloudFiles.validateOptions": "true",
-        "badRecordsPath": "/Volumes/workspace/default/utility/example/_badRecords/",
+        "badRecordsPath": "/Volumes/workspace/bronze/utility/_badRecords/",
         "columnNameOfCorruptRecord": "corrupt_record",
         "rescuedDataColumn": "rescued_data"
     },
     "writeStream_format": "delta",
     "writeStreamOptions": {
         "mergeSchema": "true",
-        "checkpointLocation": "/Volumes/workspace/default/utility/example/_checkpoints/",
+        "checkpointLocation": "/Volumes/workspace/bronze/utility/_checkpoints/",
         "delta.columnMapping.mode": "name"
     },
     "writeStream_outputMode": "append",

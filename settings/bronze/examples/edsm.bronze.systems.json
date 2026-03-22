@@ -1,17 +1,17 @@
 {
     "dst_table_name": "edsm.bronze.systems",
     "bronze_function": "framework.bronze.ingest.from_files",
-    "readStream_load": "/Volumes/workspace/default/landing/edsm/",
+    "readStream_load": "/Volumes/edsm/bronze/landing/",
     "readStreamOptions": {
         "cloudFiles.format": "json",
         "cloudFiles.inferColumnTypes": "false",
         "cloudFiles.inferSchema": "true",
-        "cloudFiles.schemaLocation": "/Volumes/workspace/default/utility/edsm/_schema/",
+        "cloudFiles.schemaLocation": "/Volumes/edsm/bronze/utility/_schema/",
         "cloudFiles.schemaEvolutionMode": "addNewColumns",
         "cloudFiles.useNotifications": "false",
         "cloudFiles.useIncrementalListing": "auto",
         "cloudFiles.validateOptions": "true",
-        "badRecordsPath": "/Volumes/workspace/default/utility/edsm/_badRecords/",
+        "badRecordsPath": "/Volumes/edsm/bronze/utility/_badRecords/",
         "multiLine": "false",
         "mode": "PERMISSIVE",
         "columnNameOfCorruptRecord": "corrupt_record"
@@ -19,7 +19,7 @@
     "writeStream_format": "delta",
     "writeStreamOptions": {
         "mergeSchema": "true",
-        "checkpointLocation": "/Volumes/workspace/default/utility/edsm/_checkpoints/",
+        "checkpointLocation": "/Volumes/edsm/bronze/utility/_checkpoints/",
         "delta.columnMapping.mode": "name"
     },
     "writeStream_outputMode": "append",
