@@ -9,7 +9,7 @@ skip            = dbutils.widgets.get("skip")
 stop_here       = dbutils.widgets.get("stop_here")
 color           = dbutils.widgets.get("color")
 task_settings   = json.loads(dbutils.widgets.get("task_settings"))
-config          = read_json_and_decode(task_settings["settings_file"])
+config          = read_json_and_decode(task_settings["config_file"])
 
 # Skip or stop
 if skip == "True":
