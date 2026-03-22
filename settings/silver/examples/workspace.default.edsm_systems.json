@@ -1,6 +1,6 @@
 {
-    "src_table_name": "workspace.default_raw.edsm_systems",
-    "dst_table_name": "workspace.default.edsm_systems",
+    "src_table_name": "edsm.bronze.systems",
+    "dst_table_name": "edsm.silver.systems",
     "silver_function": "framework.silver.functions.upsert_with_pk_columns_checksum",
     "source_type": "table",
     "readStreamOptions": {},

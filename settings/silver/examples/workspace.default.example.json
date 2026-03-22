@@ -1,6 +1,6 @@
 {
-    "src_table_name": "workspace.default_raw.example",
-    "dst_table_name": "workspace.default.example",
+    "src_table_name": "workspace.bronze.example",
+    "dst_table_name": "workspace.silver.example",
     "merge_columns": [ "key_column_to_merge_on", "you_can_have_more_than_one" ],
     "silver_function": "framework.silver.functions.upsert_with_pk_columns_checksum",
     "column_map": { "OLD NAME GOES HERE": "new_name_goes_here" },

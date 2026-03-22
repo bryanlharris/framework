@@ -1,5 +1,5 @@
 {
-    "dst_table_name": "workspace.default_raw.edsm_systems",
+    "dst_table_name": "edsm.bronze.systems",
     "readStream_load": "/Volumes/workspace/default/landing/edsm/",
     "readStreamOptions": {
         "cloudFiles.format": "json",
