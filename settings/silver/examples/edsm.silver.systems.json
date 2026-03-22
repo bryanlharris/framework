@@ -5,7 +5,7 @@
     "source_type": "table",
     "readStreamOptions": {},
     "writeStreamOptions": {
-        "checkpointLocation": "/Volumes/workspace/default/utility/edsm_silver/_checkpoints/"
+        "checkpointLocation": "/Volumes/edsm/silver/utility/_checkpoints/"
     },
     "fuzzy_column_map": {},
     "data_type_map": {

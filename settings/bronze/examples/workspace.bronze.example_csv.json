@@ -1,6 +1,6 @@
 {
     "dst_table_name": "workspace.bronze.example_csv",
-    "readStream_load": "/Volumes/workspace/default/landing/example/",
+    "readStream_load": "/Volumes/workspace/bronze/landing/",
     "readStreamOptions": {
         "header": true,
         "quote": "\"",
@@ -11,12 +11,12 @@
         "cloudFiles.format": "csv",
         "cloudFiles.inferColumnTypes": "false",
         "cloudFiles.inferSchema": "false",
-        "cloudFiles.schemaLocation": "/Volumes/workspace/default/utility/example/_schema/",
+        "cloudFiles.schemaLocation": "/Volumes/workspace/bronze/utility/_schema/",
         "cloudFiles.schemaEvolutionMode": "none",
         "cloudFiles.useNotifications": "false",
         "cloudFiles.useIncrementalListing": "auto",
         "cloudFiles.validateOptions": "true",
-        "badRecordsPath": "/Volumes/workspace/default/utility/example/_badRecords/",
+        "badRecordsPath": "/Volumes/workspace/bronze/utility/_badRecords/",
         "multiLine": "true",
         "ignoreLeadingWhiteSpace": "false",
         "ignoreTrailingWhiteSpace": "false",
@@ -25,7 +25,7 @@
     "writeStream_format": "delta",
     "writeStreamOptions": {
         "mergeSchema": "true",
-        "checkpointLocation": "/Volumes/workspace/default/utility/example/_checkpoints/",
+        "checkpointLocation": "/Volumes/workspace/bronze/utility/_checkpoints/",
         "delta.columnMapping.mode": "name"
     },
     "writeStream_outputMode": "append",
