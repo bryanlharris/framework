@@ -6,7 +6,7 @@ from framework.transform.metadata import (
 )
 
 
-def run_file_ingest(settings):
+def from_files(settings):
     dst_table_name          = settings["dst_table_name"]
     catalog_name            = settings["dst_table_name"].split(".")[0]
     bronze_schema           = settings["dst_table_name"].split(".")[1]
