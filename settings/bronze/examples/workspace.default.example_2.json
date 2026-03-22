@@ -1,5 +1,5 @@
 {
-    "bronze_function": "framework.bronze.functions.example_2",
+    "bronze_function": "framework.bronze.pipelines.example_2",
     "dst_table_name": "CATALOG.SCHEMA_RAW.TABLE_NAME",
     "readStream_load": "/Volumes/staging/SCHEMA_RAW/landing/data_files/",
     "readStreamOptions": {
