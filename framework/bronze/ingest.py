@@ -1,8 +1,9 @@
+
+
 from framework.transform.metadata import (
     add_source_metadata,
     add_timestamp_column,
 )
-
 
 def from_files(settings):
     destination_table       = settings["destination_table"]
@@ -37,7 +38,7 @@ def from_files(settings):
         .transform(add_source_metadata, "source_metadata")
     )
 
-    query_name = f"{catalog_name}_{bronze_schema}_{table}"
+    query_name = destination_table
     query = (
         df.writeStream
         .format(writeStream_format)
