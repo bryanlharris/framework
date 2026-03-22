@@ -1,4 +1,4 @@
 [
-  { "settings_file": "settings/silver/table1.json" },
-  { "settings_file": "settings/silver/table2.json" }
+  { "settings_file": "settings/silver/examples/workspace.silver.example.json" },
+  { "settings_file": "settings/silver/examples/edsm.silver.systems.json" }
 ]
