@@ -69,7 +69,7 @@ def example_2(settings):
     )
 
 
-def ingest_bronze(settings):
+def run_file_ingest(settings):
     dst_table_name          = settings["dst_table_name"]
     catalog_name            = settings["dst_table_name"].split(".")[0]
     bronze_schema           = settings["dst_table_name"].split(".")[1]
