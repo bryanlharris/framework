@@ -22,9 +22,8 @@
         "delta.columnMapping.mode": "name"
     },
     "writeStream_outputMode": "append",
-    "bronze_function": "framework.bronze.ingest.ingest_bronze",
+    "bronze_function": "framework.bronze.pipelines.ingest_bronze",
     "source_type": "cloudFiles",
-    "transform_functions": { "add_source_metadata": [ "source_metadata" ], "add_timestamp_column": [ "ingest_time" ] },
     "trigger_type": { "availableNow": true },
     "duplicatefiles_flag": true,
     "date_pattern": "([0-9]{8})[0-9]{6}"
