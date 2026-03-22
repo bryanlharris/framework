@@ -4,7 +4,6 @@ from framework.core.merge import upsertByPK
 from framework.transform.metadata import add_row_sha_checksum
 from framework.transform.columns import cast_data_types, rename_columns
 
-
 def from_table(settings):
     source_table        = settings["source_table"]
     destination_table   = settings["destination_table"]
