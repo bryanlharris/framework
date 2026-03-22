@@ -1,7 +1,7 @@
-from framework.bronze.pipelines import from_files
+from framework.bronze.ingest import from_files
 
 bronze_functions = {
-    "framework.bronze.pipelines.from_files": from_files,
+    "framework.bronze.ingest.from_files": from_files,
 }
 
 __all__ = [
