@@ -1,8 +1,8 @@
-from framework.silver.ingest import upsert_with_pk_columns_checksum
+from framework.silver.ingest import from_table
 
 silver_functions = {
-    "upsert_with_pk_columns_checksum": upsert_with_pk_columns_checksum,
-    "framework.silver.functions.upsert_with_pk_columns_checksum": upsert_with_pk_columns_checksum,
+    "from_table": from_table,
+    "framework.silver.functions.from_table": from_table,
 }
 
-__all__ = ["silver_functions", "upsert_with_pk_columns_checksum"]
+__all__ = ["silver_functions", "from_table"]

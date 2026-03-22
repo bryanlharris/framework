@@ -6,7 +6,7 @@ from framework.transform.metadata import add_row_sha_checksum
 from framework.transform.columns import cast_data_types, rename_columns
 
 
-def upsert_with_pk_columns_checksum(settings):
+def from_table(settings):
     src_table_name      = settings["src_table_name"]
     dst_table_name      = settings["dst_table_name"]
     fuzzy_column_map    = settings["fuzzy_column_map"]
