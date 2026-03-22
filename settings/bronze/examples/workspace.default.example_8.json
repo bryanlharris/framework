@@ -12,7 +12,7 @@
         "delta.columnMapping.mode": "name"
     },
     "writeStream_outputMode": "append",
-    "bronze_function": "framework.bronze.pipelines.run_file_ingest",
+    "bronze_function": "framework.bronze.pipelines.from_files",
     "source_type": "table",
     "trigger_type": { "availableNow": true }
 }
