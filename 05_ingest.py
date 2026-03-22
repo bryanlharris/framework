@@ -1,7 +1,7 @@
 # Databricks notebook source
 import json
 
-from framework.registry import function_registries
+from framework import function_registries
 from framework.core.utils import read_json_and_decode
 
 # Variables
