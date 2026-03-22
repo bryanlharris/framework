@@ -31,7 +31,7 @@ def from_table(settings):
             ),
             current_timestamp().alias("ingest_time"),
         )
-        .transform(add_row_sha_checksum, col_name=pk, columns=pk_columns_str, bitlength=256)
+        .transform(add_row_sha_checksum, col_name=pk, columns=pk_columns_str)
     )
 
     (
