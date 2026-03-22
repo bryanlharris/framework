@@ -17,12 +17,12 @@ def from_files(settings):
     source_type             = settings["source_type"]
     trigger_type            = settings["trigger_type"]
 
-    if not bronze_schema.endswith("_raw"):
+    if bronze_schema != "bronze":
         raise Exception(
             """
                         Sanity checking failed.
-                        Error: You are attempting to write to a non-raw schema with the bronze notebook.
-                        The bronze notebook is only for writing to raw schemas.
+                        Error: You are attempting to write to a non-bronze schema with the bronze notebook.
+                        The bronze notebook is only for writing to the bronze schema.
                         Please examine your settings.
                         There is no parking in the red zone.
                         """
