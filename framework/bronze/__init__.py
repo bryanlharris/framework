@@ -6,8 +6,8 @@ bronze_functions = {
     "example_1": example_1,
     "example_2": example_2,
     "framework.ingest.ingest_bronze": ingest_bronze,
-    "framework.bronze.functions.example_1": example_1,
-    "framework.bronze.functions.example_2": example_2,
+    "framework.bronze.pipelines.example_1": example_1,
+    "framework.bronze.pipelines.example_2": example_2,
 }
 
 __all__ = [
