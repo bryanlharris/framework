@@ -1,6 +1,5 @@
 from pyspark.sql.functions import col, current_timestamp
 
-from framework.core.streaming import streaming_read
 from framework.core.merge import upsertByPK
 from framework.transform.metadata import add_row_sha_checksum
 from framework.transform.columns import cast_data_types, rename_columns
@@ -21,7 +20,9 @@ def from_table(settings):
     spark.conf.set("spark.databricks.delta.schema.autoMerge.enabled", "true")
 
     (
-        streaming_read(source_type, readStreamOptions, src_table_name)
+        spark.readStream
+        .options(**readStreamOptions)
+        .table(src_table_name)
         .drop("ingest_time")
         .transform(rename_columns, fuzzy_column_map)
         .transform(cast_data_types, data_type_map)

@@ -1,5 +1,4 @@
-from framework.core.streaming import streaming_read, streaming_write
-from framework.core.utils import get_latest_file_path, get_table_schema
+from framework.core.utils import get_latest_file_path
 from framework.transform.metadata import (
     add_source_metadata,
     add_timestamp_column,
@@ -38,35 +37,23 @@ def from_files(settings):
                         There is no parking in the red zone.
                         """
         )
-    if (
-        source_type.lower() == "cloudfiles"
-        and "header" in readStreamOptions.keys()
-        and readStreamOptions["header"] is False
-    ):
-        table_schema = get_table_schema(
-            dst_table_name,
-            ["source_metadata", "ingest_time", "row_checksum", "_rescued_data"],
-        )
-    else:
-        table_schema = None
-
-    df = streaming_read(
-        source_type=source_type,
-        readstream_options=readStreamOptions,
-        source=readStream_load,
-        schema=table_schema,
+    df = (
+        spark.readStream
+        .format(source_type)
+        .options(**readStreamOptions)
+        .load(readStream_load)
     )
 
     df = add_timestamp_column(df, "ingest_time")
     df = add_source_metadata(df, "source_metadata")
 
     query_name = f"{catalog_name}_{bronze_schema}_{table}"
-    streaming_write(
-        df,
-        dst_table_name,
-        writeStream_format,
-        writeStream_outputMode,
-        query_name,
-        trigger_type,
-        writeStreamOptions,
+    query = (
+        df.writeStream
+        .format(writeStream_format)
+        .outputMode(writeStream_outputMode)
+        .queryName(query_name)
+        .trigger(**trigger_type)
+        .options(**writeStreamOptions)
+        .toTable(dst_table_name)
     )
