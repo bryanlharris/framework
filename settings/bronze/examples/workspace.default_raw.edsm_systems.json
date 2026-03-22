@@ -1,0 +1,30 @@
+{
+    "dst_table_name": "workspace.default_raw.edsm_systems",
+    "readStream_load": "/Volumes/workspace/default/landing/edsm/",
+    "readStreamOptions": {
+        "cloudFiles.format": "json",
+        "cloudFiles.inferColumnTypes": "false",
+        "cloudFiles.inferSchema": "true",
+        "cloudFiles.schemaLocation": "/Volumes/workspace/default/utility/edsm/_schema/",
+        "cloudFiles.schemaEvolutionMode": "addNewColumns",
+        "cloudFiles.useNotifications": "false",
+        "cloudFiles.useIncrementalListing": "auto",
+        "cloudFiles.validateOptions": "true",
+        "badRecordsPath": "/Volumes/workspace/default/utility/edsm/_badRecords/",
+        "multiLine": "false",
+        "mode": "PERMISSIVE",
+        "columnNameOfCorruptRecord": "corrupt_record"
+    },
+    "writeStream_format": "delta",
+    "writeStreamOptions": {
+        "mergeSchema": "true",
+        "checkpointLocation": "/Volumes/workspace/default/utility/edsm/_checkpoints/",
+        "delta.columnMapping.mode": "name"
+    },
+    "writeStream_outputMode": "append",
+    "bronze_function": "framework.bronze.pipelines.from_files",
+    "source_type": "cloudFiles",
+    "trigger_type": { "availableNow": true },
+    "duplicatefiles_flag": true,
+    "date_pattern": "(\\d{8})"
+}
