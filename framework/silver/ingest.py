@@ -1,7 +1,5 @@
-from pyspark.sql.functions import col, current_timestamp
-
 from framework.core.merge import upsertByPK
-from framework.transform.metadata import add_row_sha_checksum
+from framework.transform.metadata import add_row_sha_checksum, flatten_source_metadata
 from framework.transform.columns import cast_data_types, rename_columns
 
 def from_table(settings):
@@ -22,14 +20,7 @@ def from_table(settings):
         .drop("ingest_time")
         .transform(rename_columns, column_map)
         .transform(cast_data_types, data_type_map)
-        .select(
-            "*",
-            col("source_metadata.file_path").alias("file_path"),
-            col("source_metadata.file_modification_time").alias(
-                "file_modification_time"
-            ),
-            current_timestamp().alias("ingest_time"),
-        )
+        .transform(flatten_source_metadata)
         .transform(add_row_sha_checksum, col_name=pk, columns=pk_columns_str)
     )
 
