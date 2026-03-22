@@ -14,7 +14,6 @@ def from_table(settings):
     pk                  = settings["pk"]["name"]
     pk_columns          = settings["pk"]["columns"]
     pk_columns_str      = ",".join(pk_columns) if isinstance(pk_columns, list) else pk_columns
-    source_type         = settings["source_type"]
     readStream_options  = settings["readStream_options"]
 
     spark.conf.set("spark.databricks.delta.schema.autoMerge.enabled", "true")
