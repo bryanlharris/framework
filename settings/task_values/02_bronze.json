@@ -1,5 +1,3 @@
 [
-  { "settings_file": "settings/bronze/examples/workspace.bronze.example_csv.json" },
-  { "settings_file": "settings/bronze/examples/workspace.bronze.example_xml.json" },
   { "settings_file": "settings/bronze/examples/edsm.bronze.systems.json" }
 ]
