@@ -18,7 +18,7 @@ def from_table(settings):
 
     spark.conf.set("spark.databricks.delta.schema.autoMerge.enabled", "true")
 
-    (
+    df = (
         spark.readStream
         .options(**readStream_options)
         .table(source_table)
@@ -33,13 +33,12 @@ def from_table(settings):
             ),
             current_timestamp().alias("ingest_time"),
         )
-        .transform(
-            add_row_sha_checksum,
-            col_name=pk,
-            columns=pk_columns_str,
-            bitlength=256,
-        )
-        .writeStream
+    )
+
+    df = add_row_sha_checksum(df, col_name=pk, columns=pk_columns_str, bitlength=256)
+
+    (
+        df.writeStream
         .queryName(destination_table)
         .format("delta")
         .options(**writeStream_options)
