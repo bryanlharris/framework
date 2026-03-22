@@ -20,13 +20,14 @@ def from_files(settings):
     if bronze_schema != "bronze":
         raise Exception(
             """
-                        Sanity checking failed.
-                        Error: You are attempting to write to a non-bronze schema with the bronze notebook.
-                        The bronze notebook is only for writing to the bronze schema.
-                        Please examine your settings.
-                        There is no parking in the red zone.
-                        """
+            Sanity checking failed.
+            Error: You are attempting to write to a non-bronze schema with the bronze notebook.
+            The bronze notebook is only for writing to the bronze schema.
+            Please examine your settings.
+            There is no parking in the red zone.
+            """
         )
+
     df = (
         spark.readStream
         .format(source_type)
