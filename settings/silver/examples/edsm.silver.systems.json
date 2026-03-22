@@ -1,7 +1,7 @@
 {
     "src_table_name": "edsm.bronze.systems",
     "dst_table_name": "edsm.silver.systems",
-    "silver_function": "framework.silver.functions.upsert_with_pk_columns_checksum",
+    "silver_function": "framework.silver.functions.from_table",
     "source_type": "table",
     "readStreamOptions": {},
     "writeStreamOptions": {
