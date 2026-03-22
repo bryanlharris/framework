@@ -33,10 +33,9 @@ def from_files(settings):
         .format(source_type)
         .options(**readStream_options)
         .load(readStream_path)
+        .transform(add_timestamp_column, "ingest_time")
+        .transform(add_source_metadata, "source_metadata")
     )
-
-    df = add_timestamp_column(df, "ingest_time")
-    df = add_source_metadata(df, "source_metadata")
 
     query_name = f"{catalog_name}_{bronze_schema}_{table}"
     query = (
