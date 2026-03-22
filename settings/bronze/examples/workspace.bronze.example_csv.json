@@ -1,7 +1,7 @@
 {
-    "dst_table_name": "workspace.bronze.example_csv",
-    "readStream_load": "/Volumes/workspace/bronze/landing/",
-    "readStreamOptions": {
+    "destination_table": "workspace.bronze.example_csv",
+    "readStream_path": "/Volumes/workspace/bronze/landing/",
+    "readStream_options": {
         "header": true,
         "quote": "\"",
         "escape": "\"",
@@ -23,7 +23,7 @@
         "treatEmptyValuesAsNulls": "true"
     },
     "writeStream_format": "delta",
-    "writeStreamOptions": {
+    "writeStream_options": {
         "mergeSchema": "true",
         "checkpointLocation": "/Volumes/workspace/bronze/utility/_checkpoints/",
         "delta.columnMapping.mode": "name"
