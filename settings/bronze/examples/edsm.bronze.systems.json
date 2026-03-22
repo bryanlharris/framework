@@ -24,7 +24,5 @@
     },
     "writeStream_outputMode": "append",
     "source_type": "cloudFiles",
-    "trigger_type": { "availableNow": true },
-    "duplicatefiles_flag": true,
-    "date_pattern": "(\\d{8})"
+    "trigger_type": { "availableNow": true }
 }

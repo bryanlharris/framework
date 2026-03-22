@@ -1,4 +1,3 @@
-from framework.core.utils import get_latest_file_path
 from framework.transform.metadata import (
     add_source_metadata,
     add_timestamp_column,
@@ -17,15 +16,6 @@ def from_files(settings):
     writeStream_outputMode  = settings["writeStream_outputMode"]
     source_type             = settings["source_type"]
     trigger_type            = settings["trigger_type"]
-
-    try:
-        duplicatefiles_flag = settings["duplicatefiles_flag"]
-        date_pattern = settings["date_pattern"]
-        if duplicatefiles_flag is True:
-            pathGlobFilter = get_latest_file_path(readStream_load, date_pattern)
-            readStreamOptions["pathGlobFilter"] = pathGlobFilter
-    except Exception:
-        print("duplicatefiles_flag is false")
 
     if not bronze_schema.endswith("_raw"):
         raise Exception(
