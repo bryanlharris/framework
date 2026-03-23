@@ -1,6 +1,6 @@
 {
-    "destination_table": "edsm.bronze.systemsWithCoordinates7days",
     "function_path": "lakehouse.bronze.ingest.from_files",
+    "destination_table": "edsm.bronze.systemsWithCoordinates7days",
     "readStream_path": "/Volumes/edsm/bronze/landing/",
     "readStream_options": {
         "cloudFiles.format": "json",
