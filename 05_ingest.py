@@ -2,7 +2,7 @@
 import importlib
 import json
 
-from framework.core.utils import read_json_and_decode
+from lakehouse.core.utils import read_json_and_decode
 
 # Variables
 skip            = dbutils.widgets.get("skip")

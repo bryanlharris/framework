@@ -1,6 +1,6 @@
-from framework.core.merge import upsertByPK
-from framework.transform.metadata import add_row_sha_checksum, flatten_source_metadata
-from framework.transform.columns import cast_data_types, rename_columns
+from lakehouse.core.merge import upsertByPK
+from lakehouse.transform.metadata import add_row_sha_checksum, flatten_source_metadata
+from lakehouse.transform.columns import cast_data_types, rename_columns
 
 def from_table(settings):
     source_table        = settings["source_table"]
