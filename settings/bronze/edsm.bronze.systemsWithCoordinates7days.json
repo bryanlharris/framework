@@ -17,7 +17,6 @@
         "cloudFiles.validateOptions": "true",
         "badRecordsPath": "/Volumes/edsm/bronze/utility/_badRecords/",
         "multiLine": "false",
-        "mode": "PERMISSIVE",
         "columnNameOfCorruptRecord": "corrupt_record",
         "pathGlobFilter": "systemsWithCoordinates7days*.json"
     },

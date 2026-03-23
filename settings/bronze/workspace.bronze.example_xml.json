@@ -5,7 +5,6 @@
     "readStream_path": "/Volumes/workspace/bronze/landing/",
     "readStream_options": {
         "rowTag": "EXAMPLE_ROW_TAG",
-        "mode": "PERMISSIVE",
         "encoding": "UTF-8",
         "cloudFiles.format": "xml",
         "cloudFiles.inferColumnTypes": "false",
