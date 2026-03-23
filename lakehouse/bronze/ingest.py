@@ -1,6 +1,6 @@
 
 
-from framework.transform.metadata import (
+from lakehouse.transform.metadata import (
     add_source_metadata,
     add_timestamp_column,
 )
