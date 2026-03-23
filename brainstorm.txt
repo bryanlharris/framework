@@ -1,0 +1,31 @@
+
+Some other ingest function ideas & how to organize.
+
+BRONZE
+lakehouse/bronze/ingest/files.py      ---> from_files
+lakehouse/bronze/ingest/files.py      ---> from_url
+lakehouse/bronze/ingest/files.py      ---> from_compressed_archive
+lakehouse/bronze/ingest/cloud.py      ---> from_s3
+lakehouse/bronze/ingest/cloud.py      ---> from_adls
+lakehouse/bronze/ingest/cloud.py      ---> from_gcs
+lakehouse/bronze/ingest/streaming.py  ---> from_kafka
+lakehouse/bronze/ingest/streaming.py  ---> from_eventhub
+lakehouse/bronze/ingest/streaming.py  ---> from_kinesis
+lakehouse/bronze/ingest/api.py        ---> from_rest_api
+lakehouse/bronze/ingest/api.py        ---> from_graphql
+lakehouse/bronze/ingest/api.py        ---> from_webhook
+lakehouse/bronze/ingest/transfer.py   ---> from_sftp
+lakehouse/bronze/ingest/transfer.py   ---> from_ftp
+lakehouse/bronze/ingest/transfer.py   ---> from_sharepoint
+
+SILVER
+lakehouse/silver/ingest/table.py      ---> from_table
+lakehouse/silver/ingest/table.py      ---> from_table_scd2
+lakehouse/silver/ingest/table.py      ---> from_table_dedup
+lakehouse/silver/ingest/table.py      ---> from_table_latest
+lakehouse/silver/ingest/cdc.py        ---> from_jdbc_cdc
+lakehouse/silver/ingest/cdc.py        ---> from_delta_cdf
+lakehouse/silver/ingest/cdc.py        ---> from_mongodb_changestream
+lakehouse/silver/ingest/cdc.py        ---> from_cosmosdb_changefeed
+lakehouse/silver/ingest/api.py        ---> from_api_incremental
+lakehouse/silver/ingest/merge.py      ---> from_multiple_sources
