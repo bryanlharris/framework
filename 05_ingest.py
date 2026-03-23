@@ -7,7 +7,6 @@ from lakehouse.core.utils import read_json_and_decode
 # Variables
 skip            = dbutils.widgets.get("skip")
 stop_here       = dbutils.widgets.get("stop_here")
-color           = dbutils.widgets.get("color")
 task_value      = json.loads(dbutils.widgets.get("task_value"))
 settings        = read_json_and_decode(task_value["settings_file"])
 
