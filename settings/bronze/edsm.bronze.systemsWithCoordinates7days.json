@@ -1,5 +1,6 @@
 {
-    "function_path": "lakehouse.bronze.ingest.from_files",
+    "function_path": "lakehouse.bronze.ingest.from_url",
+    "download_url": "https://www.edsm.net/dump/systemsWithCoordinates7days.json.gz",
     "source_type": "cloudFiles",
     "destination_table": "edsm.bronze.systemsWithCoordinates7days",
     "readStream_path": "/Volumes/edsm/bronze/landing/",
@@ -16,7 +17,7 @@
         "multiLine": "false",
         "mode": "PERMISSIVE",
         "columnNameOfCorruptRecord": "corrupt_record",
-        "pathGlobFilter": "systemsWithCoordinates7days.json"
+        "pathGlobFilter": "systemsWithCoordinates7days*.json"
     },
     "writeStream_format": "delta",
     "writeStream_options": {
