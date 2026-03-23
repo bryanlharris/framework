@@ -5,7 +5,7 @@ from lakehouse.transform.metadata import (
     add_timestamp_column,
 )
 
-def from_url(settings):
+def from_url(spark, settings):
     """Download file from URL, decompress if gzipped, write to landing volume, ingest via from_files.
 
     Additional required settings:
@@ -37,10 +37,10 @@ def from_url(settings):
     output_path.write_bytes(content)
 
     # Execute standard file ingestion
-    from_files(settings)
+    from_files(spark, settings)
 
 
-def from_inbox(settings):
+def from_inbox(spark, settings):
     """Move files from inbox volume to landing zone with timestamp-based naming, then ingest.
 
     Additional required settings:
@@ -77,10 +77,10 @@ def from_inbox(settings):
             shutil.move(str(file), str(dest))
 
     # Execute standard file ingestion
-    from_files(settings)
+    from_files(spark, settings)
 
 
-def from_files(settings):
+def from_files(spark, settings):
     destination_table       = settings["destination_table"]
     readStream_options      = settings["readStream_options"]
     writeStream_options     = settings["writeStream_options"]
