@@ -20,6 +20,5 @@ transaction_history_task_values    = read_json_and_decode(f"{task_values_root}/0
 
 dbutils.jobs.taskValues.set(key = "bronze",                 value = bronze_task_values)
 dbutils.jobs.taskValues.set(key = "silver",                 value = silver_task_values)
-dbutils.jobs.taskValues.set(key = "gold",                   value = gold_task_values)
 dbutils.jobs.taskValues.set(key = "file_version_history",   value = file_version_history_task_values)
 dbutils.jobs.taskValues.set(key = "transaction_history",    value = transaction_history_task_values)
