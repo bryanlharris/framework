@@ -1,5 +1,5 @@
 {
-    "destination_table": "edsm.bronze.systems",
+    "destination_table": "edsm.bronze.systemsWithCoordinates7days",
     "function_path": "lakehouse.bronze.ingest.from_files",
     "readStream_path": "/Volumes/edsm/bronze/landing/",
     "readStream_options": {
@@ -14,7 +14,8 @@
         "badRecordsPath": "/Volumes/edsm/bronze/utility/_badRecords/",
         "multiLine": "false",
         "mode": "PERMISSIVE",
-        "columnNameOfCorruptRecord": "corrupt_record"
+        "columnNameOfCorruptRecord": "corrupt_record",
+        "pathGlobFilter": "systemsWithCoordinates7days.json"
     },
     "writeStream_format": "delta",
     "writeStream_options": {
