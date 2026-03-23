@@ -5,6 +5,36 @@ from lakehouse.transform.metadata import (
     add_timestamp_column,
 )
 
+def from_url(settings):
+    """Download file from URL, decompress if gzipped, write to landing volume, ingest via from_files.
+
+    Additional required settings:
+        download_url: URL to download from (str)
+        filename: Optional output filename (defaults to URL basename with .gz removed)
+    """
+    import requests
+    import gzip
+    from pathlib import Path
+
+    url = settings["download_url"]
+    landing_path = settings["readStream_path"].rstrip("/")
+    filename = settings.get("filename", url.split("/")[-1].replace(".gz", ""))
+
+    # Download
+    response = requests.get(url, timeout=300)
+    response.raise_for_status()
+
+    # Decompress if gzipped
+    content = gzip.decompress(response.content) if url.endswith(".gz") else response.content
+
+    # Write to landing volume
+    output_path = Path(landing_path) / filename
+    output_path.write_bytes(content)
+
+    # Execute standard file ingestion
+    from_files(settings)
+
+
 def from_files(settings):
     destination_table       = settings["destination_table"]
     readStream_options      = settings["readStream_options"]
