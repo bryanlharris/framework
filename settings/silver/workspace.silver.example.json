@@ -1,8 +1,8 @@
 {
-    "source_table": "workspace.bronze.example",
-    "destination_table": "workspace.silver.example",
-    "merge_columns": [ "key_column_to_merge_on", "you_can_have_more_than_one" ],
     "function_path": "lakehouse.silver.ingest.from_table",
+    "destination_table": "workspace.silver.example",
+    "source_table": "workspace.bronze.example",
+    "merge_columns": [ "key_column_to_merge_on", "you_can_have_more_than_one" ],
     "column_map": { "OLD NAME GOES HERE": "new_name_goes_here" },
     "columns_to_drop": [ "COLUMNS YOU DON'T WANT GO HERE" ],
     "data_type_map": { "new_name_goes_here": "integer" }
