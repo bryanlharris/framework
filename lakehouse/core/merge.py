@@ -23,7 +23,7 @@ def fullSyncMergeSQL(mergeKeys, destinationTable):
 
 def fullSyncMerge(mergeKeys, destinationTable):
     def _do_upsert(microBatchDF, batchId):
-        deltaTable = DeltaTable.forName(spark, destinationTable)
+        deltaTable = DeltaTable.forName(microBatchDF.sparkSession, destinationTable)
 
         merge_condition = " AND ".join([f"s.{col} = d.{col}" for col in mergeKeys])
         (
@@ -39,7 +39,7 @@ def fullSyncMerge(mergeKeys, destinationTable):
 
 def upsertByPK(sourcePK, destinationTable, destinationPK):
     def _do_upsert(microBatchDF, batchId):
-        deltaTable = DeltaTable.forName(spark, destinationTable)
+        deltaTable = DeltaTable.forName(microBatchDF.sparkSession, destinationTable)
         (
             deltaTable.alias("d")
             .merge(microBatchDF.alias("s"), f"s.{sourcePK} = d.{destinationPK}")
