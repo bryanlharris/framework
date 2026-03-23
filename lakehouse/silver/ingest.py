@@ -1,5 +1,4 @@
-from lakehouse.core.merge import upsertByPK
-from lakehouse.core.merge_scd2 import scd2UpsertByBusinessKey
+from lakehouse.core.merge import upsertByPK, scd2UpsertByBusinessKey
 from lakehouse.transform.metadata import add_row_sha_checksum, flatten_source_metadata
 from lakehouse.transform.columns import cast_data_types, rename_columns
 
