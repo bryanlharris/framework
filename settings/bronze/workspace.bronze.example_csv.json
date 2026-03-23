@@ -29,7 +29,7 @@
         "delta.columnMapping.mode": "name"
     },
     "writeStream_outputMode": "append",
-    "function_path": "framework.bronze.ingest.from_files",
+    "function_path": "lakehouse.bronze.ingest.from_files",
     "source_type": "cloudFiles",
     "trigger_type": { "availableNow": true }
 }

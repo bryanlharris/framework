@@ -1,6 +1,6 @@
 {
     "destination_table": "edsm.bronze.systems",
-    "function_path": "framework.bronze.ingest.from_files",
+    "function_path": "lakehouse.bronze.ingest.from_files",
     "readStream_path": "/Volumes/edsm/bronze/landing/",
     "readStream_options": {
         "cloudFiles.format": "json",
