@@ -85,6 +85,12 @@ def from_files(spark, settings):
     readStream_options      = settings["readStream_options"]
     writeStream_options     = settings["writeStream_options"]
     readStream_path         = settings["readStream_path"]
+
+    if "badRecordsPath" in readStream_options and "mode" in readStream_options:
+        raise ValueError(
+            "If 'badRecordsPath' is specified, 'mode' is not allowed to be set. "
+            "Remove 'mode' from readStream_options — badRecordsPath implicitly uses PERMISSIVE mode."
+        )
     writeStream_format      = settings["writeStream_format"]
     writeStream_outputMode  = settings["writeStream_outputMode"]
     source_type             = settings["source_type"]
