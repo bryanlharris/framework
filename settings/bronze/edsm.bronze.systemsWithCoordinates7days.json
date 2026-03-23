@@ -1,5 +1,6 @@
 {
     "function_path": "lakehouse.bronze.ingest.from_files",
+    "source_type": "cloudFiles",
     "destination_table": "edsm.bronze.systemsWithCoordinates7days",
     "readStream_path": "/Volumes/edsm/bronze/landing/",
     "readStream_options": {
@@ -24,6 +25,5 @@
         "delta.columnMapping.mode": "name"
     },
     "writeStream_outputMode": "append",
-    "source_type": "cloudFiles",
     "trigger_type": { "availableNow": true }
 }

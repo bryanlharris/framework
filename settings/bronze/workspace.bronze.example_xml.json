@@ -1,5 +1,6 @@
 {
     "function_path": "lakehouse.bronze.ingest.from_files",
+    "source_type": "cloudFiles",
     "destination_table": "workspace.bronze.example_xml",
     "readStream_path": "/Volumes/workspace/bronze/landing/",
     "readStream_options": {
@@ -25,6 +26,5 @@
         "delta.columnMapping.mode": "name"
     },
     "writeStream_outputMode": "append",
-    "source_type": "cloudFiles",
     "trigger_type": { "availableNow": true }
 }
