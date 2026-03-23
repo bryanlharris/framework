@@ -23,6 +23,9 @@ def fullSyncMergeSQL(mergeKeys, destinationTable):
 
 def fullSyncMerge(mergeKeys, destinationTable):
     def _do_upsert(microBatchDF, batchId):
+        if not DeltaTable.isDeltaTable(microBatchDF.sparkSession, destinationTable):
+            microBatchDF.write.format("delta").mode("overwrite").saveAsTable(destinationTable)
+            return
         deltaTable = DeltaTable.forName(microBatchDF.sparkSession, destinationTable)
 
         merge_condition = " AND ".join([f"s.{col} = d.{col}" for col in mergeKeys])
@@ -39,6 +42,9 @@ def fullSyncMerge(mergeKeys, destinationTable):
 
 def upsertByPK(sourcePK, destinationTable, destinationPK):
     def _do_upsert(microBatchDF, batchId):
+        if not DeltaTable.isDeltaTable(microBatchDF.sparkSession, destinationTable):
+            microBatchDF.write.format("delta").mode("overwrite").saveAsTable(destinationTable)
+            return
         deltaTable = DeltaTable.forName(microBatchDF.sparkSession, destinationTable)
         (
             deltaTable.alias("d")
