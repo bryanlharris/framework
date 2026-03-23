@@ -7,9 +7,6 @@ from lakehouse.transform.metadata import (
 
 def from_files(settings):
     destination_table       = settings["destination_table"]
-    catalog_name            = settings["destination_table"].split(".")[0]
-    bronze_schema           = settings["destination_table"].split(".")[1]
-    table                   = settings["destination_table"].split(".")[2]
     readStream_options      = settings["readStream_options"]
     writeStream_options     = settings["writeStream_options"]
     readStream_path         = settings["readStream_path"]
@@ -18,7 +15,7 @@ def from_files(settings):
     source_type             = settings["source_type"]
     trigger_type            = settings["trigger_type"]
 
-    if bronze_schema != "bronze":
+    if destination_table.split(".")[1] != "bronze":
         raise Exception(
             """
             Sanity checking failed.
