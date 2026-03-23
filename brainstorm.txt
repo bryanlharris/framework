@@ -19,9 +19,11 @@ lakehouse/bronze/ingest/transfer.py   ---> from_ftp
 lakehouse/bronze/ingest/transfer.py   ---> from_sharepoint
 
 SILVER
-lakehouse/silver/ingest/table.py      ---> from_table
-lakehouse/silver/ingest/table.py      ---> from_table_scd2
-lakehouse/silver/ingest/table.py      ---> from_table_dedup
+lakehouse/silver/ingest/table.py      ---> from_table_upsert     (PK upsert)
+lakehouse/silver/ingest/table.py      ---> from_table_append     (append only, no merge)
+lakehouse/silver/ingest/table.py      ---> from_table_full_sync  (sync with deletes)
+lakehouse/silver/ingest/table.py      ---> from_table_dedup      (dedup before upsert)
+lakehouse/silver/ingest/table.py      ---> from_table_scd2       (slowly changing dimension type 2)
 lakehouse/silver/ingest/table.py      ---> from_table_latest
 lakehouse/silver/ingest/cdc.py        ---> from_jdbc_cdc
 lakehouse/silver/ingest/cdc.py        ---> from_delta_cdf
