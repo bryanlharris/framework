@@ -1,7 +1,7 @@
 {
     "function_path": "lakehouse.silver.ingest.from_table",
-    "destination_table": "edsm.silver.systems",
-    "source_table": "edsm.bronze.systems",
+    "destination_table": "edsm.silver.systemsWithCoordinates7days",
+    "source_table": "edsm.bronze.systemsWithCoordinates7days",
     "source_type": "table",
     "readStream_options": {},
     "writeStream_options": {
