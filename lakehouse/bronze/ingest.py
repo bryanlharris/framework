@@ -40,6 +40,46 @@ def from_url(settings):
     from_files(settings)
 
 
+def from_inbox(settings):
+    """Move files from inbox volume to landing zone with timestamp-based naming, then ingest.
+
+    Additional required settings:
+        inbox_path: Directory to scan for incoming files (str)
+        filename_pattern: Glob pattern to match files in inbox (str)
+        landing_subdirectory: Destination directory for landed files (str)
+    """
+    import gzip
+    import shutil
+    from datetime import datetime
+    from pathlib import Path
+
+    inbox    = Path(settings["inbox_path"])
+    pattern  = settings["filename_pattern"]
+    landing  = Path(settings["landing_subdirectory"])
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    for file in inbox.glob(pattern):
+        # Strip .gz to get real extension, then build timestamped destination name
+        name_without_gz = file.name[:-3] if file.name.endswith(".gz") else file.name
+        stem   = Path(name_without_gz).stem
+        suffix = Path(name_without_gz).suffix
+        new_name = f"{stem}_{timestamp}{suffix}"
+        dest = landing / new_name
+
+        if file.name.endswith(".gz"):
+            # Decompress to a sibling temp file, remove original, then move
+            content  = gzip.decompress(file.read_bytes())
+            tmp_path = file.parent / new_name
+            tmp_path.write_bytes(content)
+            file.unlink()
+            shutil.move(str(tmp_path), str(dest))
+        else:
+            shutil.move(str(file), str(dest))
+
+    # Execute standard file ingestion
+    from_files(settings)
+
+
 def from_files(settings):
     destination_table       = settings["destination_table"]
     readStream_options      = settings["readStream_options"]
