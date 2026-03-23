@@ -14,11 +14,16 @@ def from_url(settings):
     """
     import requests
     import gzip
+    from datetime import datetime
     from pathlib import Path
 
     url = settings["download_url"]
     landing_path = settings["readStream_path"].rstrip("/")
-    filename = settings.get("filename", url.split("/")[-1].replace(".gz", ""))
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    default_filename = url.split("/")[-1].replace(".gz", "")
+    stem = Path(default_filename).stem
+    suffix = Path(default_filename).suffix
+    filename = settings.get("filename", f"{stem}_{timestamp}{suffix}")
 
     # Download
     response = requests.get(url, timeout=300)
