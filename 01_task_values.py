@@ -13,7 +13,6 @@ task_values_root = "settings/task_values"
 
 bronze_task_values                 = read_json_and_decode(f"{task_values_root}/02_bronze.json")
 silver_task_values                 = read_json_and_decode(f"{task_values_root}/03_silver.json")
-gold_task_values                   = read_json_and_decode(f"{task_values_root}/04_gold.json")
 file_version_history_task_values   = read_json_and_decode(f"{task_values_root}/05_file_version_history.json")
 transaction_history_task_values    = read_json_and_decode(f"{task_values_root}/06_transaction_history.json")
 
