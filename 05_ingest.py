@@ -1,7 +1,7 @@
 # Databricks notebook source
+import importlib
 import json
 
-from framework import function_registries
 from framework.core.utils import read_json_and_decode
 
 # Variables
@@ -17,12 +17,9 @@ if skip == "True":
 if stop_here == "True":
     raise Exception("Stop here per task value.")
 
-function_name = settings[f"{color}_function"]
-function_registry = function_registries.get(color, {})
-function = function_registry.get(function_name)
+function_path = settings["function_path"]
+module_path, fn_name = function_path.rsplit(".", 1)
+function = getattr(importlib.import_module(module_path), fn_name)
 
 # Call ingest function
-if callable(function):
-    function(settings)
-else:
-    raise Exception(f"Could not find {color} ingest function name in settings.")
+function(settings)
