@@ -2,7 +2,7 @@ from lakehouse.core.merge import upsertByPK, scd2UpsertByBusinessKey
 from lakehouse.transform.metadata import add_row_sha_checksum, flatten_source_metadata
 from lakehouse.transform.columns import cast_data_types, rename_columns
 
-def from_table(settings):
+def from_table(spark, settings):
     source_table        = settings["source_table"]
     destination_table   = settings["destination_table"]
     column_map          = settings["column_map"]
@@ -35,7 +35,7 @@ def from_table(settings):
         .start()
     )
 
-def from_table_scd2(settings):
+def from_table_scd2(spark, settings):
     source_table        = settings["source_table"]
     destination_table   = settings["destination_table"]
     column_map          = settings.get("column_map", {})

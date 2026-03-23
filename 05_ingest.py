@@ -21,4 +21,4 @@ module_path, fn_name = function_path.rsplit(".", 1)
 function = getattr(importlib.import_module(module_path), fn_name)
 
 # Call ingest function
-function(settings)
+function(spark, settings)
