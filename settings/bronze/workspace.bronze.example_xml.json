@@ -1,5 +1,5 @@
 {
-    "function_path": "lakehouse.bronze.ingest.from_files",
+    "function_path": "lakehouse.bronze.ingest.from_file",
     "source_type": "cloudFiles",
     "destination_table": "workspace.bronze.example_xml",
     "readStream_path": "/Volumes/workspace/bronze/landing/",

@@ -2,7 +2,7 @@
 Some other ingest function ideas & how to organize.
 
 BRONZE
-lakehouse/bronze/ingest/files.py      ---> from_files
+lakehouse/bronze/ingest/files.py      ---> from_file
 lakehouse/bronze/ingest/files.py      ---> from_url
 lakehouse/bronze/ingest/files.py      ---> from_compressed_archive
 lakehouse/bronze/ingest/cloud.py      ---> from_s3

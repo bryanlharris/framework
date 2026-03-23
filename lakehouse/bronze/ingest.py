@@ -6,7 +6,7 @@ from lakehouse.transform.metadata import (
 )
 
 def from_url(spark, settings):
-    """Download file from URL, decompress if gzipped, write to landing volume, ingest via from_files.
+    """Download file from URL, decompress if gzipped, write to landing volume, ingest via from_file.
 
     Additional required settings:
         download_url: URL to download from (str)
@@ -37,7 +37,7 @@ def from_url(spark, settings):
     output_path.write_bytes(content)
 
     # Execute standard file ingestion
-    from_files(spark, settings)
+    from_file(spark, settings)
 
 
 def from_inbox(spark, settings):
@@ -77,10 +77,10 @@ def from_inbox(spark, settings):
             shutil.move(str(file), str(dest))
 
     # Execute standard file ingestion
-    from_files(spark, settings)
+    from_file(spark, settings)
 
 
-def from_files(spark, settings):
+def from_file(spark, settings):
     destination_table       = settings["destination_table"]
     readStream_options      = settings["readStream_options"]
     writeStream_options     = settings["writeStream_options"]
