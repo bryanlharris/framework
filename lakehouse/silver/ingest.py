@@ -1,6 +1,6 @@
 from lakehouse.core.merge import upsertByPK, scd2UpsertByBusinessKey
-from lakehouse.transform.metadata import add_row_sha_checksum, flatten_source_metadata
-from lakehouse.transform.columns import cast_data_types, rename_columns
+from lakehouse.silver.transform.metadata import add_row_sha_checksum, flatten_source_metadata
+from lakehouse.silver.transform.columns import cast_data_types, rename_columns
 
 def from_table(spark, settings):
     source_table        = settings["source_table"]

@@ -1,9 +1,7 @@
 
 
-from lakehouse.transform.metadata import (
-    add_source_metadata,
-    add_timestamp_column,
-)
+from lakehouse.core.transform.metadata import add_timestamp_column
+from lakehouse.bronze.transform.metadata import add_source_metadata
 
 def from_url(spark, settings):
     """Download file from URL, decompress if gzipped, write to landing volume, ingest via from_file.
