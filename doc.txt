@@ -26,7 +26,10 @@ lakehouse.bronze.ingest.files.from_url()                          - Download, de
 lakehouse.bronze.ingest.files.from_inbox()                        - Move files from inbox to landing, then ingest
 
 SILVER LAYER - Data Ingestion
-lakehouse.silver.ingest.from_table()                              - Stream bronze➜silver with upsertByPK()
+lakehouse.silver.ingest.from_table.upsert_by_pk()                 - Stream bronze➜silver with upsertByPK()
+lakehouse.silver.ingest.from_table.scd2_upsert_by_business_key()  - Stream bronze➜silver with scd2UpsertByBusinessKey()
+lakehouse.silver.ingest.from_table.full_sync_merge()              - Stream bronze➜silver with fullSyncMerge()
+lakehouse.silver.ingest.from_table.full_sync_merge_sql()          - Stream bronze➜silver with fullSyncMergeSQL()
 lakehouse.silver.ingest.from_table_scd2()                         - Stream bronze➜silver with scd2UpsertByBusinessKey()
 
 SILVER LAYER - Merge Strategies
