@@ -30,12 +30,7 @@ from pyspark.sql import functions as F
 # Variables
 catalog_name = full_table_name.split(".")[0]
 schema_name = full_table_name.split(".")[1]
-
-# Figure out bronze schema name
-bronze_schema = "bronze"
-
-# Table to write to
-file_version_table_name = f"{catalog_name}.{bronze_schema}.file_version_history"
+file_version_table_name = f"{catalog_name}.bronze.file_version_history"
 
 # COMMAND ----------
 
