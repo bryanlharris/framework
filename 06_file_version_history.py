@@ -8,8 +8,8 @@
 import json
 
 # Workflow parameters and task values
-task_values_item    = json.loads(dbutils.widgets.get("task_values_item"))
-full_table_name     = task_values_item['full_table_name']
+task_config         = json.loads(dbutils.widgets.get("task_config"))
+full_table_name     = task_config['full_table_name']
 
 # COMMAND ----------
 
