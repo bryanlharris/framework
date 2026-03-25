@@ -3,7 +3,8 @@ from pathlib import Path
 
 
 def scan_settings_folder(color: str) -> list[dict]:
-    """Scan settings/{color}/ for active .json files.
+    """
+    Scan settings/{color}/ for active .json files.
 
     Returns list of dicts with 'settings_file' key.
     """
@@ -16,7 +17,8 @@ def scan_settings_folder(color: str) -> list[dict]:
 
 
 def extract_destination_tables(color: str) -> list[dict]:
-    """Read all active .json files in settings/{color}/ and extract destination_table.
+    """
+    Read all active .json files in settings/{color}/ and extract destination_table.
 
     Skips files that lack the destination_table field.
     Returns list of dicts with 'full_table_name' key.
