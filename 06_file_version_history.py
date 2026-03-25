@@ -82,7 +82,7 @@ if len(file_version_history_records) > 0:
     # Merge
     df.createOrReplaceTempView("df")
     spark.sql(f"""
-                merge WITH SCHEMA EVOLUTION into {file_version_table_name} as target
+                merge into {file_version_table_name} as target
                 using df as source
                 on target.primary_key = source.primary_key
                 when matched then update set *

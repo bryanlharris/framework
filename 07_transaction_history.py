@@ -45,7 +45,7 @@ df = (
 # Merge
 df.createOrReplaceTempView("df")
 spark.sql(f"""
-            merge WITH SCHEMA EVOLUTION into {transaction_table_name} as target
+            merge into {transaction_table_name} as target
             using df as source
             on target.primary_key = source.primary_key
             when matched then update set *
