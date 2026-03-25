@@ -1,0 +1,36 @@
+LAKEHOUSE API REFERENCE
+
+CORE - Configuration
+lakehouse.core.config.scan_settings_folder()                      - List all .json files in settings/{color}/
+lakehouse.core.config.extract_destination_tables()                - Extract destination_table from all configs
+
+CORE - Utilities
+lakehouse.core.utils.read_json_and_decode()                       - Read JSON file from workspace -> put into a variable
+lakehouse.core.utils.get_table_schema()                           - Get schema from table, optionally drop columns
+lakehouse.core.utils.ensure_table_exists()                        - Create table (w/schema) if missing
+
+CORE/BRONZE/SILVER - Transforms
+lakehouse.core.transform.metadata.add_timestamp_column()          - Add current_timestamp() column
+lakehouse.bronze.transform.metadata.add_source_metadata()         - Add _metadata as named column
+lakehouse.silver.transform.columns.rename_columns()               - Apply column name mapping
+lakehouse.silver.transform.columns.cast_data_types()              - Cast columns to target types
+lakehouse.silver.transform.metadata.add_row_sha_checksum()        - SHA256 hash of specified columns
+lakehouse.silver.transform.metadata.flatten_source_metadata()     - Flatten nested source_metadata struct
+
+BRONZE - Utilities
+lakehouse.bronze.utils.get_latest_file_path()                     - Find latest file matching date pattern (YYYYMMDD)
+
+BRONZE LAYER - Data Ingestion
+lakehouse.bronze.ingest.files.from_file()                         - Ingest files from landing zone via Auto Loader
+lakehouse.bronze.ingest.files.from_url()                          - Download, decompress, land, then ingest
+lakehouse.bronze.ingest.files.from_inbox()                        - Move files from inbox to landing, then ingest
+
+SILVER LAYER - Data Ingestion
+lakehouse.silver.ingest.from_table()                              - Stream bronze➜silver with upsertByPK()
+lakehouse.silver.ingest.from_table_scd2()                         - Stream bronze➜silver with scd2UpsertByBusinessKey()
+
+SILVER LAYER - Merge Strategies
+lakehouse.silver.merge.upsertByPK()                               - Upsert based on primary key
+lakehouse.silver.merge.scd2UpsertByBusinessKey()                  - SCD2 merge with business key
+lakehouse.silver.merge.fullSyncMerge()                            - Sync with deletes (DeltaTable API)
+lakehouse.silver.merge.fullSyncMergeSQL()                         - Sync with deletes (SQL)
