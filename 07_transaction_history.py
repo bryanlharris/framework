@@ -26,6 +26,7 @@ if stop_here == "True":
 # COMMAND ----------
 
 from pyspark.sql import functions as F
+from lakehouse.core.utils import ensure_table_exists
 
 # Variables
 catalog_name = full_table_name.split(".")[0]
@@ -41,6 +42,10 @@ df = (
     .withColumn('primary_key', F.expr(' coalesce(table_name, "") || "_" || coalesce(cast(version as string), "") '))
     .selectExpr("table_name", "* except (table_name)")
     )
+
+# Ensure target table exists before merge
+schema_string = ", ".join(f"`{name}` {dtype}" for name, dtype in df.dtypes)
+ensure_table_exists(spark, transaction_table_name, schema_string)
 
 # Merge
 df.createOrReplaceTempView("df")
