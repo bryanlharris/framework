@@ -40,6 +40,7 @@ file_version_table_name = f"{catalog_name}.{bronze_schema}.file_version_history"
 # COMMAND ----------
 
 from pyspark.sql.functions import col, lit
+from lakehouse.core.utils import ensure_table_exists
 
 hist = spark.sql(f"describe history {full_table_name}")
 
@@ -80,8 +81,8 @@ if len(file_version_history_records) > 0:
     df = spark.createDataFrame(file_version_history_records, "primary_key STRING, file_path ARRAY<STRING>")
     df.createOrReplaceTempView("df")
 
-    # Turn on schema evolution (will not work on serverless clusters)
-    # spark.conf.set("spark.databricks.delta.schema.autoMerge.enabled", "true")
+    # Ensure target table exists before merge
+    ensure_table_exists(spark, file_version_table_name, "primary_key STRING, file_path ARRAY<STRING>")
 
     # Merge
     df.createOrReplaceTempView("df")
