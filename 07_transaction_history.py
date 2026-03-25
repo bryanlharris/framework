@@ -8,20 +8,8 @@
 import json
 
 # Workflow parameters and task values
-skip                = dbutils.widgets.get("skip")
-stop_here           = dbutils.widgets.get("stop_here")
 task_value          = json.loads(dbutils.widgets.get("task_value"))
 full_table_name     = task_value['full_table_name']
-
-# COMMAND ----------
-
-# Skip if True (continues remaining workflow)
-if skip == "True":
-    dbutils.notebook.exit("Skipping per Workflow task value.")
-
-# Stop if True (stops and does not continue workflow)
-if stop_here == "True":
-    raise Exception("Stop here per task value.")
 
 # COMMAND ----------
 
