@@ -81,7 +81,7 @@ if len(file_version_history_records) > 0:
     df.createOrReplaceTempView("df")
 
     # Turn on schema evolution (will not work on serverless clusters)
-    spark.conf.set("spark.databricks.delta.schema.autoMerge.enabled", "true")
+    # spark.conf.set("spark.databricks.delta.schema.autoMerge.enabled", "true")
 
     # Merge
     df.createOrReplaceTempView("df")
