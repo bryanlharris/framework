@@ -1,7 +1,7 @@
 {
     "function_path": "lakehouse.bronze.ingest.files.from_inbox",
     "inbox_path": "/Volumes/edsm/bronze/inbox/",
-    "filename_pattern": "systemsWithCoordinates7days.json.gz",
+    "filename_pattern": "systemsWithCoordinates7days.json",
     "landing_subdirectory": "/Volumes/edsm/bronze/landing/",
     "source_type": "cloudFiles",
     "destination_table": "edsm.bronze.systemsWithCoordinates7days",
