@@ -1,8 +1,10 @@
 {
     "function_path": "lakehouse.bronze.ingest.files.from_inbox",
-    "inbox_path": "/Volumes/edsm/bronze/inbox/",
-    "filename_pattern": "powerPlay.json",
-    "landing_subdirectory": "/Volumes/edsm/bronze/landing/",
+    "from_inbox_options": {
+        "inbox_path": "/Volumes/edsm/bronze/inbox/",
+        "filename_pattern": "powerPlay.json",
+        "landing_subdirectory": "/Volumes/edsm/bronze/landing/"
+    },
     "source_type": "cloudFiles",
     "destination_table": "edsm.bronze.powerPlay",
     "readStream_path": "/Volumes/edsm/bronze/landing/",
