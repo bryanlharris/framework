@@ -42,7 +42,6 @@ def fullSyncMerge(mergeKeys, destinationTable):
 
 def upsertByPK(sourcePK, destinationTable, destinationPK):
     def _do_upsert(microBatchDF, batchId):
-        microBatchDF = microBatchDF.dropDuplicates([sourcePK])
         if not microBatchDF.sparkSession.catalog.tableExists(destinationTable):
             microBatchDF.write.format("delta").mode("overwrite").saveAsTable(destinationTable)
             return
