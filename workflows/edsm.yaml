@@ -1,0 +1,81 @@
+resources:
+  jobs:
+    edsm:
+      name: edsm
+      tasks:
+        - task_key: task_values
+          notebook_task:
+            notebook_path: 01_task_values
+            source: GIT
+          min_retry_interval_millis: 900000
+          disable_auto_optimization: true
+          environment_key: Default
+        - task_key: bronze_loop
+          depends_on:
+            - task_key: task_values
+          for_each_task:
+            inputs: "{{tasks.task_values.values.bronze}}"
+            task:
+              task_key: bronze_iteration
+              notebook_task:
+                notebook_path: 05_ingest
+                base_parameters:
+                  task_config: "{{input}}"
+                source: GIT
+              min_retry_interval_millis: 900000
+              disable_auto_optimization: true
+              environment_key: Default
+        - task_key: silver_loop
+          depends_on:
+            - task_key: bronze_loop
+          for_each_task:
+            inputs: "{{tasks.task_values.values.silver}}"
+            task:
+              task_key: silver_iteration
+              notebook_task:
+                notebook_path: 05_ingest
+                base_parameters:
+                  task_config: "{{input}}"
+                source: GIT
+              min_retry_interval_millis: 900000
+              disable_auto_optimization: true
+              environment_key: Default
+        - task_key: file_version_history_loop
+          depends_on:
+            - task_key: silver_loop
+          for_each_task:
+            inputs: "{{tasks.task_values.values.file_version_history}}"
+            task:
+              task_key: file_version_history_iteration
+              notebook_task:
+                notebook_path: 06_file_version_history
+                base_parameters:
+                  task_config: "{{input}}"
+                source: GIT
+              min_retry_interval_millis: 900000
+              disable_auto_optimization: true
+              environment_key: Default
+        - task_key: transaction_history_loop
+          depends_on:
+            - task_key: silver_loop
+          for_each_task:
+            inputs: "{{tasks.task_values.values.file_version_history}}"
+            task:
+              task_key: transaction_history_iteration
+              notebook_task:
+                notebook_path: 07_transaction_history
+                base_parameters:
+                  task_config: "{{input}}"
+                source: GIT
+              min_retry_interval_millis: 900000
+              disable_auto_optimization: true
+              environment_key: Default
+      git_source:
+        git_url: https://github.com/bryanlharris/framework
+        git_provider: gitHub
+        git_branch: master
+      environments:
+        - environment_key: Default
+          spec:
+            environment_version: "5"
+      performance_target: PERFORMANCE_OPTIMIZED
