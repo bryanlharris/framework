@@ -1,5 +1,5 @@
 {
-    "function_path": "lakehouse.silver.ingest.from_table",
+    "function_path": "lakehouse.silver.ingest.from_table.upsert_by_pk",
     "source_table": "workspace.bronze.example",
     "destination_table": "workspace.silver.example",
     "merge_columns": [ "key_column_to_merge_on", "you_can_have_more_than_one" ],

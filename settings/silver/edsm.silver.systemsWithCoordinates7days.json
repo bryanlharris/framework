@@ -1,5 +1,5 @@
 {
-    "function_path": "lakehouse.silver.ingest.from_table",
+    "function_path": "lakehouse.silver.ingest.from_table.upsert_by_pk",
     "source_table": "edsm.bronze.systemsWithCoordinates7days",
     "destination_table": "edsm.silver.systemsWithCoordinates7days",
     "source_type": "table",
