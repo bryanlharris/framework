@@ -2,7 +2,7 @@
 # MAGIC %md
 # MAGIC
 # MAGIC Validate bronze table for exact duplicate rows. If duplicates are found,
-# MAGIC raise a ValueError listing the offending file paths and recovery steps.
+# MAGIC raise an error listing the offending files and recovery steps.
 
 # COMMAND ----------
 
