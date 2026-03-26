@@ -9,19 +9,19 @@
         "cloudFiles.format": "xml",
         "cloudFiles.inferColumnTypes": "false",
         "cloudFiles.inferSchema": "true",
-        "cloudFiles.schemaLocation": "/Volumes/workspace/bronze/utility/_schema/",
+        "cloudFiles.schemaLocation": "/Volumes/workspace/bronze/utility/workspace.bronze.example_xml/_schema/",
         "cloudFiles.schemaEvolutionMode": "none",
         "cloudFiles.useNotifications": "false",
         "cloudFiles.useIncrementalListing": "auto",
         "cloudFiles.validateOptions": "true",
-        "badRecordsPath": "/Volumes/workspace/bronze/utility/_badRecords/",
+        "badRecordsPath": "/Volumes/workspace/bronze/utility/workspace.bronze.example_xml/_badRecords/",
         "columnNameOfCorruptRecord": "corrupt_record",
         "rescuedDataColumn": "rescued_data"
     },
     "writeStream_format": "delta",
     "writeStream_options": {
         "mergeSchema": "true",
-        "checkpointLocation": "/Volumes/workspace/bronze/utility/_checkpoints/",
+        "checkpointLocation": "/Volumes/workspace/bronze/utility/workspace.bronze.example_xml/_checkpoints/",
         "delta.columnMapping.mode": "name"
     },
     "writeStream_outputMode": "append",

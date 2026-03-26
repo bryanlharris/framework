@@ -5,7 +5,7 @@
     "source_type": "table",
     "readStream_options": {},
     "writeStream_options": {
-        "checkpointLocation": "/Volumes/edsm/silver/utility/_checkpoints/"
+        "checkpointLocation": "/Volumes/edsm/silver/utility/edsm.silver.systemsWithCoordinates7days/_checkpoints/"
     },
     "column_map": {},
     "data_type_map": {
