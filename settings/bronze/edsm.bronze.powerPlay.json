@@ -1,0 +1,31 @@
+{
+    "function_path": "lakehouse.bronze.ingest.files.from_inbox",
+    "inbox_path": "/Volumes/edsm/bronze/inbox/",
+    "filename_pattern": "powerPlay.json",
+    "landing_subdirectory": "/Volumes/edsm/bronze/landing/",
+    "source_type": "cloudFiles",
+    "destination_table": "edsm.bronze.powerPlay",
+    "readStream_path": "/Volumes/edsm/bronze/landing/",
+    "readStream_options": {
+        "cloudFiles.format": "json",
+        "cloudFiles.inferColumnTypes": "false",
+        "cloudFiles.inferSchema": "true",
+        "cloudFiles.schemaLocation": "/Volumes/edsm/bronze/utility/_schema/",
+        "cloudFiles.schemaEvolutionMode": "addNewColumns",
+        "cloudFiles.useNotifications": "false",
+        "cloudFiles.useIncrementalListing": "auto",
+        "cloudFiles.validateOptions": "true",
+        "badRecordsPath": "/Volumes/edsm/bronze/utility/_badRecords/",
+        "multiLine": "false",
+        "columnNameOfCorruptRecord": "corrupt_record",
+        "pathGlobFilter": "powerPlay*.json"
+    },
+    "writeStream_format": "delta",
+    "writeStream_options": {
+        "mergeSchema": "true",
+        "checkpointLocation": "/Volumes/edsm/bronze/utility/_checkpoints/",
+        "delta.columnMapping.mode": "name"
+    },
+    "writeStream_outputMode": "append",
+    "trigger_type": { "availableNow": true }
+}

@@ -1,0 +1,20 @@
+{
+    "function_path": "lakehouse.silver.ingest.from_table.upsert_by_pk",
+    "source_table": "edsm.bronze.powerPlay",
+    "destination_table": "edsm.silver.powerPlay",
+    "source_type": "table",
+    "readStream_options": {},
+    "writeStream_options": {
+        "checkpointLocation": "/Volumes/edsm/silver/utility/_checkpoints/"
+    },
+    "column_map": {},
+    "data_type_map": {
+        "id": "integer",
+        "id64": "long",
+        "date": "timestamp"
+    },
+    "pk": {
+        "name": "power_play_pk",
+        "columns": ["id"]
+    }
+}
