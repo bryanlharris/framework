@@ -12,12 +12,12 @@
         "cloudFiles.format": "json",
         "cloudFiles.inferColumnTypes": "false",
         "cloudFiles.inferSchema": "true",
-        "cloudFiles.schemaLocation": "/Volumes/edsm/bronze/utility/_schema/",
+        "cloudFiles.schemaLocation": "/Volumes/edsm/bronze/utility/edsm.bronze.systemsWithCoordinates7days/_schema/",
         "cloudFiles.schemaEvolutionMode": "addNewColumns",
         "cloudFiles.useNotifications": "false",
         "cloudFiles.useIncrementalListing": "auto",
         "cloudFiles.validateOptions": "true",
-        "badRecordsPath": "/Volumes/edsm/bronze/utility/_badRecords/",
+        "badRecordsPath": "/Volumes/edsm/bronze/utility/edsm.bronze.systemsWithCoordinates7days/_badRecords/",
         "multiLine": "false",
         "columnNameOfCorruptRecord": "corrupt_record",
         "pathGlobFilter": "systemsWithCoordinates7days*.json"
@@ -25,7 +25,7 @@
     "writeStream_format": "delta",
     "writeStream_options": {
         "mergeSchema": "true",
-        "checkpointLocation": "/Volumes/edsm/bronze/utility/_checkpoints/",
+        "checkpointLocation": "/Volumes/edsm/bronze/utility/edsm.bronze.systemsWithCoordinates7days/_checkpoints/",
         "delta.columnMapping.mode": "name"
     },
     "writeStream_outputMode": "append",

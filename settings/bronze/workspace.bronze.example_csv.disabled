@@ -13,12 +13,12 @@
         "cloudFiles.format": "csv",
         "cloudFiles.inferColumnTypes": "false",
         "cloudFiles.inferSchema": "false",
-        "cloudFiles.schemaLocation": "/Volumes/workspace/bronze/utility/_schema/",
+        "cloudFiles.schemaLocation": "/Volumes/workspace/bronze/utility/workspace.bronze.example_csv/_schema/",
         "cloudFiles.schemaEvolutionMode": "none",
         "cloudFiles.useNotifications": "false",
         "cloudFiles.useIncrementalListing": "auto",
         "cloudFiles.validateOptions": "true",
-        "badRecordsPath": "/Volumes/workspace/bronze/utility/_badRecords/",
+        "badRecordsPath": "/Volumes/workspace/bronze/utility/workspace.bronze.example_csv/_badRecords/",
         "multiLine": "true",
         "ignoreLeadingWhiteSpace": "false",
         "ignoreTrailingWhiteSpace": "false",
@@ -27,7 +27,7 @@
     "writeStream_format": "delta",
     "writeStream_options": {
         "mergeSchema": "true",
-        "checkpointLocation": "/Volumes/workspace/bronze/utility/_checkpoints/",
+        "checkpointLocation": "/Volumes/workspace/bronze/utility/workspace.bronze.example_csv/_checkpoints/",
         "delta.columnMapping.mode": "name"
     },
     "writeStream_outputMode": "append",
