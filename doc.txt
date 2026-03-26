@@ -9,7 +9,7 @@ lakehouse.core.utils.read_json_and_decode()                       - Read JSON fi
 lakehouse.core.utils.get_table_schema()                           - Get schema from table, optionally drop columns
 lakehouse.core.utils.ensure_table_exists()                        - Create table (w/schema) if missing
 
-CORE/BRONZE/SILVER - Transforms
+ALL/BRONZE/SILVER - Transforms
 lakehouse.core.transform.metadata.add_timestamp_column()          - Add current_timestamp() column
 lakehouse.bronze.transform.metadata.add_source_metadata()         - Add _metadata as named column
 lakehouse.silver.transform.columns.rename_columns()               - Apply column name mapping
@@ -31,9 +31,3 @@ lakehouse.silver.ingest.from_table.scd2_upsert_by_business_key()  - Stream bronz
 lakehouse.silver.ingest.from_table.full_sync_merge()              - Stream bronze➜silver with fullSyncMerge()
 lakehouse.silver.ingest.from_table.full_sync_merge_sql()          - Stream bronze➜silver with fullSyncMergeSQL()
 lakehouse.silver.ingest.from_table_scd2()                         - Stream bronze➜silver with scd2UpsertByBusinessKey()
-
-SILVER LAYER - Merge Strategies
-lakehouse.silver.merge.upsertByPK()                               - Upsert based on primary key
-lakehouse.silver.merge.scd2UpsertByBusinessKey()                  - SCD2 merge with business key
-lakehouse.silver.merge.fullSyncMerge()                            - Sync with deletes (DeltaTable API)
-lakehouse.silver.merge.fullSyncMergeSQL()                         - Sync with deletes (SQL)
