@@ -7,21 +7,22 @@ def from_url(spark, settings):
     """
     Download file from URL, write to landing volume, ingest via from_file.
 
-    Additional required settings:
-        download_url: URL to download from (str)
-        filename: Optional output filename (defaults to URL basename)
+    Reads function-specific options from settings["from_url_options"].
+    Required keys: download_url.
+    Optional keys: filename (defaults to URL basename with timestamp).
     """
     import requests
     from datetime import datetime
     from pathlib import Path
 
-    url = settings["download_url"]
+    opts = settings["from_url_options"]
+    url = opts["download_url"]
     landing_path = settings["readStream_path"].rstrip("/")
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     default_filename = url.split("/")[-1]
     stem = Path(default_filename).stem
     suffix = Path(default_filename).suffix
-    filename = settings.get("filename", f"{stem}_{timestamp}{suffix}")
+    filename = opts.get("filename", f"{stem}_{timestamp}{suffix}")
 
     # Download
     response = requests.get(url, timeout=300)
@@ -38,18 +39,17 @@ def from_url(spark, settings):
 def from_inbox(spark, settings):
     """Move files from inbox volume to landing zone with timestamp-based naming, then ingest.
 
-    Additional required settings:
-        inbox_path: Directory to scan for incoming files (str)
-        filename_pattern: Glob pattern to match files in inbox (str)
-        landing_subdirectory: Destination directory for landed files (str)
+    Reads function-specific options from settings["from_inbox_options"].
+    Required keys: inbox_path, filename_pattern, landing_subdirectory.
     """
     import shutil
     from datetime import datetime
     from pathlib import Path
 
-    inbox    = Path(settings["inbox_path"])
-    pattern  = settings["filename_pattern"]
-    landing  = Path(settings["landing_subdirectory"])
+    opts     = settings["from_inbox_options"]
+    inbox    = Path(opts["inbox_path"])
+    pattern  = opts["filename_pattern"]
+    landing  = Path(opts["landing_subdirectory"])
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
     for file in inbox.glob(pattern):
