@@ -25,9 +25,24 @@ resources:
               min_retry_interval_millis: 900000
               disable_auto_optimization: true
               environment_key: Default
-        - task_key: silver_loop
+        - task_key: validate_bronze_loop
           depends_on:
             - task_key: bronze_loop
+          for_each_task:
+            inputs: "{{tasks.task_values.values.bronze_tables}}"
+            task:
+              task_key: validate_bronze_iteration
+              notebook_task:
+                notebook_path: 08_validate_bronze
+                base_parameters:
+                  task_config: "{{input}}"
+                source: GIT
+              min_retry_interval_millis: 900000
+              disable_auto_optimization: true
+              environment_key: Default
+        - task_key: silver_loop
+          depends_on:
+            - task_key: validate_bronze_loop
           for_each_task:
             inputs: "{{tasks.task_values.values.silver}}"
             task:
