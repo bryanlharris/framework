@@ -32,3 +32,8 @@ lakehouse.silver.ingest.from_table.scd2_upsert_by_business_key()  - Stream bronz
 lakehouse.silver.ingest.from_table.full_sync_merge()              - Stream bronze➜silver with fullSyncMerge()
 lakehouse.silver.ingest.from_table.full_sync_merge_sql()          - Stream bronze➜silver with fullSyncMergeSQL()
 lakehouse.silver.ingest.from_table_scd2()                         - Stream bronze➜silver with scd2UpsertByBusinessKey()
+
+JOBS - Constraints
+file_version_history_loop and transaction_history_loop require concurrency: 1 because
+both write to a shared Delta table and parallel iterations will cause Databricks write
+conflicts.

@@ -60,6 +60,7 @@ resources:
             - task_key: silver_loop
           for_each_task:
             inputs: "{{tasks.task_values.values.file_version_history}}"
+            concurrency: 1
             task:
               task_key: file_version_history_iteration
               notebook_task:
@@ -74,7 +75,8 @@ resources:
           depends_on:
             - task_key: silver_loop
           for_each_task:
-            inputs: "{{tasks.task_values.values.file_version_history}}"
+            inputs: "{{tasks.task_values.values.transaction_history}}"
+            concurrency: 1
             task:
               task_key: transaction_history_iteration
               notebook_task:
