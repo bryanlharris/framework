@@ -26,6 +26,7 @@ lakehouse.bronze.ingest.files.from_file()                         - Ingest files
 lakehouse.bronze.ingest.files.from_url()                          - Download file, land, then ingest
 lakehouse.bronze.ingest.files.from_inbox()                        - Move files from inbox to landing, then ingest
 lakehouse.bronze.ingest.files.from_pdf()                          - Read latest PDF from volume, parse with ai_parse_document, write to Delta (batch)
+lakehouse.bronze.ingest.api.from_rest_api()                       - Call REST API, land JSON response, then ingest
 
 SILVER LAYER - Data Ingestion
 lakehouse.silver.ingest.from_table.upsert_by_pk()                 - Stream bronze➜silver with upsertByPK()
