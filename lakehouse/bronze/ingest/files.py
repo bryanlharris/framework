@@ -63,6 +63,60 @@ def from_inbox(spark, settings):
     from_file(spark, settings)
 
 
+def from_pdf(spark, settings):
+    """
+    Read the latest PDF from a volume using binaryFile format, parse with
+    ai_parse_document, and write to a Delta table in batch mode.
+
+    Example settings:
+    {
+        "function_path": "lakehouse.bronze.ingest.files.from_pdf",
+        "destination_table": "edsm.bronze.my_pdfs",
+        "input_path": "/Volumes/edsm/bronze/landing/",
+        "date_pattern": "(\\d{8})",
+        "write_options": {
+            "mergeSchema": "true"
+        },
+        "write_mode": "append"
+    }
+    """
+    from lakehouse.core.transform.metadata import add_timestamp_column
+    from lakehouse.core.utils import ensure_table_exists
+    from lakehouse.bronze.utils import get_latest_file_path
+
+    destination_table  = settings["destination_table"]
+    input_path         = settings["input_path"]
+    date_pattern       = settings["date_pattern"]
+    write_options      = settings["write_options"]
+    write_mode         = settings.get("write_mode", "append")
+
+    latest_file        = get_latest_file_path(input_path, date_pattern)
+    full_path          = f"{input_path.rstrip('/')}/{latest_file}"
+
+    df = (
+        spark.read
+        .format("binaryFile")
+        .load(full_path)
+        .selectExpr(
+            "path",
+            "modificationTime as source_modified_time",
+            "ai_parse_document(content) AS parsed_document"
+        )
+        .transform(add_timestamp_column, "ingest_time")
+    )
+
+    schema_string = ", ".join(f"`{name}` {dtype}" for name, dtype in df.dtypes)
+    ensure_table_exists(spark, destination_table, schema_string)
+
+    (
+        df.write
+        .format("delta")
+        .options(**write_options)
+        .mode(write_mode)
+        .saveAsTable(destination_table)
+    )
+
+
 def from_file(spark, settings):
     destination_table       = settings["destination_table"]
     readStream_options      = settings["readStream_options"]

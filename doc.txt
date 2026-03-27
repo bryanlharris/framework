@@ -25,6 +25,7 @@ NOTE: All files must be decompressed before ingestion. from_url(), from_inbox(),
 lakehouse.bronze.ingest.files.from_file()                         - Ingest files from landing zone via Auto Loader
 lakehouse.bronze.ingest.files.from_url()                          - Download file, land, then ingest
 lakehouse.bronze.ingest.files.from_inbox()                        - Move files from inbox to landing, then ingest
+lakehouse.bronze.ingest.files.from_pdf()                          - Read latest PDF from volume, parse with ai_parse_document, write to Delta (batch)
 
 SILVER LAYER - Data Ingestion
 lakehouse.silver.ingest.from_table.upsert_by_pk()                 - Stream bronze➜silver with upsertByPK()
