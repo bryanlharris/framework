@@ -1,7 +1,9 @@
 {
-    "function_path": "lakehouse.bronze.ingest.files.from_url",
-    "from_url_options": {
-        "download_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=FEDFUNDS"
+    "function_path": "lakehouse.bronze.ingest.files.from_inbox",
+    "from_inbox_options": {
+        "inbox_path": "/Volumes/ingestion/bronze/inbox/",
+        "filename_pattern": "fredgraph*.csv",
+        "landing_subdirectory": "/Volumes/demo/bronze/landing/"
     },
     "source_type": "cloudFiles",
     "destination_table": "demo.bronze.fedfunds",
