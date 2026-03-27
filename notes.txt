@@ -11,7 +11,7 @@ lakehouse.bronze.ingest.cloud.from_gcs
 lakehouse.bronze.ingest.streaming.from_kafka
 lakehouse.bronze.ingest.streaming.from_eventhub
 lakehouse.bronze.ingest.streaming.from_kinesis
-lakehouse.bronze.ingest.api.from_rest_api  (implemented)
+lakehouse.bronze.ingest.api.from_rest_api
 lakehouse.bronze.ingest.api.from_graphql
 lakehouse.bronze.ingest.api.from_webhook
 lakehouse.bronze.ingest.transfer.from_sftp
