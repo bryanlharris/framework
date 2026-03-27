@@ -1,0 +1,16 @@
+{
+    "function_path": "lakehouse.silver.ingest.from_table.upsert_by_pk",
+    "source_table": "demo.bronze.fedfunds",
+    "destination_table": "demo.silver.fedfunds",
+    "source_type": "table",
+    "readStream_options": {},
+    "writeStream_options": {
+        "checkpointLocation": "/Volumes/demo/silver/utility/demo.silver.fedfunds/_checkpoints/"
+    },
+    "column_map": {},
+    "data_type_map": {
+        "date": "timestamp",
+        "value": "double"
+    },
+    "pk": "date"
+}
