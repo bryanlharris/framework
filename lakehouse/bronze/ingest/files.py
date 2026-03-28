@@ -9,7 +9,7 @@ def from_url(spark, settings):
 
     Reads function-specific options from settings["from_url_options"].
     Required keys: download_url.
-    Optional keys: filename (defaults to URL basename with timestamp).
+    Optional keys: filename (base name; timestamp is always appended before the extension).
     """
     import requests
     from datetime import datetime
@@ -20,7 +20,9 @@ def from_url(spark, settings):
     landing_path = settings["readStream_path"].rstrip("/")
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     default_filename = url.split("/")[-1]
-    base = opts.get("filename", default_filename)
+    default_stem = Path(default_filename).stem
+    default_suffix = Path(default_filename).suffix
+    base = opts.get("filename", f"{default_stem}{default_suffix}")
     stem = Path(base).stem
     suffix = Path(base).suffix
     filename = f"{stem}_{timestamp}{suffix}"
