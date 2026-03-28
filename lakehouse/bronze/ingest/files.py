@@ -19,10 +19,8 @@ def from_url(spark, settings):
     url = opts["download_url"]
     landing_path = settings["readStream_path"].rstrip("/")
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    default_filename = url.split("/")[-1]
-    default_stem = Path(default_filename).stem
-    default_suffix = Path(default_filename).suffix
-    base = opts.get("filename", f"{default_stem}{default_suffix}")
+    default_filename = url.split("/")[-1].split("?")[0]
+    base = opts.get("filename", default_filename)
     stem = Path(base).stem
     suffix = Path(base).suffix
     filename = f"{stem}_{timestamp}{suffix}"
