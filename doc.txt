@@ -1,10 +1,10 @@
 LAKEHOUSE API REFERENCE
 
 NOTES
-All files must be decompressed before ingestion.
+1. All files must be decompressed before ingestion.
 No compressed files of any kind allowed anywhere.
 
-file_version_history_loop and transaction_history_loop
+2. file_version_history_loop and transaction_history_loop
 require concurrency 1 because both write to a shared
 Delta table and parallel iterations will cause Databricks
 write conflicts.
