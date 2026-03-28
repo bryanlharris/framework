@@ -1,5 +1,10 @@
 LAKEHOUSE API REFERENCE
 
+NOTE:
+All files must be decompressed before ingestion.
+No compressed files of any kind allowed anywhere.
+There is no parking in the red zone.
+
 CORE - Configuration
 lakehouse.core.config.scan_settings_folder()                      - List all .json files in settings/{color}/
 lakehouse.core.config.extract_destination_tables()                - Extract destination_table from all configs
@@ -21,7 +26,6 @@ BRONZE - Utilities
 lakehouse.bronze.utils.get_latest_file_path()                     - Find latest file matching date pattern (YYYYMMDD)
 
 BRONZE LAYER - Data Ingestion
-NOTE: All files must be decompressed before ingestion. from_url(), from_inbox(), and from_file() require decompressed input.
 lakehouse.bronze.ingest.files.from_file()                         - Ingest files from landing zone via Auto Loader
 lakehouse.bronze.ingest.files.from_url()                          - Download file, land, then ingest
 lakehouse.bronze.ingest.files.from_inbox()                        - Move files from inbox to landing, then ingest
