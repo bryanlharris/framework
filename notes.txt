@@ -20,7 +20,6 @@ lakehouse.bronze.ingest.transfer.from_sharepoint
 
 SILVER
 lakehouse.silver.ingest.from_table.upsert_by_pk
-lakehouse.silver.ingest.from_table.scd2_upsert_by_business_key
 lakehouse.silver.ingest.from_table.full_sync_merge
 lakehouse.silver.ingest.from_table.full_sync_merge_sql
 lakehouse.silver.ingest.from_table.from_table_append
