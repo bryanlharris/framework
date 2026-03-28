@@ -37,9 +37,9 @@ lakehouse.bronze.ingest.files.from_pdf()                          - Read latest 
 lakehouse.bronze.ingest.api.from_rest_api()                       - Call REST API, land JSON response, then ingest
 
 SILVER LAYER - Data Ingestion
-lakehouse.silver.ingest.from_table.upsert_by_pk()                 - Stream bronze➜silver with upsertByPK()
-lakehouse.silver.ingest.from_table.full_sync_merge()              - Stream bronze➜silver with fullSyncMerge()
-lakehouse.silver.ingest.from_table.full_sync_merge_sql()          - Stream bronze➜silver with fullSyncMergeSQL()
-lakehouse.silver.ingest.from_table.scd2()                         - Stream bronze➜silver with scd2UpsertByBusinessKey()
+lakehouse.silver.ingest.from_table.upsert.without_delete()        - Stream bronze➜silver with upsertByPK()
+lakehouse.silver.ingest.from_table.upsert.with_delete()           - Stream bronze➜silver with fullSyncMerge()
+lakehouse.silver.ingest.from_table.merge.with_delete()            - Stream bronze➜silver with fullSyncMergeSQL()
+lakehouse.silver.ingest.from_table.history.scd2()                 - Stream bronze➜silver with scd2UpsertByBusinessKey()
 
 

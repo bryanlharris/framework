@@ -19,13 +19,13 @@ lakehouse.bronze.ingest.transfer.from_ftp
 lakehouse.bronze.ingest.transfer.from_sharepoint
 
 SILVER
-lakehouse.silver.ingest.from_table.upsert_by_pk
-lakehouse.silver.ingest.from_table.full_sync_merge
-lakehouse.silver.ingest.from_table.full_sync_merge_sql
+lakehouse.silver.ingest.from_table.upsert.without_delete
+lakehouse.silver.ingest.from_table.upsert.with_delete
+lakehouse.silver.ingest.from_table.merge.with_delete
 lakehouse.silver.ingest.from_table.from_table_append
 lakehouse.silver.ingest.from_table.from_table_dedup
 lakehouse.silver.ingest.from_table.from_table_latest
-lakehouse.silver.ingest.from_table_scd2
+lakehouse.silver.ingest.from_table.history.scd2
 lakehouse.silver.ingest.cdc.from_jdbc_cdc
 lakehouse.silver.ingest.cdc.from_delta_cdf
 lakehouse.silver.ingest.cdc.from_mongodb_changestream
