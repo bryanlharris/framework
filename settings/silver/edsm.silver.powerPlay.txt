@@ -1,5 +1,5 @@
 {
-    "function_path": "lakehouse.silver.ingest.from_table.upsert_by_pk",
+    "function_path": "lakehouse.silver.ingest.from_table.upsert.without_delete",
     "source_table": "edsm.bronze.powerPlay",
     "destination_table": "edsm.silver.powerPlay",
     "source_type": "table",
