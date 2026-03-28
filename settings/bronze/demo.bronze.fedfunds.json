@@ -1,7 +1,8 @@
 {
     "function_path": "lakehouse.bronze.ingest.files.from_url",
     "from_url_options": {
-        "download_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=FEDFUNDS"
+        "download_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=FEDFUNDS",
+        "filename": "fredgraph_FEDFUNDS.csv"
     },
     "source_type": "cloudFiles",
     "destination_table": "demo.bronze.fedfunds",
@@ -17,7 +18,7 @@
         "cloudFiles.useIncrementalListing": "auto",
         "cloudFiles.validateOptions": "true",
         "badRecordsPath": "/Volumes/demo/bronze/utility/demo.bronze.fedfunds/_badRecords/",
-        "pathGlobFilter": "fredgraph*.csv?id=FEDFUNDS"
+        "pathGlobFilter": "fredgraph_FEDFUNDS*.csv"
     },
     "writeStream_format": "delta",
     "writeStream_options": {
