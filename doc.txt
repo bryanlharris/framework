@@ -14,7 +14,7 @@ lakehouse.core.config.scan_settings_folder()                      - List all .js
 lakehouse.core.config.extract_destination_tables()                - Extract destination_table from all configs
 
 CORE - Utilities
-lakehouse.core.utils.read_json_and_decode()                       - Read JSON file from workspace -> put into a variable
+lakehouse.core.utils.read_json_and_decode()                       - Read JSON file -> put into a variable
 lakehouse.core.utils.get_table_schema()                           - Get schema from table, optionally drop columns
 lakehouse.core.utils.ensure_table_exists()                        - Create table (w/schema) if missing
 
