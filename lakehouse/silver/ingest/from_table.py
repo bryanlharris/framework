@@ -15,10 +15,9 @@ def _from_table_with_strategy(spark, settings, strategy_name):
     readStream_options  = settings["readStream_options"]
 
     _strategies = {
-        "upsert_by_pk":                lambda: upsertByPK(pk, destination_table, pk),
-        "scd2_upsert_by_business_key": lambda: scd2UpsertByBusinessKey(pk_columns, destination_table, pk),
-        "full_sync_merge":             lambda: fullSyncMerge(pk_columns, destination_table),
-        "full_sync_merge_sql":         lambda: fullSyncMergeSQL(pk_columns, destination_table),
+        "upsert_by_pk":    lambda: upsertByPK(pk, destination_table, pk),
+        "full_sync_merge":    lambda: fullSyncMerge(pk_columns, destination_table),
+        "full_sync_merge_sql": lambda: fullSyncMergeSQL(pk_columns, destination_table),
     }
 
     df = (
@@ -101,10 +100,6 @@ def example_custom(spark, settings):
 
 def upsert_by_pk(spark, settings):
     return _from_table_with_strategy(spark, settings, "upsert_by_pk")
-
-
-def scd2_upsert_by_business_key(spark, settings):
-    return _from_table_with_strategy(spark, settings, "scd2_upsert_by_business_key")
 
 
 def full_sync_merge(spark, settings):
