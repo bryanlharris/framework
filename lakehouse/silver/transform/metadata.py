@@ -20,3 +20,15 @@ def flatten_source_metadata(df):
         ),
         current_timestamp().alias("ingest_time"),
     )
+
+
+def add_scd2_columns(df, ingest_time_column):
+    from pyspark.sql.functions import col, lit
+    return (
+        df
+        .withColumn("created_on", col(ingest_time_column))
+        .withColumn("deleted_on", lit(None).cast("timestamp"))
+        .withColumn("current_flag", lit("Yes"))
+        .withColumn("valid_from", col(ingest_time_column))
+        .withColumn("valid_to", lit("9999-12-31 23:59:59").cast("timestamp"))
+    )

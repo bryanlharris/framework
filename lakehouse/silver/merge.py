@@ -1,5 +1,5 @@
 from delta.tables import DeltaTable
-from pyspark.sql.functions import col, lit, row_number
+from pyspark.sql.functions import col, row_number
 from pyspark.sql.window import Window
 
 from lakehouse.core.utils import create_table_if_not_exists
@@ -66,15 +66,7 @@ def scd2UpsertByBusinessKey(business_key, surrogate_key, destinationTable, inges
             .filter("rn = 1")
             .drop("rn")
         )
-        scd2_df = (
-            df
-            .withColumn("created_on", col(ingest_time_column))
-            .withColumn("deleted_on", lit(None).cast("timestamp"))
-            .withColumn("current_flag", lit("Yes"))
-            .withColumn("valid_from", col(ingest_time_column))
-            .withColumn("valid_to", lit("9999-12-31 23:59:59").cast("timestamp"))
-        )
-        create_table_if_not_exists(df.sparkSession, destinationTable, scd2_df)
+        create_table_if_not_exists(df.sparkSession, destinationTable, df)
         merge_condition = " and ".join([f"t.{k} = s.{k}" for k in business_key])
 
         if use_row_hash:
