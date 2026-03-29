@@ -1,4 +1,27 @@
-from pyspark.sql.functions import sha2, concat_ws, coalesce, col, lit, current_timestamp
+from pyspark.sql.functions import sha2, col, lit, current_timestamp, to_json, struct, transform, coalesce, array
+from pyspark.sql.types import StructType, ArrayType, MapType
+
+
+def make_null_safe(field_type, col_expr):
+    if isinstance(field_type, MapType):
+        raise TypeError(
+            "MapType columns are not supported for checksum hashing "
+            "because map key ordering is not stable in to_json"
+        )
+    if isinstance(field_type, StructType):
+        safe_fields = [
+            make_null_safe(f.dataType, col_expr[f.name]).alias(f.name)
+            for f in field_type.fields
+        ]
+        return struct(*safe_fields)
+    if isinstance(field_type, ArrayType):
+        if isinstance(field_type.elementType, (StructType, ArrayType, MapType)):
+            return coalesce(
+                transform(col_expr, lambda x: make_null_safe(field_type.elementType, x)),
+                array()
+            )
+        return coalesce(col_expr, array())
+    return col_expr
 
 
 def add_row_sha_checksum(df, col_name='row_checksum', columns=None):
@@ -6,9 +29,15 @@ def add_row_sha_checksum(df, col_name='row_checksum', columns=None):
         cols = [c.strip() for c in columns.split(",")] if isinstance(columns, str) else list(columns)
     else:
         cols = df.columns
-    cols_expr = [coalesce(col(c).cast("string"), lit("-")) for c in cols]
 
-    return df.withColumn(col_name, sha2(concat_ws('-', *cols_expr), 256))
+    field_map = {f.name: f.dataType for f in df.schema.fields}
+
+    normalized = [
+        make_null_safe(field_map[c], col(c)).alias(c)
+        for c in cols
+    ]
+
+    return df.withColumn(col_name, sha2(to_json(struct(*normalized)), 256))
 
 
 def flatten_source_metadata(df):
