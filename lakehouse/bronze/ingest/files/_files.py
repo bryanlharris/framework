@@ -1,8 +1,8 @@
 
 
 from lakehouse.core.transform.metadata import add_timestamp_column
-from lakehouse.bronze.transform.metadata.file import add_source_metadata
-from lakehouse.bronze.transform.metadata.derived import add_ingest_time_from_path
+from lakehouse.bronze.transform.file import add_source_metadata
+from lakehouse.bronze.transform.derived import add_ingest_time_from_path
 
 def from_url(spark, settings):
     """
