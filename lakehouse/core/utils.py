@@ -23,3 +23,8 @@ def get_table_schema(table_name, columns_to_drop=[]):
 def ensure_table_exists(spark, table_name, schema_string):
     if not spark.catalog.tableExists(table_name):
         spark.sql(f"CREATE TABLE {table_name} ({schema_string}) USING DELTA")
+
+
+def create_table_if_not_exists(spark, table_name, df):
+    if not spark.catalog.tableExists(table_name):
+        spark.createDataFrame([], df.schema).write.format("delta").mode("overwrite").saveAsTable(table_name)
