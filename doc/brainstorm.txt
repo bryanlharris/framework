@@ -2,16 +2,12 @@
 Some other ingest function ideas & how to organize.
 
 BRONZE
-lakehouse.bronze.ingest.files.from_file
-lakehouse.bronze.ingest.files.from_url
-lakehouse.bronze.ingest.files.from_inbox
 lakehouse.bronze.ingest.cloud.from_s3
 lakehouse.bronze.ingest.cloud.from_adls
 lakehouse.bronze.ingest.cloud.from_gcs
 lakehouse.bronze.ingest.streaming.from_kafka
 lakehouse.bronze.ingest.streaming.from_eventhub
 lakehouse.bronze.ingest.streaming.from_kinesis
-lakehouse.bronze.ingest.api.from_rest_api
 lakehouse.bronze.ingest.api.from_graphql
 lakehouse.bronze.ingest.api.from_webhook
 lakehouse.bronze.ingest.transfer.from_sftp
@@ -19,13 +15,9 @@ lakehouse.bronze.ingest.transfer.from_ftp
 lakehouse.bronze.ingest.transfer.from_sharepoint
 
 SILVER
-lakehouse.silver.ingest.from_table.upsert.without_delete
-lakehouse.silver.ingest.from_table.upsert.with_delete
-lakehouse.silver.ingest.from_table.merge.with_delete
 lakehouse.silver.ingest.from_table.from_table_append
 lakehouse.silver.ingest.from_table.from_table_dedup
 lakehouse.silver.ingest.from_table.from_table_latest
-lakehouse.silver.ingest.from_table.history.scd2
 lakehouse.silver.ingest.cdc.from_jdbc_cdc
 lakehouse.silver.ingest.cdc.from_delta_cdf
 lakehouse.silver.ingest.cdc.from_mongodb_changestream
