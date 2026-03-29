@@ -1,0 +1,53 @@
+lakehouse/
+├── core/
+│   ├── config/
+│   │   ├── scan_settings_folder()
+│   │   └── extract_destination_tables()
+│   ├── transform/
+│   │   └── metadata/
+│   │       └── add_timestamp_column()
+│   └── utils/
+│       ├── read_json_and_decode()
+│       ├── get_table_schema()
+│       └── ensure_table_exists()
+│
+├── bronze/
+│   ├── ingest/
+│   │   ├── files/
+│   │   │   ├── from_file()
+│   │   │   ├── from_url()
+│   │   │   ├── from_inbox()
+│   │   │   └── from_pdf()
+│   │   └── api/
+│   │       └── from_rest_api()
+│   ├── transform/
+│   │   ├── file/
+│   │   │   └── add_source_metadata()
+│   │   └── derived/
+│   │       └── add_ingest_time_from_path()
+│   └── utils/
+│       └── get_latest_file_path()
+│
+└── silver/
+    ├── ingest/
+    │   └── from_table/
+    │       ├── upsert/
+    │       │   ├── without_delete()
+    │       │   └── with_delete()
+    │       ├── merge/
+    │       │   └── with_delete()
+    │       └── history/
+    │           └── scd2()
+    ├── transform/
+    │   ├── columns/
+    │   │   ├── rename_columns()
+    │   │   └── cast_data_types()
+    │   └── metadata/
+    │       ├── add_row_sha_checksum()
+    │       ├── flatten_source_metadata()
+    │       └── add_scd2_columns()
+    └── merge/
+        ├── upsertByPK()
+        ├── fullSyncMerge()
+        ├── fullSyncMergeSQL()
+        └── scd2UpsertByBusinessKey()
