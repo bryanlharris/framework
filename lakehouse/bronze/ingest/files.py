@@ -1,7 +1,8 @@
 
 
 from lakehouse.core.transform.metadata import add_timestamp_column
-from lakehouse.bronze.transform.metadata import add_source_metadata, add_derived_ingest_time
+from lakehouse.bronze.transform.metadata.file import add_source_metadata
+from lakehouse.bronze.transform.metadata.derived import add_ingest_time_from_path
 
 def from_url(spark, settings):
     """
@@ -154,11 +155,10 @@ def from_file(spark, settings):
         .transform(add_source_metadata, "source_metadata")
     )
 
-    add_derived = settings.get("add_derived_ingest_time", "false").lower() == "true"
-    derived_regex = settings.get("derived_ingest_time_regex", r"(\d{8}_\d{6})")
-
-    if add_derived:
-        df = df.transform(add_derived_ingest_time, "derived_ingest_time", derived_regex)
+    derived = settings.get("derived", {})
+    if derived.get("add_ingest_time_from_path", "false").lower() == "true":
+        derived_regex = derived.get("file_path_datetime_regex", r"(\d{8}_\d{6})")
+        df = df.transform(add_ingest_time_from_path, "derived_ingest_time", derived_regex)
 
     query_name = destination_table
     query = (

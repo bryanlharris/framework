@@ -25,6 +25,8 @@
     },
     "writeStream_outputMode": "append",
     "trigger_type": { "availableNow": true },
-    "add_derived_ingest_time": "true",
-    "derived_ingest_time_regex": "/(\\d{8})/"
+    "derived": {
+        "add_ingest_time_from_path": "true",
+        "file_path_datetime_regex": "/(\\d{8})/"
+    }
 }
