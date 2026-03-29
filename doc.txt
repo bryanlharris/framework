@@ -20,8 +20,8 @@ lakehouse.core.utils.ensure_table_exists()                        - Create table
 
 ALL/BRONZE/SILVER - Transforms
 lakehouse.core.transform.metadata.add_timestamp_column()          - Add current_timestamp() column
-lakehouse.bronze.transform.metadata.add_source_metadata()         - Add _metadata as named column
-lakehouse.bronze.transform.metadata.add_derived_ingest_time()     - Extract YYYYMMDD_HHmmss from file_path, add as derived_ingest_time column
+lakehouse.bronze.transform.metadata.file.add_source_metadata()    - Add _metadata as named column
+lakehouse.bronze.transform.metadata.derived.add_ingest_time_from_path() - Extract datetime from file_path via regex, add as derived_ingest_time column
 lakehouse.silver.transform.columns.rename_columns()               - Apply column name mapping
 lakehouse.silver.transform.columns.cast_data_types()              - Cast columns to target types
 lakehouse.silver.transform.metadata.add_row_sha_checksum()        - SHA256 hash of specified columns
