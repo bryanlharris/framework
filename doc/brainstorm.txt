@@ -10,8 +10,7 @@ lakehouse.bronze.ingest.streaming.from_eventhub
 lakehouse.bronze.ingest.streaming.from_kinesis
 lakehouse.bronze.ingest.api.from_graphql
 lakehouse.bronze.ingest.api.from_webhook
-lakehouse.bronze.ingest.transfer.from_sftp
-lakehouse.bronze.ingest.transfer.from_ftp
+lakehouse.bronze.ingest.files.from_sftp
 lakehouse.bronze.ingest.transfer.from_sharepoint
 
 SILVER
