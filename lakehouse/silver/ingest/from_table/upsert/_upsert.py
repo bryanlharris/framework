@@ -4,6 +4,31 @@ from lakehouse.silver.transform.columns import cast_data_types, rename_columns
 
 
 def without_delete(spark, settings):
+    """
+    Read streaming data from a bronze table, apply column renames, type casts,
+    metadata flattening, and row checksums, then upsert into a silver Delta table
+    by primary key without deleting records absent from the source.
+
+    Example settings:
+    {
+        "function_path": "lakehouse.silver.ingest.from_table.upsert.without_delete",
+        "source_table": "demo.bronze.fedfunds",
+        "destination_table": "demo.silver.fedfunds",
+        "readStream_options": {},
+        "writeStream_options": {
+            "checkpointLocation": "/Volumes/demo/silver/utility/demo.silver.fedfunds/_checkpoints/"
+        },
+        "column_map": {},
+        "data_type_map": {
+            "date": "timestamp",
+            "value": "double"
+        },
+        "pk": {
+            "name": "primary_key",
+            "columns": ["observation_date", "FEDFUNDS"]
+        }
+    }
+    """
     source_table        = settings["source_table"]
     destination_table   = settings["destination_table"]
     column_map          = settings["column_map"]
@@ -38,6 +63,34 @@ def without_delete(spark, settings):
 
 
 def with_delete(spark, settings):
+    """
+    Read streaming data from a bronze table, apply column renames, type casts,
+    metadata flattening, and row checksums, then perform a full-sync merge into a
+    silver Delta table by primary key, including deletion of records absent from
+    the source.
+
+    Example settings:
+    {
+        "function_path": "lakehouse.silver.ingest.from_table.upsert.with_delete",
+        "source_table": "edsm.bronze.stations",
+        "destination_table": "edsm.silver.stations",
+        "readStream_options": {},
+        "writeStream_options": {
+            "checkpointLocation": "/Volumes/edsm/silver/utility/edsm.silver.stations/_checkpoints/"
+        },
+        "column_map": {
+            "marketId": "market_id"
+        },
+        "data_type_map": {
+            "market_id": "long",
+            "updateTime": "timestamp"
+        },
+        "pk": {
+            "name": "primary_key",
+            "columns": ["market_id"]
+        }
+    }
+    """
     source_table        = settings["source_table"]
     destination_table   = settings["destination_table"]
     column_map          = settings["column_map"]

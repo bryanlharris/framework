@@ -6,6 +6,10 @@ from lakehouse.core.utils import create_table_if_not_exists
 
 
 def fullSyncMergeSQL(mergeKeys, destinationTable):
+    """
+    Return a foreachBatch function that performs a full-sync MERGE via SQL,
+    handling UPDATE, INSERT, and DELETE for records not present in the source batch.
+    """
     def _do_upsert(microBatchDF, batchId):
         merge_condition = " AND ".join([f"source.{col} = target.{col}" for col in mergeKeys])
 
@@ -24,6 +28,11 @@ def fullSyncMergeSQL(mergeKeys, destinationTable):
 
 
 def fullSyncMerge(mergeKeys, destinationTable):
+    """
+    Return a foreachBatch function that performs a full-sync MERGE via the Delta API,
+    handling UPDATE, INSERT, and DELETE for records not present in the source batch.
+    Creates the destination table on first run if it does not exist.
+    """
     def _do_upsert(microBatchDF, batchId):
         if not microBatchDF.sparkSession.catalog.tableExists(destinationTable):
             microBatchDF.write.format("delta").mode("overwrite").saveAsTable(destinationTable)
@@ -43,6 +52,10 @@ def fullSyncMerge(mergeKeys, destinationTable):
 
 
 def upsertByPK(sourcePK, destinationTable, destinationPK):
+    """
+    Return a foreachBatch function that upserts records by primary key via the Delta API
+    (UPDATE + INSERT only, no deletes). Creates the destination table on first run.
+    """
     def _do_upsert(microBatchDF, batchId):
         if not microBatchDF.sparkSession.catalog.tableExists(destinationTable):
             microBatchDF.write.format("delta").mode("overwrite").saveAsTable(destinationTable)
@@ -59,6 +72,14 @@ def upsertByPK(sourcePK, destinationTable, destinationPK):
 
 
 def scd2UpsertByBusinessKey(business_key, surrogate_key, destinationTable, ingest_time_column, use_row_hash=False, row_hash_col="row_hash"):
+    """
+    Return a foreachBatch function that implements SCD2 upsert logic. Deduplicates the
+    micro-batch by business key (keeping the latest record by ingest_time_column), marks
+    changed current records as expired, and inserts new or changed records with SCD2
+    tracking columns (created_on, deleted_on, current_flag, valid_from, valid_to).
+    When use_row_hash is True, change detection uses row_hash_col instead of comparing
+    surrogate_key columns individually.
+    """
     def _do_upsert(microBatchDF, batchId):
         window = Window.partitionBy(*business_key).orderBy(col(ingest_time_column).desc())
         df = (

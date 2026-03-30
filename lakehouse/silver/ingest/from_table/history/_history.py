@@ -4,6 +4,30 @@ from lakehouse.silver.transform.columns import cast_data_types, rename_columns
 
 
 def scd2(spark, settings):
+    """
+    Read streaming data from a bronze table, apply column renames, type casts,
+    metadata flattening, row checksums, and SCD2 tracking columns, then write to
+    a silver Delta table using SCD2 merge logic (insert new/changed records,
+    expire old ones).
+
+    Example settings:
+    {
+        "function_path": "lakehouse.silver.ingest.from_table.history.scd2",
+        "source_table": "edsm.bronze.powerPlay",
+        "destination_table": "edsm.silver.powerPlay",
+        "readStream_options": {},
+        "writeStream_options": {
+            "checkpointLocation": "/Volumes/edsm/silver/utility/edsm.silver.powerPlay/_checkpoints/"
+        },
+        "business_key": ["id", "power"],
+        "surrogate_key": ["allegiance", "government", "powerState", "state"],
+        "column_map": {},
+        "data_type_map": {
+            "date": "timestamp"
+        },
+        "ingest_time_column": "derived_ingest_time"
+    }
+    """
     source_table        = settings["source_table"]
     destination_table   = settings["destination_table"]
     column_map          = settings.get("column_map", {})
