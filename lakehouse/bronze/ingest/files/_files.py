@@ -119,6 +119,43 @@ def from_pdf(spark, settings):
     )
 
 
+def from_sftp(spark, settings):
+    import paramiko
+    import fnmatch
+    import io
+    from datetime import datetime
+    from pathlib import Path
+
+    opts                    = settings["from_sftp_options"]
+    host                    = opts["host"]
+    port                    = opts.get("port", 22)
+    username                = opts["username"]
+    secret_scope            = opts["secret_scope"]
+    secret_key              = opts["secret_key"]
+    remote_path             = opts["remote_path"]
+    remote_filename_pattern = opts.get("remote_filename_pattern", "*")
+    landing_path            = Path(settings["readStream_path"].rstrip("/"))
+    timestamp               = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    private_key_string = dbutils.secrets.get(scope=secret_scope, key=secret_key)
+    pk = paramiko.RSAKey.from_private_key(io.StringIO(private_key_string))
+
+    transport = paramiko.Transport((host, port))
+    transport.connect(username=username, pkey=pk)
+    sftp = paramiko.SFTPClient.from_transport(transport)
+
+    for filename in sftp.listdir(remote_path):
+        if fnmatch.fnmatch(filename, remote_filename_pattern):
+            stem, suffix = Path(filename).stem, Path(filename).suffix
+            dest = landing_path / f"{stem}_{timestamp}{suffix}"
+            sftp.get(f"{remote_path.rstrip('/')}/{filename}", str(dest))
+
+    sftp.close()
+    transport.close()
+
+    from_file(spark, settings)
+
+
 def from_file(spark, settings):
     destination_table       = settings["destination_table"]
     readStream_options      = settings["readStream_options"]
