@@ -120,6 +120,47 @@ def from_pdf(spark, settings):
 
 
 def from_sftp(spark, settings):
+    """
+    Connect to an SFTP server using RSA key auth (from Databricks secrets), download
+    files matching a pattern to the landing volume with timestamp-based naming, then
+    ingest via from_file.
+
+    Reads function-specific options from settings["from_sftp_options"].
+    Required keys: host, username, secret_scope, secret_key, remote_path.
+    Optional keys: port (default 22), remote_filename_pattern (default "*").
+
+    Example settings:
+    {
+        "function_path": "lakehouse.bronze.ingest.files.from_sftp",
+        "from_sftp_options": {
+            "host": "sftp.example.com",
+            "port": 22,
+            "username": "svc_account",
+            "secret_scope": "my-scope",
+            "secret_key": "sftp-rsa-key",
+            "remote_path": "/outbound/data/",
+            "remote_filename_pattern": "export_*.csv"
+        },
+        "source_type": "cloudFiles",
+        "destination_table": "edsm.bronze.sftp_export",
+        "readStream_path": "/Volumes/edsm/bronze/landing/",
+        "readStream_options": {
+            "cloudFiles.format": "csv",
+            "header": "true",
+            "cloudFiles.inferSchema": "true",
+            "cloudFiles.schemaLocation": "/Volumes/edsm/bronze/utility/edsm.bronze.sftp_export/_schema/",
+            "cloudFiles.schemaEvolutionMode": "addNewColumns",
+            "pathGlobFilter": "export_*.csv"
+        },
+        "writeStream_format": "delta",
+        "writeStream_options": {
+            "mergeSchema": "true",
+            "checkpointLocation": "/Volumes/edsm/bronze/utility/edsm.bronze.sftp_export/_checkpoints/"
+        },
+        "writeStream_outputMode": "append",
+        "trigger_type": {"availableNow": true}
+    }
+    """
     import paramiko
     import fnmatch
     import io
@@ -157,6 +198,38 @@ def from_sftp(spark, settings):
 
 
 def from_file(spark, settings):
+    """
+    Read a streaming file source, add ingest_time and source_metadata columns,
+    optionally derive ingest time from the file path, and write to a bronze Delta table.
+    The destination_table must be in the bronze schema.
+
+    Example settings:
+    {
+        "function_path": "lakehouse.bronze.ingest.files.from_file",
+        "source_type": "cloudFiles",
+        "destination_table": "edsm.bronze.powerPlay",
+        "readStream_path": "/Volumes/edsm/bronze/landing/",
+        "readStream_options": {
+            "cloudFiles.format": "json",
+            "cloudFiles.inferSchema": "true",
+            "cloudFiles.schemaLocation": "/Volumes/edsm/bronze/utility/edsm.bronze.powerPlay/_schema/",
+            "cloudFiles.schemaEvolutionMode": "addNewColumns",
+            "badRecordsPath": "/Volumes/edsm/bronze/utility/edsm.bronze.powerPlay/_badRecords/",
+            "pathGlobFilter": "powerPlay*.json"
+        },
+        "writeStream_format": "delta",
+        "writeStream_options": {
+            "mergeSchema": "true",
+            "checkpointLocation": "/Volumes/edsm/bronze/utility/edsm.bronze.powerPlay/_checkpoints/"
+        },
+        "writeStream_outputMode": "append",
+        "trigger_type": {"availableNow": true},
+        "derived": {
+            "add_ingest_time_from_path": "true",
+            "file_path_datetime_regex": "(\\d{8}_\\d{6})\\.json"
+        }
+    }
+    """
     destination_table       = settings["destination_table"]
     readStream_options      = settings["readStream_options"]
     writeStream_options     = settings["writeStream_options"]

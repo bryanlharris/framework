@@ -3,6 +3,10 @@ from pyspark.sql.functions import to_date, to_timestamp, when
 
 
 def rename_columns(df, column_map):
+    """
+    Rename DataFrame columns according to column_map (old_name -> new_name).
+    Columns not present in the map are preserved unchanged.
+    """
     renamed_columns = [col(old).alias(new) for old, new in column_map.items()]
 
     for column_name in df.columns:
@@ -15,6 +19,12 @@ def rename_columns(df, column_map):
 
 
 def cast_data_types(df, data_type_map):
+    """
+    Cast DataFrame columns to the types specified in data_type_map. Handles numeric
+    types (strips leading $ and , characters), dates in M/d/yyyy, d-M-yyyy, and
+    yyyy-M-d formats, timestamps, and plain Spark casts. Columns not in the map are
+    preserved unchanged.
+    """
     selected_columns = []
 
     for column_name, data_type in data_type_map.items():

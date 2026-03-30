@@ -4,6 +4,33 @@ from lakehouse.silver.transform.columns import cast_data_types, rename_columns
 
 
 def with_delete(spark, settings):
+    """
+    Read streaming data from a bronze table, apply column renames, type casts,
+    metadata flattening, and row checksums, then perform a full-sync merge into a
+    silver Delta table via SQL MERGE, handling INSERT, UPDATE, and DELETE.
+
+    Example settings:
+    {
+        "function_path": "lakehouse.silver.ingest.from_table.merge.with_delete",
+        "source_table": "edsm.bronze.systems",
+        "destination_table": "edsm.silver.systems",
+        "readStream_options": {},
+        "writeStream_options": {
+            "checkpointLocation": "/Volumes/edsm/silver/utility/edsm.silver.systems/_checkpoints/"
+        },
+        "column_map": {
+            "id64": "system_id"
+        },
+        "data_type_map": {
+            "system_id": "long",
+            "date": "timestamp"
+        },
+        "pk": {
+            "name": "primary_key",
+            "columns": ["system_id"]
+        }
+    }
+    """
     source_table        = settings["source_table"]
     destination_table   = settings["destination_table"]
     column_map          = settings["column_map"]

@@ -3,6 +3,11 @@ from pyspark.sql.types import StructType, ArrayType, MapType
 
 
 def make_null_safe(field_type, col_expr):
+    """
+    Recursively wrap a column expression so that null values produce stable output
+    for SHA-256 checksum hashing. Handles StructType and ArrayType; raises TypeError
+    for MapType (unstable key ordering in to_json).
+    """
     if isinstance(field_type, MapType):
         raise TypeError(
             "MapType columns are not supported for checksum hashing "
@@ -25,6 +30,11 @@ def make_null_safe(field_type, col_expr):
 
 
 def add_row_sha_checksum(df, col_name='row_checksum', columns=None):
+    """
+    Add a SHA-256 checksum column to a DataFrame computed over the specified columns,
+    or all columns if columns is None. Uses null-safe JSON serialization for stable
+    hashing across schema changes.
+    """
     if columns is not None:
         cols = [c.strip() for c in columns.split(",")] if isinstance(columns, str) else list(columns)
     else:
@@ -41,6 +51,11 @@ def add_row_sha_checksum(df, col_name='row_checksum', columns=None):
 
 
 def flatten_source_metadata(df):
+    """
+    Flatten the nested source_metadata struct by extracting file_path and
+    file_modification_time as top-level columns, and add an ingest_time column
+    with the current timestamp.
+    """
     return df.select(
         "*",
         col("source_metadata.file_path").alias("file_path"),
@@ -52,6 +67,11 @@ def flatten_source_metadata(df):
 
 
 def add_scd2_columns(df, ingest_time_column):
+    """
+    Add SCD2 tracking columns to a DataFrame: created_on, deleted_on (NULL),
+    current_flag ('Yes'), valid_from, and valid_to ('9999-12-31 23:59:59'),
+    all seeded from the specified ingest_time_column.
+    """
     from pyspark.sql.functions import col, lit
     return (
         df
