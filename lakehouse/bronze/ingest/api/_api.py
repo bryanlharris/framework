@@ -22,32 +22,7 @@ def from_rest_api(spark, settings):
                 "api_key": "<YOUR_API_KEY>",
                 "file_type": "json"
             }
-        },
-        "source_type": "cloudFiles",
-        "destination_table": "demo.bronze.fedfunds",
-        "readStream_path": "/Volumes/demo/bronze/landing/",
-        "readStream_options": {
-            "cloudFiles.format": "json",
-            "cloudFiles.inferColumnTypes": "false",
-            "cloudFiles.inferSchema": "true",
-            "cloudFiles.schemaLocation": "/Volumes/demo/bronze/utility/demo.bronze.fedfunds/_schema/",
-            "cloudFiles.schemaEvolutionMode": "addNewColumns",
-            "cloudFiles.useNotifications": "false",
-            "cloudFiles.useIncrementalListing": "auto",
-            "cloudFiles.validateOptions": "true",
-            "badRecordsPath": "/Volumes/demo/bronze/utility/demo.bronze.fedfunds/_badRecords/",
-            "multiLine": "false",
-            "columnNameOfCorruptRecord": "corrupt_record",
-            "pathGlobFilter": "observations*.json"
-        },
-        "writeStream_format": "delta",
-        "writeStream_options": {
-            "mergeSchema": "true",
-            "checkpointLocation": "/Volumes/demo/bronze/utility/demo.bronze.fedfunds/_checkpoints/",
-            "delta.columnMapping.mode": "name"
-        },
-        "writeStream_outputMode": "append",
-        "trigger_type": { "availableNow": true }
+        }
     }
     """
     import requests
