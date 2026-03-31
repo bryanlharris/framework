@@ -18,31 +18,7 @@ def from_url(spark, settings):
         "from_url_options": {
             "download_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=FEDFUNDS",
             "filename": "fredgraph_FEDFUNDS.csv"
-        },
-        "source_type": "cloudFiles",
-        "destination_table": "demo.bronze.fedfunds",
-        "readStream_path": "/Volumes/demo/bronze/landing/",
-        "readStream_options": {
-            "cloudFiles.format": "csv",
-            "header": "true",
-            "cloudFiles.inferColumnTypes": "false",
-            "cloudFiles.inferSchema": "true",
-            "cloudFiles.schemaLocation": "/Volumes/demo/bronze/utility/demo.bronze.fedfunds/_schema/",
-            "cloudFiles.schemaEvolutionMode": "addNewColumns",
-            "cloudFiles.useNotifications": "false",
-            "cloudFiles.useIncrementalListing": "auto",
-            "cloudFiles.validateOptions": "true",
-            "badRecordsPath": "/Volumes/demo/bronze/utility/demo.bronze.fedfunds/_badRecords/",
-            "pathGlobFilter": "fredgraph_FEDFUNDS*.csv"
-        },
-        "writeStream_format": "delta",
-        "writeStream_options": {
-            "mergeSchema": "true",
-            "checkpointLocation": "/Volumes/demo/bronze/utility/demo.bronze.fedfunds/_checkpoints/",
-            "delta.columnMapping.mode": "name"
-        },
-        "writeStream_outputMode": "append",
-        "trigger_type": { "availableNow": true }
+        }
     }
     """
     import requests
@@ -84,32 +60,7 @@ def from_inbox(spark, settings):
             "inbox_path": "/Volumes/edsm/bronze/inbox/",
             "filename_pattern": "systemsWithCoordinates7days.json",
             "landing_subdirectory": "/Volumes/edsm/bronze/landing/"
-        },
-        "source_type": "cloudFiles",
-        "destination_table": "edsm.bronze.systemsWithCoordinates7days",
-        "readStream_path": "/Volumes/edsm/bronze/landing/",
-        "readStream_options": {
-            "cloudFiles.format": "json",
-            "cloudFiles.inferColumnTypes": "false",
-            "cloudFiles.inferSchema": "true",
-            "cloudFiles.schemaLocation": "/Volumes/edsm/bronze/utility/edsm.bronze.systemsWithCoordinates7days/_schema/",
-            "cloudFiles.schemaEvolutionMode": "addNewColumns",
-            "cloudFiles.useNotifications": "false",
-            "cloudFiles.useIncrementalListing": "auto",
-            "cloudFiles.validateOptions": "true",
-            "badRecordsPath": "/Volumes/edsm/bronze/utility/edsm.bronze.systemsWithCoordinates7days/_badRecords/",
-            "multiLine": "false",
-            "columnNameOfCorruptRecord": "corrupt_record",
-            "pathGlobFilter": "systemsWithCoordinates7days*.json"
-        },
-        "writeStream_format": "delta",
-        "writeStream_options": {
-            "mergeSchema": "true",
-            "checkpointLocation": "/Volumes/edsm/bronze/utility/edsm.bronze.systemsWithCoordinates7days/_checkpoints/",
-            "delta.columnMapping.mode": "name"
-        },
-        "writeStream_outputMode": "append",
-        "trigger_type": { "availableNow": true }
+        }
     }
     """
     import shutil
@@ -141,13 +92,8 @@ def from_pdf(spark, settings):
     Example settings:
     {
         "function_path": "lakehouse.bronze.ingest.files.from_pdf",
-        "destination_table": "edsm.bronze.my_pdfs",
         "input_path": "/Volumes/edsm/bronze/landing/",
-        "date_pattern": "(\\d{8})",
-        "write_options": {
-            "mergeSchema": "true"
-        },
-        "write_mode": "append"
+        "date_pattern": "(\\d{8})"
     }
     """
     from lakehouse.core.transform.metadata import add_timestamp_column
@@ -208,25 +154,7 @@ def from_sftp(spark, settings):
             "secret_key": "sftp-rsa-key",
             "remote_path": "/outbound/data/",
             "remote_filename_pattern": "export_*.csv"
-        },
-        "source_type": "cloudFiles",
-        "destination_table": "edsm.bronze.sftp_export",
-        "readStream_path": "/Volumes/edsm/bronze/landing/",
-        "readStream_options": {
-            "cloudFiles.format": "csv",
-            "header": "true",
-            "cloudFiles.inferSchema": "true",
-            "cloudFiles.schemaLocation": "/Volumes/edsm/bronze/utility/edsm.bronze.sftp_export/_schema/",
-            "cloudFiles.schemaEvolutionMode": "addNewColumns",
-            "pathGlobFilter": "export_*.csv"
-        },
-        "writeStream_format": "delta",
-        "writeStream_options": {
-            "mergeSchema": "true",
-            "checkpointLocation": "/Volumes/edsm/bronze/utility/edsm.bronze.sftp_export/_checkpoints/"
-        },
-        "writeStream_outputMode": "append",
-        "trigger_type": {"availableNow": true}
+        }
     }
     """
     import paramiko
@@ -274,24 +202,6 @@ def from_file(spark, settings):
     Example settings:
     {
         "function_path": "lakehouse.bronze.ingest.files.from_file",
-        "source_type": "cloudFiles",
-        "destination_table": "edsm.bronze.powerPlay",
-        "readStream_path": "/Volumes/edsm/bronze/landing/",
-        "readStream_options": {
-            "cloudFiles.format": "json",
-            "cloudFiles.inferSchema": "true",
-            "cloudFiles.schemaLocation": "/Volumes/edsm/bronze/utility/edsm.bronze.powerPlay/_schema/",
-            "cloudFiles.schemaEvolutionMode": "addNewColumns",
-            "badRecordsPath": "/Volumes/edsm/bronze/utility/edsm.bronze.powerPlay/_badRecords/",
-            "pathGlobFilter": "powerPlay*.json"
-        },
-        "writeStream_format": "delta",
-        "writeStream_options": {
-            "mergeSchema": "true",
-            "checkpointLocation": "/Volumes/edsm/bronze/utility/edsm.bronze.powerPlay/_checkpoints/"
-        },
-        "writeStream_outputMode": "append",
-        "trigger_type": {"availableNow": true},
         "derived": {
             "add_ingest_time_from_path": "true",
             "file_path_datetime_regex": "(\\d{8}_\\d{6})\\.json"
