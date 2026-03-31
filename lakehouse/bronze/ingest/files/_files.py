@@ -11,6 +11,39 @@ def from_url(spark, settings):
     Reads function-specific options from settings["from_url_options"].
     Required keys: download_url.
     Optional keys: filename (base name; timestamp is always appended before the extension).
+
+    Example settings:
+    {
+        "function_path": "lakehouse.bronze.ingest.files.from_url",
+        "from_url_options": {
+            "download_url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=FEDFUNDS",
+            "filename": "fredgraph_FEDFUNDS.csv"
+        },
+        "source_type": "cloudFiles",
+        "destination_table": "demo.bronze.fedfunds",
+        "readStream_path": "/Volumes/demo/bronze/landing/",
+        "readStream_options": {
+            "cloudFiles.format": "csv",
+            "header": "true",
+            "cloudFiles.inferColumnTypes": "false",
+            "cloudFiles.inferSchema": "true",
+            "cloudFiles.schemaLocation": "/Volumes/demo/bronze/utility/demo.bronze.fedfunds/_schema/",
+            "cloudFiles.schemaEvolutionMode": "addNewColumns",
+            "cloudFiles.useNotifications": "false",
+            "cloudFiles.useIncrementalListing": "auto",
+            "cloudFiles.validateOptions": "true",
+            "badRecordsPath": "/Volumes/demo/bronze/utility/demo.bronze.fedfunds/_badRecords/",
+            "pathGlobFilter": "fredgraph_FEDFUNDS*.csv"
+        },
+        "writeStream_format": "delta",
+        "writeStream_options": {
+            "mergeSchema": "true",
+            "checkpointLocation": "/Volumes/demo/bronze/utility/demo.bronze.fedfunds/_checkpoints/",
+            "delta.columnMapping.mode": "name"
+        },
+        "writeStream_outputMode": "append",
+        "trigger_type": { "availableNow": true }
+    }
     """
     import requests
     from datetime import datetime
@@ -43,6 +76,41 @@ def from_inbox(spark, settings):
 
     Reads function-specific options from settings["from_inbox_options"].
     Required keys: inbox_path, filename_pattern, landing_subdirectory.
+
+    Example settings:
+    {
+        "function_path": "lakehouse.bronze.ingest.files.from_inbox",
+        "from_inbox_options": {
+            "inbox_path": "/Volumes/edsm/bronze/inbox/",
+            "filename_pattern": "systemsWithCoordinates7days.json",
+            "landing_subdirectory": "/Volumes/edsm/bronze/landing/"
+        },
+        "source_type": "cloudFiles",
+        "destination_table": "edsm.bronze.systemsWithCoordinates7days",
+        "readStream_path": "/Volumes/edsm/bronze/landing/",
+        "readStream_options": {
+            "cloudFiles.format": "json",
+            "cloudFiles.inferColumnTypes": "false",
+            "cloudFiles.inferSchema": "true",
+            "cloudFiles.schemaLocation": "/Volumes/edsm/bronze/utility/edsm.bronze.systemsWithCoordinates7days/_schema/",
+            "cloudFiles.schemaEvolutionMode": "addNewColumns",
+            "cloudFiles.useNotifications": "false",
+            "cloudFiles.useIncrementalListing": "auto",
+            "cloudFiles.validateOptions": "true",
+            "badRecordsPath": "/Volumes/edsm/bronze/utility/edsm.bronze.systemsWithCoordinates7days/_badRecords/",
+            "multiLine": "false",
+            "columnNameOfCorruptRecord": "corrupt_record",
+            "pathGlobFilter": "systemsWithCoordinates7days*.json"
+        },
+        "writeStream_format": "delta",
+        "writeStream_options": {
+            "mergeSchema": "true",
+            "checkpointLocation": "/Volumes/edsm/bronze/utility/edsm.bronze.systemsWithCoordinates7days/_checkpoints/",
+            "delta.columnMapping.mode": "name"
+        },
+        "writeStream_outputMode": "append",
+        "trigger_type": { "availableNow": true }
+    }
     """
     import shutil
     from datetime import datetime
