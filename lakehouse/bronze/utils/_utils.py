@@ -5,7 +5,7 @@ def get_latest_file_path(volume_path: str, date_pattern: str) -> str | None:
     """Return the latest filename in ``volume_path`` that matches ``date_pattern``.
 
     The function expects ``date_pattern`` to contain a capture group whose value
-    sorts in the same order as recency, such as ``YYYYMMDD``.
+    sorts in the same order as recency, such as ``YYYYMMDD_HHmmss``.
     """
     files = dbutils.fs.ls(volume_path)
 
