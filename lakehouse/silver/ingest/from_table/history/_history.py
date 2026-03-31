@@ -13,12 +13,6 @@ def scd2(spark, settings):
     Example settings:
     {
         "function_path": "lakehouse.silver.ingest.from_table.history.scd2",
-        "source_table": "edsm.bronze.powerPlay",
-        "destination_table": "edsm.silver.powerPlay",
-        "readStream_options": {},
-        "writeStream_options": {
-            "checkpointLocation": "/Volumes/edsm/silver/utility/edsm.silver.powerPlay/_checkpoints/"
-        },
         "business_key": ["id", "power"],
         "surrogate_key": ["allegiance", "government", "powerState", "state"],
         "column_map": {},

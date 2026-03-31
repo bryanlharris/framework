@@ -12,12 +12,6 @@ def without_delete(spark, settings):
     Example settings:
     {
         "function_path": "lakehouse.silver.ingest.from_table.upsert.without_delete",
-        "source_table": "demo.bronze.fedfunds",
-        "destination_table": "demo.silver.fedfunds",
-        "readStream_options": {},
-        "writeStream_options": {
-            "checkpointLocation": "/Volumes/demo/silver/utility/demo.silver.fedfunds/_checkpoints/"
-        },
         "column_map": {},
         "data_type_map": {
             "date": "timestamp",
@@ -72,12 +66,6 @@ def with_delete(spark, settings):
     Example settings:
     {
         "function_path": "lakehouse.silver.ingest.from_table.upsert.with_delete",
-        "source_table": "edsm.bronze.stations",
-        "destination_table": "edsm.silver.stations",
-        "readStream_options": {},
-        "writeStream_options": {
-            "checkpointLocation": "/Volumes/edsm/silver/utility/edsm.silver.stations/_checkpoints/"
-        },
         "column_map": {
             "marketId": "market_id"
         },

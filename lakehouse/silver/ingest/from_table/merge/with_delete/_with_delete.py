@@ -12,12 +12,6 @@ def with_delete(spark, settings):
     Example settings:
     {
         "function_path": "lakehouse.silver.ingest.from_table.merge.with_delete",
-        "source_table": "edsm.bronze.systems",
-        "destination_table": "edsm.silver.systems",
-        "readStream_options": {},
-        "writeStream_options": {
-            "checkpointLocation": "/Volumes/edsm/silver/utility/edsm.silver.systems/_checkpoints/"
-        },
         "column_map": {
             "id64": "system_id"
         },
