@@ -93,7 +93,7 @@ def from_pdf(spark, settings):
     {
         "function_path": "lakehouse.bronze.ingest.files.from_pdf",
         "input_path": "/Volumes/edsm/bronze/landing/",
-        "date_pattern": "(\\d{8})"
+        "date_pattern": "(\\d{8}_\\d{6})"
     }
     """
     from lakehouse.core.transform.metadata import add_timestamp_column
