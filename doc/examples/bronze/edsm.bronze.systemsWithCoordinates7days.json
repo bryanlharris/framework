@@ -1,6 +1,4 @@
 {
-    "_formats_doc": "https://docs.databricks.com/en/query/formats/index.html",
-    "_cloudFiles_doc": "https://docs.databricks.com/en/ingestion/cloud-object-storage/auto-loader/options.html",
     "function_path": "lakehouse.bronze.ingest.files.from_inbox",
     "from_inbox_options": {
         "inbox_path": "/Volumes/edsm/bronze/inbox/",
