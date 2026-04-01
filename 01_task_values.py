@@ -1,7 +1,16 @@
 # Databricks notebook source
 # MAGIC %md
 # MAGIC
-# MAGIC Task values
+# MAGIC ### Task values
+# MAGIC
+# MAGIC Place JSON settings files in `settings/bronze/` or `settings/silver/` and their settings
+# MAGIC will be passed to the correct task. If you rename a file to something other than `.json`
+# MAGIC it will be disabled.
+# MAGIC
+# MAGIC - Convention: `<catalog>.<schema>.<table>.json`<br>
+# MAGIC - Example: `demo.bronze.fedfunds.json`
+# MAGIC
+# MAGIC Look in `doc/examples` for examples.
 
 # COMMAND ----------
 
