@@ -24,12 +24,30 @@ file_version_table_name = f"{catalog_name}.bronze.file_version_history"
 
 from pyspark.sql.functions import col, lit
 from lakehouse.core.utils import ensure_table_exists
+from datetime import datetime, timedelta, timezone
+import re
 
 hist = spark.sql(f"describe history {full_table_name}")
+
+# Get actual deletedFileRetentionDuration from table properties
+tbl_props = {row["key"]: row["value"] for row in spark.sql(f"SHOW TBLPROPERTIES {full_table_name}").collect()}
+retention_str = tbl_props.get("delta.deletedFileRetentionDuration", "interval 168 hours")
+
+# Parse "interval N unit" — convert to hours
+match = re.match(r"interval\s+(\d+)\s+(\w+)", retention_str)
+if match:
+    value, unit = int(match.group(1)), match.group(2).lower()
+    unit_to_hours = {"hours": 1, "hour": 1, "days": 24, "day": 24, "weeks": 168, "week": 168}
+    retention_hours = value * unit_to_hours.get(unit, 24)
+else:
+    retention_hours = 168  # fallback to Delta default
+
+retention_cutoff = datetime.now(timezone.utc) - timedelta(hours=retention_hours)
 
 # Get table history
 update_or_merge_version_rows = (
     hist.filter((col("operation") == "STREAMING UPDATE") | (col("operation") == "MERGE"))
+    .filter(col("timestamp") >= retention_cutoff)
     .select("version")
     .distinct()
     .collect()
