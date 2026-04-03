@@ -55,14 +55,14 @@ resources:
               min_retry_interval_millis: 900000
               disable_auto_optimization: true
               environment_key: Default
-        - task_key: silver_dependents_loop
+        - task_key: silver_dep_loop
           depends_on:
             - task_key: silver_loop
           for_each_task:
-            inputs: "{{tasks.task_values.values.silver_dependents}}"
+            inputs: "{{tasks.task_values.values.silver_dep}}"
             concurrency: 1
             task:
-              task_key: silver_dependents_iteration
+              task_key: silver_dep_iteration
               notebook_task:
                 notebook_path: 05_ingest
                 base_parameters:
@@ -73,7 +73,7 @@ resources:
               environment_key: Default
         - task_key: file_version_history_loop
           depends_on:
-            - task_key: silver_dependents_loop
+            - task_key: silver_dep_loop
           for_each_task:
             inputs: "{{tasks.task_values.values.file_version_history}}"
             concurrency: 1
@@ -89,7 +89,7 @@ resources:
               environment_key: Default
         - task_key: transaction_history_loop
           depends_on:
-            - task_key: silver_dependents_loop
+            - task_key: silver_dep_loop
           for_each_task:
             inputs: "{{tasks.task_values.values.transaction_history}}"
             concurrency: 1
