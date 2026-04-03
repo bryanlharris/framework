@@ -9,4 +9,6 @@ SILVER
 lakehouse.silver.ingest.from_table.append
 lakehouse.silver.ingest.from_table.dedup
 lakehouse.silver.ingest.from_table.latest
-lakehouse.silver.ingest.join.left
+
+GOLD
+lakehouse.gold.ingest.join.left
