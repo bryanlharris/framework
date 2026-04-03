@@ -1,6 +1,6 @@
 {
-    "function_path": "lakehouse.bronze.ingest.api.from_rest_api",
-    "from_rest_api_options": {
+    "function_path": "lakehouse.bronze.ingest.api.from_rest",
+    "from_rest_options": {
         "url": "https://api.stlouisfed.org/fred/series/observations",
         "params": {
             "series_id": "FEDFUNDS",

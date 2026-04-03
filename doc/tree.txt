@@ -20,7 +20,7 @@ lakehouse/
 │   │   │   ├── from_inbox()
 │   │   │   └── from_pdf()
 │   │   └── api/
-│   │       └── from_rest_api()
+│   │       └── from_rest()
 │   ├── transform/
 │   │   ├── file/
 │   │   │   └── add_source_metadata()

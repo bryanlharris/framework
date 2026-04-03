@@ -4,7 +4,7 @@ from lakehouse.core.transform.metadata import add_timestamp_column
 from lakehouse.bronze.transform.file import add_source_metadata
 
 
-def from_rest_api(spark, settings):
+def from_rest(spark, settings):
     """
     Call a REST API endpoint, write response as a JSON file to the landing
     volume, then ingest via from_file.
@@ -13,8 +13,8 @@ def from_rest_api(spark, settings):
 
     Example settings:
     {
-        "function_path": "lakehouse.bronze.ingest.api.from_rest_api",
-        "from_rest_api_options": {
+        "function_path": "lakehouse.bronze.ingest.api.from_rest",
+        "from_rest_options": {
             "url": "https://api.stlouisfed.org/fred/series/observations",
             "params": {
                 "series_id": "FEDFUNDS",
@@ -29,7 +29,7 @@ def from_rest_api(spark, settings):
     from pathlib import Path
     from lakehouse.bronze.ingest.files import from_file
 
-    opts         = settings["from_rest_api_options"]
+    opts         = settings["from_rest_options"]
     url          = opts["url"]
     params       = opts["params"]
     landing_path = settings["readStream_path"].rstrip("/")
