@@ -11,7 +11,7 @@ def read_json_and_decode(workspace_path: str | Path) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def get_table_schema(table_name, columns_to_drop=[]):
+def get_table_schema(spark, table_name, columns_to_drop=[]):
     """
     Read a table with Spark and return its schema, optionally dropping columns first.
     """
