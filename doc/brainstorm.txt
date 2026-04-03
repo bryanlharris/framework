@@ -11,4 +11,4 @@ SILVER
 lakehouse.silver.ingest.from_table.from_table.append
 lakehouse.silver.ingest.from_table.from_table.dedup
 lakehouse.silver.ingest.from_table.from_table.latest
-lakehouse.silver.ingest.merge.from_multiple_sources
+lakehouse.silver.ingest.join.left
