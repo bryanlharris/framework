@@ -13,9 +13,9 @@ lakehouse.bronze.ingest.api.from_webhook
 lakehouse.bronze.ingest.transfer.from_sharepoint
 
 SILVER
-lakehouse.silver.ingest.from_table.from_table_append
-lakehouse.silver.ingest.from_table.from_table_dedup
-lakehouse.silver.ingest.from_table.from_table_latest
+lakehouse.silver.ingest.from_table.from_table.append
+lakehouse.silver.ingest.from_table.from_table.dedup
+lakehouse.silver.ingest.from_table.from_table.latest
 lakehouse.silver.ingest.cdc.from_jdbc_cdc
 lakehouse.silver.ingest.cdc.from_delta_cdf
 lakehouse.silver.ingest.cdc.from_mongodb_changestream
