@@ -3,12 +3,10 @@ Some other ingest function ideas & how to organize.
 
 BRONZE
 lakehouse.bronze.ingest.cloud.from_s3
-lakehouse.bronze.ingest.cloud.from_adls
-lakehouse.bronze.ingest.cloud.from_gcs
 lakehouse.bronze.ingest.cloud.from_sharepoint
 
 SILVER
-lakehouse.silver.ingest.from_table.from_table.append
-lakehouse.silver.ingest.from_table.from_table.dedup
-lakehouse.silver.ingest.from_table.from_table.latest
+lakehouse.silver.ingest.from_table.append
+lakehouse.silver.ingest.from_table.dedup
+lakehouse.silver.ingest.from_table.latest
 lakehouse.silver.ingest.join.left
