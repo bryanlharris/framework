@@ -5,20 +5,10 @@ BRONZE
 lakehouse.bronze.ingest.cloud.from_s3
 lakehouse.bronze.ingest.cloud.from_adls
 lakehouse.bronze.ingest.cloud.from_gcs
-lakehouse.bronze.ingest.streaming.from_kafka
-lakehouse.bronze.ingest.streaming.from_eventhub
-lakehouse.bronze.ingest.streaming.from_kinesis
-lakehouse.bronze.ingest.api.from_graphql
-lakehouse.bronze.ingest.api.from_webhook
-lakehouse.bronze.ingest.transfer.from_sharepoint
+lakehouse.bronze.ingest.cloud.from_sharepoint
 
 SILVER
 lakehouse.silver.ingest.from_table.from_table.append
 lakehouse.silver.ingest.from_table.from_table.dedup
 lakehouse.silver.ingest.from_table.from_table.latest
-lakehouse.silver.ingest.cdc.from_jdbc_cdc
-lakehouse.silver.ingest.cdc.from_delta_cdf
-lakehouse.silver.ingest.cdc.from_mongodb_changestream
-lakehouse.silver.ingest.cdc.from_cosmosdb_changefeed
-lakehouse.silver.ingest.api.from_api_incremental
 lakehouse.silver.ingest.merge.from_multiple_sources
