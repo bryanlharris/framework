@@ -5,4 +5,5 @@ No compressed files of any kind allowed anywhere.
 2. file_version_history_loop and transaction_history_loop
 require concurrency 1 because both write to a shared
 Delta table and parallel iterations will cause Databricks
-write conflicts.
+write conflicts. At least, I kept having issues unless
+I did that.
