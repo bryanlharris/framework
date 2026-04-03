@@ -49,7 +49,6 @@ def from_url(spark, settings):
 def from_inbox(spark, settings):
     """Move files from inbox volume to landing zone with timestamp-based naming, then ingest.
 
-    Reads function-specific options from settings["from_inbox_options"].
     Required keys: inbox_path, filename_pattern, landing_subdirectory.
 
     Example settings:
