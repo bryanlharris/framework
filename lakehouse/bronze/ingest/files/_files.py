@@ -8,7 +8,6 @@ def from_url(spark, settings):
     """
     Download file from URL, write to landing volume, ingest via from_file.
 
-    Reads function-specific options from settings["from_url_options"].
     Required keys: download_url.
     Optional keys: filename (base name; timestamp is always appended before the extension).
 
