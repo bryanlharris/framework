@@ -139,9 +139,8 @@ def from_sftp(spark, settings):
     files matching a pattern to the landing volume with timestamp-based naming, then
     ingest via from_file.
 
-    Reads function-specific options from settings["from_sftp_options"].
-    Required keys: host, username, secret_scope, secret_key, remote_path.
-    Optional keys: port (default 22), remote_filename_pattern (default "*").
+    Required: host, username, secret_scope, secret_key, remote_path.
+    Optional: port (default 22), remote_filename_pattern (default "*").
 
     Example settings:
     {
