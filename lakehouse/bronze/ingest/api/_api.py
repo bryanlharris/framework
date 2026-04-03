@@ -9,7 +9,6 @@ def from_rest_api(spark, settings):
     Call a REST API endpoint, write response as a JSON file to the landing
     volume, then ingest via from_file.
 
-    Reads function-specific options from settings["from_rest_api_options"].
     Required keys: url, params.
 
     Example settings:
