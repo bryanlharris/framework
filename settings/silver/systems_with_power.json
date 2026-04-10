@@ -5,7 +5,5 @@
     "join_keys": ["id"],
     "destination_table": "edsm.silver.systems_with_power",
     "write_mode": "overwrite",
-    "write_options": {
-        "mergeSchema": "true"
-    }
+    "write_options": {}
 }
