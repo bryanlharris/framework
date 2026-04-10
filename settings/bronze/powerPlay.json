@@ -4,7 +4,6 @@
     "destination_table": "edsm.bronze.powerPlay",
     "readStream_path": "/Volumes/edsm/bronze/landing/",
     "readStream_options": {
-        "cloudFiles.includeExistingFiles": "false",
         "modifiedAfter": "2026-04-10T18:04:49.000Z",
         "cloudFiles.format": "json",
         "cloudFiles.inferColumnTypes": "false",
