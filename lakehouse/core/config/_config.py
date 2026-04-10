@@ -73,7 +73,14 @@ def scan_settings_folder(color: str, dependents: bool | None = None) -> list[dic
                 try:
                     data = json.loads(path.read_text(encoding="utf-8"))
                     source = data.get("source_table", "")
-                    dep_map[str(path)] = source if _is_silver_table(source) else None
+                    depends_on = data.get("depends_on", [])
+                    silver_deps = [t for t in depends_on if _is_silver_table(t)]
+                    if _is_silver_table(source):
+                        dep_map[str(path)] = source
+                    elif silver_deps:
+                        dep_map[str(path)] = silver_deps[0]
+                    else:
+                        dep_map[str(path)] = None
                 except Exception:
                     dep_map[str(path)] = None
 

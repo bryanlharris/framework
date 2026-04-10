@@ -1,9 +1,8 @@
 {
-    "function_path": "lakehouse.silver.ingest.join.left",
-    "left_table": "edsm.bronze.systemsWithCoordinates7days",
-    "right_table": "edsm.bronze.powerPlay",
-    "join_keys": ["id"],
+    "function_path": "lakehouse.silver.custom.systems_with_power",
     "destination_table": "edsm.silver.systems_with_power",
-    "write_mode": "overwrite",
-    "write_options": {}
+    "depends_on": [
+        "edsm.bronze.systemsWithCoordinates7days",
+        "edsm.bronze.powerPlay"
+    ]
 }
