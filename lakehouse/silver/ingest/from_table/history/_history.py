@@ -1,5 +1,5 @@
 from lakehouse.silver.merge import scd2UpsertByBusinessKey
-from lakehouse.silver.transform.metadata import add_row_sha_checksum, flatten_source_metadata, add_scd2_columns
+from lakehouse.silver.transform.metadata import add_row_hash, flatten_source_metadata, add_scd2_columns
 from lakehouse.silver.transform.columns import cast_data_types, rename_columns
 
 
@@ -44,7 +44,7 @@ def scd2(spark, settings):
         .transform(rename_columns, column_map)
         .transform(cast_data_types, data_type_map)
         .transform(flatten_source_metadata)
-        .transform(add_row_sha_checksum, col_name=row_hash_col, columns=surrogate_key_str)
+        .transform(add_row_hash, col_name=row_hash_col, columns=surrogate_key_str)
         .transform(add_scd2_columns, ingest_time_column)
     )
 

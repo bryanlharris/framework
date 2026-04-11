@@ -45,7 +45,7 @@ lakehouse/
     │   │   ├── rename_columns()
     │   │   └── cast_data_types()
     │   └── metadata/
-    │       ├── add_row_sha_checksum()
+    │       ├── add_row_hash()
     │       ├── flatten_source_metadata()
     │       └── add_scd2_columns()
     └── merge/

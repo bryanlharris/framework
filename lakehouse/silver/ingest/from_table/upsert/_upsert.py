@@ -1,5 +1,5 @@
 from lakehouse.silver.merge import upsertByPK, fullSyncMerge
-from lakehouse.silver.transform.metadata import add_row_sha_checksum, flatten_source_metadata
+from lakehouse.silver.transform.metadata import add_row_hash, flatten_source_metadata
 from lakehouse.silver.transform.columns import cast_data_types, rename_columns
 
 
@@ -41,7 +41,7 @@ def without_delete(spark, settings):
         .transform(rename_columns, column_map)
         .transform(cast_data_types, data_type_map)
         .transform(flatten_source_metadata)
-        .transform(add_row_sha_checksum, col_name=pk, columns=pk_columns_str)
+        .transform(add_row_hash, col_name=pk, columns=pk_columns_str)
     )
 
     (
@@ -97,7 +97,7 @@ def with_delete(spark, settings):
         .transform(rename_columns, column_map)
         .transform(cast_data_types, data_type_map)
         .transform(flatten_source_metadata)
-        .transform(add_row_sha_checksum, col_name=pk, columns=pk_columns_str)
+        .transform(add_row_hash, col_name=pk, columns=pk_columns_str)
     )
 
     (
