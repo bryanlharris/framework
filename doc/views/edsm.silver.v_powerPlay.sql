@@ -12,7 +12,6 @@ select
   name,
   power,
   powerState,
-  state,
-  ingest_time
+  state
 from
   edsm.silver.powerplay powerplay;
