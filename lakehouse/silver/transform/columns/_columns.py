@@ -7,13 +7,7 @@ def rename_columns(df, column_map):
     Rename DataFrame columns according to column_map (old_name -> new_name).
     Columns not present in the map are preserved unchanged.
     """
-    renamed_columns = [col(old).alias(new) for old, new in column_map.items()]
-
-    for column_name in df.columns:
-        if column_name not in column_map:
-            renamed_columns.append(col(column_name))
-
-    df = df.select(renamed_columns)
+    df = df.select([col(c).alias(column_map.get(c, c)) for c in df.columns])
 
     return df
 
