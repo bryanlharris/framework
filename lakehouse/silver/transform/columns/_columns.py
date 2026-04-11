@@ -6,6 +6,7 @@ def rename_columns(df, column_map):
     """
     Rename DataFrame columns according to column_map (old_name -> new_name).
     Columns not present in the map are preserved unchanged.
+    Preserves the order of the columns.
     """
     df = df.select([col(c).alias(column_map.get(c, c)) for c in df.columns])
 
