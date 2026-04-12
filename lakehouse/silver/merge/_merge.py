@@ -80,9 +80,8 @@ def scd2UpsertByBusinessKey(business_key, surrogate_key, destinationTable, inges
     When use_row_hash is True, change detection uses row_hash_col instead of comparing
     surrogate_key columns individually.
 
-    Expire + insert are performed in a single atomic MERGE using an augmented USING clause:
-    - Set A (NULL merge keys): new/changed records to insert — never matches, always INSERT
-    - Set B (real merge keys): existing current rows to expire — matches, triggers UPDATE
+    Expire and insert are performed as two sequential statements: a MERGE to expire
+    changed rows, followed by an INSERT for new or changed records.
     """
     def _do_upsert(microBatchDF, batchId):
         window = Window.partitionBy(*business_key).orderBy(col(ingest_time_column).desc())
@@ -101,44 +100,29 @@ def scd2UpsertByBusinessKey(business_key, surrogate_key, destinationTable, inges
         else:
             change_condition = " or ".join([f"t.{k} <> s.{k}" for k in surrogate_key])
 
-        # Merge key columns added to the USING source to drive MATCHED vs NOT MATCHED:
-        # NULL  → condition `t.k = staged._mk_k` is always false → WHEN NOT MATCHED INSERT
-        # real  → condition matches the existing current row       → WHEN MATCHED UPDATE
-        mk_null  = ", ".join([f"CAST(NULL AS STRING) AS _mk_{k}" for k in business_key])
-        mk_real  = ", ".join([f"t.{k} AS _mk_{k}" for k in business_key])
-        mk_match = " and ".join([f"t.{k} = staged._mk_{k}" for k in business_key])
-
-        # Set A: only include records that are new (no current row) or have changed.
-        # business_key columns are assumed non-nullable, so IS NULL reliably detects no match.
-        no_current_row = f"t.{business_key[0]} IS NULL"
-
-        insert_cols     = df.columns
-        insert_cols_str = ", ".join(insert_cols)
-        insert_vals_str = ", ".join([f"staged.{c}" for c in insert_cols])
-
         df.sparkSession.sql(f"""
             MERGE INTO {destinationTable} t
-            USING (
-                -- Set A: new/changed records to insert as the new current version
-                SELECT s.*, {mk_null}, s.{ingest_time_column} AS _src_ingest_time
-                FROM updates s
-                LEFT JOIN {destinationTable} t ON {merge_condition} AND t.current_flag = 'Yes'
-                WHERE {no_current_row} OR ({change_condition})
-                UNION ALL
-                -- Set B: existing current rows that need to be expired
-                SELECT t.*, {mk_real}, s.{ingest_time_column} AS _src_ingest_time
-                FROM {destinationTable} t
-                JOIN updates s ON {merge_condition} AND t.current_flag = 'Yes'
-                WHERE ({change_condition})
-            ) staged
-            ON {mk_match} AND t.current_flag = 'Yes'
-            WHEN MATCHED THEN
+            USING updates s
+            ON {merge_condition} AND t.current_flag = 'Yes'
+            WHEN MATCHED AND ({change_condition}) THEN
                 UPDATE SET
-                    t.deleted_on   = staged._src_ingest_time,
+                    t.deleted_on   = s.{ingest_time_column},
                     t.current_flag = 'No',
-                    t.valid_to     = staged._src_ingest_time
-            WHEN NOT MATCHED THEN
-                INSERT ({insert_cols_str})
-                VALUES ({insert_vals_str})
+                    t.valid_to     = s.{ingest_time_column}
+        """)
+
+        df.sparkSession.sql(f"""
+            INSERT INTO {destinationTable}
+            SELECT
+                s.* EXCEPT (created_on, deleted_on, current_flag, valid_from, valid_to),
+                s.{ingest_time_column}                   AS created_on,
+                NULL                                     AS deleted_on,
+                'Yes'                                    AS current_flag,
+                s.{ingest_time_column}                   AS valid_from,
+                CAST('9999-12-31 23:59:59' AS TIMESTAMP) AS valid_to
+            FROM updates s
+            LEFT JOIN {destinationTable} t
+                ON {merge_condition} AND t.current_flag = 'Yes'
+            WHERE t.{business_key[0]} IS NULL
         """)
     return _do_upsert
