@@ -29,7 +29,7 @@ def make_null_safe(field_type, col_expr):
     return col_expr
 
 
-def add_row_hash(df, col_name='row_checksum', columns=None):
+def add_row_hash(df, col_name='row_hash', columns=None):
     """
     Add a SHA-256 checksum column to a DataFrame computed over the specified columns,
     or all columns if columns is None. Uses null-safe JSON serialization for stable
