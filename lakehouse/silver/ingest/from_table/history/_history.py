@@ -1,14 +1,13 @@
 from lakehouse.silver.merge import scd2UpsertByBusinessKey
-from lakehouse.silver.transform.metadata import add_row_hash, flatten_source_metadata, add_scd2_columns
+from lakehouse.silver.transform.metadata import add_row_hash, flatten_source_metadata
 from lakehouse.silver.transform.columns import cast_data_types, rename_columns
 
 
 def scd2(spark, settings):
     """
     Read streaming data from a bronze table, apply column renames, type casts,
-    metadata flattening, row checksums, and SCD2 tracking columns, then write to
-    a silver Delta table using SCD2 merge logic (insert new/changed records,
-    expire old ones).
+    metadata flattening, and row checksums, then write to a silver Delta table
+    using SCD2 merge logic (insert new/changed records, expire old ones).
 
     Example settings:
     {
@@ -45,7 +44,6 @@ def scd2(spark, settings):
         .transform(cast_data_types, data_type_map)
         .transform(flatten_source_metadata)
         .transform(add_row_hash, col_name=row_hash_col, columns=surrogate_key_str)
-        .transform(add_scd2_columns, ingest_time_column)
     )
 
     (

@@ -3,6 +3,7 @@ from pyspark.sql.functions import col, row_number
 from pyspark.sql.window import Window
 
 from lakehouse.core.utils import create_table_if_not_exists
+from lakehouse.silver.transform.metadata import add_scd2_columns
 
 
 def fullSyncMergeSQL(mergeKeys, destinationTable):
@@ -89,6 +90,7 @@ def scd2UpsertByBusinessKey(business_key, surrogate_key, destinationTable, inges
             microBatchDF.withColumn("rn", row_number().over(window))
             .filter("rn = 1")
             .drop("rn")
+            .transform(add_scd2_columns, ingest_time_column)
         )
         create_table_if_not_exists(df.sparkSession, destinationTable, df)
         df.createOrReplaceTempView("updates")
@@ -99,6 +101,9 @@ def scd2UpsertByBusinessKey(business_key, surrogate_key, destinationTable, inges
             change_condition = f"t.{row_hash_col} <> s.{row_hash_col}"
         else:
             change_condition = " or ".join([f"t.{k} <> s.{k}" for k in surrogate_key])
+
+        col_list = ", ".join(df.columns)
+        s_cols   = ", ".join([f"s.{c}" for c in df.columns])
 
         df.sparkSession.sql(f"""
             MERGE INTO {destinationTable} t
@@ -112,14 +117,8 @@ def scd2UpsertByBusinessKey(business_key, surrogate_key, destinationTable, inges
         """)
 
         df.sparkSession.sql(f"""
-            INSERT INTO {destinationTable}
-            SELECT
-                s.* EXCEPT (created_on, deleted_on, current_flag, valid_from, valid_to),
-                s.{ingest_time_column}                   AS created_on,
-                NULL                                     AS deleted_on,
-                'Yes'                                    AS current_flag,
-                s.{ingest_time_column}                   AS valid_from,
-                CAST('9999-12-31 23:59:59' AS TIMESTAMP) AS valid_to
+            INSERT INTO {destinationTable} ({col_list})
+            SELECT {s_cols}
             FROM updates s
             LEFT JOIN {destinationTable} t
                 ON {merge_condition} AND t.current_flag = 'Yes'
