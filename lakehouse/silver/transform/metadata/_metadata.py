@@ -43,8 +43,7 @@ def add_row_hash(df, col_name='row_checksum', columns=None):
     field_map = {f.name: f.dataType for f in df.schema.fields}
 
     normalized = [
-        make_null_safe(field_map[c], col(c)).alias(c)
-        for c in cols
+        make_null_safe(field_map[c], col(c)).alias(c) for c in cols
     ]
 
     return df.withColumn(col_name, sha2(to_json(struct(*normalized)), 256))
