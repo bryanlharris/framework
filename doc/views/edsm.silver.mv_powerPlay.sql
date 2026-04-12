@@ -1,0 +1,18 @@
+DROP MATERIALIZED VIEW edsm.silver.mv_powerPlay;
+-- CREATE OR REPLACE MATERIALIZED VIEW edsm.silver.mv_powerPlay
+-- TRIGGER ON UPDATE AT MOST EVERY INTERVAL 5 HOURS
+-- AS
+-- SELECT
+--   to_date(from_utc_timestamp(valid_from, 'America/New_York')) AS valid_from,
+--   to_date(from_utc_timestamp(valid_to,   'America/New_York')) AS valid_to,
+--   date,
+--   allegiance,
+--   coords,
+--   government,
+--   id,
+--   id64,
+--   name,
+--   power,
+--   powerState,
+--   state
+-- FROM edsm.silver.powerplay powerplay;
