@@ -1,6 +1,4 @@
 from delta.tables import DeltaTable
-from pyspark.sql.functions import col, row_number
-from pyspark.sql.window import Window
 
 from lakehouse.core.utils import create_table_if_not_exists
 from lakehouse.silver.transform.metadata import add_scd2_columns
@@ -74,10 +72,9 @@ def upsertByPK(sourcePK, destinationTable, destinationPK):
 
 def scd2UpsertByBusinessKey(business_key, surrogate_key, destinationTable, ingest_time_column, use_row_hash=False, row_hash_col="row_hash"):
     """
-    Return a foreachBatch function that implements SCD2 upsert logic. Deduplicates the
-    micro-batch by business key (keeping the latest record by ingest_time_column), marks
-    changed current records as expired, and inserts new or changed records with SCD2
-    tracking columns (created_on, deleted_on, current_flag, valid_from, valid_to).
+    Return a foreachBatch function that implements SCD2 upsert logic. Marks changed
+    current records as expired and inserts new or changed records with SCD2 tracking
+    columns (created_on, deleted_on, current_flag, valid_from, valid_to).
     When use_row_hash is True, change detection uses row_hash_col instead of comparing
     surrogate_key columns individually.
 
@@ -85,13 +82,7 @@ def scd2UpsertByBusinessKey(business_key, surrogate_key, destinationTable, inges
     changed rows, followed by an INSERT for new or changed records.
     """
     def _do_upsert(microBatchDF, batchId):
-        window = Window.partitionBy(*business_key).orderBy(col(ingest_time_column).desc())
-        df = (
-            microBatchDF.withColumn("rn", row_number().over(window))
-            .filter("rn = 1")
-            .drop("rn")
-            .transform(add_scd2_columns, ingest_time_column)
-        )
+        df = microBatchDF.transform(add_scd2_columns, ingest_time_column)
         create_table_if_not_exists(df.sparkSession, destinationTable, df)
         df.createOrReplaceTempView("updates")
 
