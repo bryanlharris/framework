@@ -27,7 +27,6 @@
     "writeStream_outputMode": "append",
     "trigger_type": { "availableNow": true },
     "derived": {
-        "add_ingest_time_from_path": "true",
         "file_path_datetime_regex": "(\\d{8}_\\d{6})\\.json"
     }
 }

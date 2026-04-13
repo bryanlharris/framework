@@ -193,14 +193,19 @@ def from_sftp(spark, settings):
 def from_file(spark, settings):
     """
     Read a streaming file source, add ingest_time and source_metadata columns,
-    optionally derive ingest time from the file path, and write to a bronze Delta table.
+    derive ingest time from the file path, and write to a bronze Delta table.
     The destination_table must be in the bronze schema.
+
+    Contract: every table produced by this function will contain the following columns.
+    These names are fixed and referenced by downstream silver transforms — do not rename them.
+      - ingest_time: current timestamp at the time of ingestion
+      - source_metadata: struct containing file_path and file_modification_time
+      - derived_ingest_time: timestamp parsed from the file path using file_path_datetime_regex
 
     Example settings:
     {
         "function_path": "lakehouse.bronze.ingest.files.from_file",
         "derived": {
-            "add_ingest_time_from_path": "true",
             "file_path_datetime_regex": "(\\d{8}_\\d{6})\\.json"
         }
     }
@@ -241,9 +246,8 @@ def from_file(spark, settings):
     )
 
     derived = settings.get("derived", {})
-    if derived.get("add_ingest_time_from_path", "false").lower() == "true":
-        derived_regex = derived.get("file_path_datetime_regex", r"(\d{8}_\d{6})")
-        df = df.transform(add_ingest_time_from_path, "derived_ingest_time", derived_regex)
+    derived_regex = derived.get("file_path_datetime_regex", r"(\d{8}_\d{6})")
+    df = df.transform(add_ingest_time_from_path, "derived_ingest_time", derived_regex)
 
     query_name = destination_table
     query = (
