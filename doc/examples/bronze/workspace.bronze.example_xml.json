@@ -12,7 +12,6 @@
         "cloudFiles.schemaLocation": "/Volumes/workspace/bronze/utility/workspace.bronze.example_xml/_schema/",
         "cloudFiles.schemaEvolutionMode": "none",
         "cloudFiles.useNotifications": "false",
-        "cloudFiles.useIncrementalListing": "auto",
         "cloudFiles.validateOptions": "true",
         "badRecordsPath": "/Volumes/workspace/bronze/utility/workspace.bronze.example_xml/_badRecords/",
         "columnNameOfCorruptRecord": "corrupt_record",

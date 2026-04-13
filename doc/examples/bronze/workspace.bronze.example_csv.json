@@ -16,7 +16,6 @@
         "cloudFiles.schemaLocation": "/Volumes/workspace/bronze/utility/workspace.bronze.example_csv/_schema/",
         "cloudFiles.schemaEvolutionMode": "none",
         "cloudFiles.useNotifications": "false",
-        "cloudFiles.useIncrementalListing": "auto",
         "cloudFiles.validateOptions": "true",
         "badRecordsPath": "/Volumes/workspace/bronze/utility/workspace.bronze.example_csv/_badRecords/",
         "multiLine": "true",

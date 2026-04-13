@@ -15,7 +15,6 @@
         "cloudFiles.schemaLocation": "/Volumes/edsm/bronze/utility/edsm.bronze.systemsWithCoordinates7days/_schema/",
         "cloudFiles.schemaEvolutionMode": "addNewColumns",
         "cloudFiles.useNotifications": "false",
-        "cloudFiles.useIncrementalListing": "auto",
         "cloudFiles.validateOptions": "true",
         "badRecordsPath": "/Volumes/edsm/bronze/utility/edsm.bronze.systemsWithCoordinates7days/_badRecords/",
         "multiLine": "false",

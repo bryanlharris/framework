@@ -18,7 +18,6 @@
         "cloudFiles.schemaLocation": "/Volumes/demo/bronze/utility/demo.bronze.fedfunds/_schema/",
         "cloudFiles.schemaEvolutionMode": "addNewColumns",
         "cloudFiles.useNotifications": "false",
-        "cloudFiles.useIncrementalListing": "auto",
         "cloudFiles.validateOptions": "true",
         "badRecordsPath": "/Volumes/demo/bronze/utility/demo.bronze.fedfunds/_badRecords/",
         "multiLine": "false",
