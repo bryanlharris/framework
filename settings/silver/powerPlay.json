@@ -3,8 +3,7 @@
     "source_table": "edsm.bronze.powerPlay",
     "destination_table": "edsm.silver.powerPlay",
     "readStream_options": {
-        "ignoreDeletes": "true",
-        "startingVersion": "27"
+        "ignoreDeletes": "true"
     },
     "writeStream_options": {
         "checkpointLocation": "/Volumes/edsm/silver/utility/edsm.silver.powerPlay/_checkpoints/"
