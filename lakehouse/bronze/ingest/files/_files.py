@@ -202,6 +202,11 @@ def from_file(spark, settings):
       - source_metadata: struct containing file_path and file_modification_time
       - derived_ingest_time: timestamp parsed from the file path using file_path_datetime_regex
 
+    Recovery options (set in readStream_options):
+      - modifiedAfter: skip files with modification time at or before this
+                       ISO 8601 timestamp, e.g. "2026-04-10T17:10:35.000Z".
+                       Remove after a successful recovery run.
+
     Example settings:
     {
         "function_path": "lakehouse.bronze.ingest.files.from_file",

@@ -81,6 +81,11 @@ def scd2(spark, settings):
     metadata flattening, and row checksums, then write to a silver Delta table
     using SCD2 merge logic (insert new/changed records, expire old ones).
 
+    Recovery options (set in readStream_options):
+      - startingVersion: start reading from a specific bronze table version
+                         (only used when checkpoint is absent).
+                         Remove after a successful recovery run.
+
     Example settings:
     {
         "function_path": "lakehouse.silver.ingest.from_table.history.scd2",
