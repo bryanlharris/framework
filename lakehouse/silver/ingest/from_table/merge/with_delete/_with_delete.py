@@ -1,6 +1,6 @@
 from lakehouse.silver.merge import fullSyncMergeSQL
 from lakehouse.silver.transform.metadata import add_row_hash, add_ingest_metadata
-from lakehouse.silver.transform.columns import cast_data_types, rename_columns
+from lakehouse.silver.transform.columns import cast_data_types, rename_columns, _check_cast_nulls
 
 
 def with_delete(spark, settings):
@@ -46,6 +46,12 @@ def with_delete(spark, settings):
         .transform(add_row_hash, col_name=pk, columns=pk_columns_str)
     )
 
+    _merge_fn = fullSyncMergeSQL(pk_columns, destination_table)
+
+    def _do_upsert(microBatchDF, batchId):
+        _check_cast_nulls(microBatchDF, data_type_map, source_table)
+        _merge_fn(microBatchDF, batchId)
+
     (
         df.writeStream
         .queryName(destination_table)
@@ -53,6 +59,6 @@ def with_delete(spark, settings):
         .options(**writeStream_options)
         .outputMode("update")
         .trigger(availableNow=True)
-        .foreachBatch(fullSyncMergeSQL(pk_columns, destination_table))
+        .foreachBatch(_do_upsert)
         .start()
     )

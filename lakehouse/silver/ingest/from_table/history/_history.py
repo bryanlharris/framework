@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from lakehouse.silver.merge import scd2UpsertByBusinessKey
 from lakehouse.silver.transform.metadata import add_row_hash, add_ingest_metadata
-from lakehouse.silver.transform.columns import cast_data_types, rename_columns
+from lakehouse.silver.transform.columns import cast_data_types, rename_columns, _check_cast_nulls
 
 
 def _check_duplicate_business_keys(df, business_key, source_table):
@@ -126,6 +126,7 @@ def scd2(spark, settings):
     _merge_fn = scd2UpsertByBusinessKey(business_key, surrogate_key, destination_table, ingest_time_column, use_row_hash, row_hash_col)
 
     def _do_upsert(microBatchDF, batchId):
+        _check_cast_nulls(microBatchDF, data_type_map, source_table)
         _check_duplicate_business_keys(microBatchDF, business_key, source_table)
         _merge_fn(microBatchDF, batchId)
 

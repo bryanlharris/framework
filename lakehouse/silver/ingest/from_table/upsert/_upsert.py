@@ -1,6 +1,6 @@
 from lakehouse.silver.merge import upsertByPK, fullSyncMerge
 from lakehouse.silver.transform.metadata import add_row_hash, add_ingest_metadata
-from lakehouse.silver.transform.columns import cast_data_types, rename_columns
+from lakehouse.silver.transform.columns import cast_data_types, rename_columns, _check_cast_nulls
 from lakehouse.silver.ingest.from_table._checks import _check_duplicate_pk
 
 
@@ -48,6 +48,7 @@ def without_delete(spark, settings):
     _merge_fn = upsertByPK(pk, destination_table, pk)
 
     def _do_upsert(microBatchDF, batchId):
+        _check_cast_nulls(microBatchDF, data_type_map, source_table)
         _check_duplicate_pk(microBatchDF, pk_columns, source_table)
         _merge_fn(microBatchDF, batchId)
 
@@ -110,6 +111,7 @@ def with_delete(spark, settings):
     _merge_fn = fullSyncMerge(pk_columns, destination_table)
 
     def _do_upsert(microBatchDF, batchId):
+        _check_cast_nulls(microBatchDF, data_type_map, source_table)
         _check_duplicate_pk(microBatchDF, pk_columns, source_table)
         _merge_fn(microBatchDF, batchId)
 

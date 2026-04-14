@@ -1,5 +1,56 @@
+import pyspark.sql.functions as F
 from pyspark.sql.functions import col, regexp_replace
 from pyspark.sql.functions import to_date, to_timestamp, when
+
+
+def _check_cast_nulls(df, data_type_map, source_table):
+    cast_cols = list(data_type_map.keys())
+    if not cast_cols:
+        return
+
+    null_counts = df.agg(
+        *[F.count(F.when(F.col(c).isNull(), 1)).alias(c) for c in cast_cols]
+    ).collect()[0]
+
+    failed_cols = [c for c in cast_cols if null_counts[c] > 0]
+    if not failed_cols:
+        return
+
+    null_filter = F.lit(False)
+    for c in failed_cols:
+        null_filter = null_filter | F.col(c).isNull()
+
+    file_paths = (
+        df.filter(null_filter)
+        .select("file_path")
+        .distinct()
+        .orderBy("file_path")
+        .collect()
+    )
+    file_paths = [row["file_path"] for row in file_paths]
+    file_paths_str = "\n".join(f"  {p}" for p in file_paths)
+
+    col_summary = ", ".join(
+        f"{c} ({null_counts[c]} null{'s' if null_counts[c] != 1 else ''})"
+        for c in failed_cols
+    )
+
+    raise ValueError(
+        f"Cast failures detected in micro-batch for table {source_table}: {col_summary}\n\n"
+        f"This is a source data quality issue. The bad data was never written to silver —\n"
+        f"no Delta restore is needed.\n\n"
+        f"Affected source file(s):\n{file_paths_str}\n\n"
+        f"Recovery steps:\n\n"
+        f"  1. Fix the malformed values in the source file(s)\n"
+        f"  2. Replace the corrected file(s) in the landing zone\n"
+        f'  3. In the bronze settings set:  "modifiedAfter": "<timestamp just before corrected file>"\n'
+        f"  4. Clear the bronze checkpoint, re-run bronze\n"
+        f'  5. In the silver settings set:  "startingVersion": "<bronze version after re-ingest>"\n'
+        f"  6. Clear the silver checkpoint, re-run silver\n"
+        f"  7. After a successful run:\n"
+        f"       - Remove modifiedAfter from the bronze settings\n"
+        f"       - Remove startingVersion from the silver settings"
+    )
 
 
 def rename_columns(df, column_map):
