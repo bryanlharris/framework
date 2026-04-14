@@ -1,6 +1,7 @@
 from lakehouse.silver.merge import upsertByPK, fullSyncMerge
 from lakehouse.silver.transform.metadata import add_row_hash, add_ingest_metadata
 from lakehouse.silver.transform.columns import cast_data_types, rename_columns
+from lakehouse.silver.ingest.from_table._checks import _check_duplicate_pk
 
 
 def without_delete(spark, settings):
@@ -44,6 +45,12 @@ def without_delete(spark, settings):
         .transform(add_row_hash, col_name=pk, columns=pk_columns_str)
     )
 
+    _merge_fn = upsertByPK(pk, destination_table, pk)
+
+    def _do_upsert(microBatchDF, batchId):
+        _check_duplicate_pk(microBatchDF, pk_columns, source_table)
+        _merge_fn(microBatchDF, batchId)
+
     (
         df.writeStream
         .queryName(destination_table)
@@ -51,7 +58,7 @@ def without_delete(spark, settings):
         .options(**writeStream_options)
         .outputMode("update")
         .trigger(availableNow=True)
-        .foreachBatch(upsertByPK(pk, destination_table, pk))
+        .foreachBatch(_do_upsert)
         .start()
     )
 
@@ -100,6 +107,12 @@ def with_delete(spark, settings):
         .transform(add_row_hash, col_name=pk, columns=pk_columns_str)
     )
 
+    _merge_fn = fullSyncMerge(pk_columns, destination_table)
+
+    def _do_upsert(microBatchDF, batchId):
+        _check_duplicate_pk(microBatchDF, pk_columns, source_table)
+        _merge_fn(microBatchDF, batchId)
+
     (
         df.writeStream
         .queryName(destination_table)
@@ -107,6 +120,6 @@ def with_delete(spark, settings):
         .options(**writeStream_options)
         .outputMode("update")
         .trigger(availableNow=True)
-        .foreachBatch(fullSyncMerge(pk_columns, destination_table))
+        .foreachBatch(_do_upsert)
         .start()
     )
