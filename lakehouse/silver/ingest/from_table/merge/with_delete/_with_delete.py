@@ -1,5 +1,5 @@
 from lakehouse.silver.merge import fullSyncMergeSQL
-from lakehouse.silver.transform.metadata import add_row_hash, flatten_source_metadata
+from lakehouse.silver.transform.metadata import add_row_hash, add_ingest_metadata
 from lakehouse.silver.transform.columns import cast_data_types, rename_columns
 
 
@@ -42,7 +42,7 @@ def with_delete(spark, settings):
         .drop("ingest_time")
         .transform(rename_columns, column_map)
         .transform(cast_data_types, data_type_map)
-        .transform(flatten_source_metadata)
+        .transform(add_ingest_metadata)
         .transform(add_row_hash, col_name=pk, columns=pk_columns_str)
     )
 

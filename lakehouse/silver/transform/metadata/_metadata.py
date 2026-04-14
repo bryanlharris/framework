@@ -49,11 +49,11 @@ def add_row_hash(df, col_name='row_hash', columns=None):
     return df.withColumn(col_name, sha2(to_json(struct(*normalized)), 256))
 
 
-def flatten_source_metadata(df):
+def add_ingest_metadata(df):
     """
-    Flatten the nested source_metadata struct by extracting file_path and
-    file_modification_time as top-level columns, and add an ingest_time column
-    with the current timestamp.
+    Promote file_path and file_modification_time from the nested source_metadata
+    struct to top-level columns, and add an ingest_time column with the current
+    timestamp.
     """
     return df.select(
         "*",
