@@ -65,10 +65,10 @@ def from_inbox(spark, settings):
     from datetime import datetime
     from pathlib import Path
 
-    opts     = settings["from_inbox_options"]
-    inbox    = Path(opts["inbox_path"])
-    pattern  = opts["filename_pattern"]
-    landing  = Path(opts["landing_subdirectory"])
+    opts      = settings["from_inbox_options"]
+    inbox     = Path(opts["inbox_path"])
+    pattern   = opts["filename_pattern"]
+    landing   = Path(opts["landing_subdirectory"])
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
     for file in inbox.glob(pattern):
