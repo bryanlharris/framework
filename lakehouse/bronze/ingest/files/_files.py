@@ -240,7 +240,9 @@ def from_file(spark, settings):
             There is no parking in the red zone.
             """
         )
-
+    
+    derived = settings.get("derived", {})
+    derived_regex = derived.get("file_path_datetime_regex", r"(\d{8}_\d{6})")
     df = (
         spark.readStream
         .format(source_type)
@@ -248,11 +250,8 @@ def from_file(spark, settings):
         .load(readStream_path)
         .transform(add_timestamp_column, "ingest_time")
         .transform(add_source_metadata, "source_metadata")
+        .transform(add_ingest_time_from_path, "derived_ingest_time", derived_regex)
     )
-
-    derived = settings.get("derived", {})
-    derived_regex = derived.get("file_path_datetime_regex", r"(\d{8}_\d{6})")
-    df = df.transform(add_ingest_time_from_path, "derived_ingest_time", derived_regex)
 
     query_name = destination_table
     query = (
