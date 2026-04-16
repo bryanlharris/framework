@@ -21,12 +21,15 @@ lakehouse.silver.transform.metadata.flatten_source_metadata()     - Flatten nest
 BRONZE - Utilities
 lakehouse.bronze.utils.get_latest_file_path()                     - Find latest file matching date pattern (YYYYMMDD)
 
-BRONZE LAYER - Data Ingestion
-lakehouse.bronze.ingest.files.from_file()                         - Ingest files from landing zone via Auto Loader
-lakehouse.bronze.ingest.files.from_url()                          - Download file, land, then ingest
-lakehouse.bronze.ingest.files.from_inbox()                        - Move files from inbox to landing, then ingest
-lakehouse.bronze.ingest.files.from_pdf()                          - Read latest PDF from volume, parse with ai_parse_document, write to Delta (batch)
-lakehouse.bronze.ingest.api.from_rest()                           - Call REST API, land JSON response, then ingest
+BRONZE LAYER - Data Ingestion (local)
+lakehouse.bronze.ingest.local.from_file()                         - Ingest files from landing zone via Auto Loader
+lakehouse.bronze.ingest.local.from_inbox()                        - Move files from inbox to landing, then ingest
+lakehouse.bronze.ingest.local.from_pdf()                          - Read latest PDF from volume, parse with ai_parse_document, write to Delta (batch)
+
+BRONZE LAYER - Data Ingestion (net)
+lakehouse.bronze.ingest.net.from_url()                            - Download file, land, then ingest
+lakehouse.bronze.ingest.net.from_sftp()                           - Download from SFTP, land, then ingest
+lakehouse.bronze.ingest.net.from_rest()                           - Call REST API, land JSON response, then ingest
 
 SILVER LAYER - Data Ingestion
 lakehouse.silver.ingest.from_table.upsert.without_delete()        - Stream bronze➜silver with upsertByPK()

@@ -1,5 +1,5 @@
 {
-    "function_path": "lakehouse.bronze.ingest.files.from_inbox",
+    "function_path": "lakehouse.bronze.ingest.local.from_inbox",
     "from_inbox_options": {
         "inbox_path": "/Volumes/edsm/bronze/inbox/",
         "filename_pattern": "systemsWithCoordinates7days.json",

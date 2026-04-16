@@ -14,12 +14,13 @@ lakehouse/
 │
 ├── bronze/
 │   ├── ingest/
-│   │   ├── files/
+│   │   ├── local/
 │   │   │   ├── from_file()
-│   │   │   ├── from_url()
 │   │   │   ├── from_inbox()
 │   │   │   └── from_pdf()
-│   │   └── api/
+│   │   └── net/
+│   │       ├── from_url()
+│   │       ├── from_sftp()
 │   │       └── from_rest()
 │   ├── transform/
 │   │   ├── file/
