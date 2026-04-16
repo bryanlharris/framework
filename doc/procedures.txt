@@ -1,0 +1,150 @@
+PROCEDURES
+
+
+----------------------------------------------------------------------
+ADD A NEW TABLE TO THE PIPELINE
+----------------------------------------------------------------------
+
+1. CREATE THE CATALOG (once per project)
+
+   In Databricks, run:
+
+     CREATE CATALOG IF NOT EXISTS <catalog>;
+
+   Example:
+     CREATE CATALOG IF NOT EXISTS edsm;
+
+
+2. CREATE THE SCHEMAS (once per catalog)
+
+   In Databricks, run:
+
+     CREATE SCHEMA IF NOT EXISTS <catalog>.bronze;
+     CREATE SCHEMA IF NOT EXISTS <catalog>.silver;
+
+   Optional:
+     CREATE SCHEMA IF NOT EXISTS <catalog>.gold;
+
+
+3. CREATE THE VOLUMES (once per catalog)
+
+   Bronze volumes:
+     CREATE VOLUME IF NOT EXISTS <catalog>.bronze.landing;
+     CREATE VOLUME IF NOT EXISTS <catalog>.bronze.inbox;
+     CREATE VOLUME IF NOT EXISTS <catalog>.bronze.utility;
+
+   Silver volumes:
+     CREATE VOLUME IF NOT EXISTS <catalog>.silver.utility;
+
+   The paths referenced in settings files look like:
+     /Volumes/<catalog>/bronze/landing/
+     /Volumes/<catalog>/bronze/utility/<catalog>.bronze.<table>/_checkpoints/
+     /Volumes/<catalog>/bronze/utility/<catalog>.bronze.<table>/_schema/
+     /Volumes/<catalog>/bronze/utility/<catalog>.bronze.<table>/_badRecords/
+     /Volumes/<catalog>/silver/utility/<catalog>.silver.<table>/_checkpoints/
+
+
+4. NAME YOUR DATA FILES CORRECTLY
+
+   Bronze ingestion derives a timestamp from the file path. Every
+   source file landing in the bronze landing zone must include a
+   timestamp segment in its name in the format:
+
+     YYYYMMdd_HHmmss
+
+   Example filenames:
+     powerPlay_20260415_093012.json
+     systemsWithCoordinates7days_20260415_093012.json
+
+   The default regex that extracts this timestamp is:
+     (\d{8}_\d{6})
+
+   If your files use a different pattern you can override it in the
+   settings file under derived.file_path_datetime_regex, but the
+   default pattern is strongly preferred for consistency.
+
+   The extracted value becomes the derived_ingest_time column in
+   bronze, which silver uses to track when data was originally
+   produced rather than when it was ingested.
+
+
+5. CREATE A SETTINGS FILE
+
+   - Place the file in settings/bronze/ or settings/silver/
+   - The file must end in .json to be active; rename the extension to
+     disable it without deleting it
+   - Naming convention: <table>.json (e.g. powerPlay.json)
+     Recommended but not required; the file just has to end in .json
+   - Every settings file must contain the key "function_path", which
+     determines which ingest function is called
+
+   Required keys vary by function:
+
+   lakehouse.bronze.ingest.local.from_file
+     function_path, source_type, destination_table, readStream_path,
+     readStream_options, writeStream_format, writeStream_options,
+     writeStream_outputMode, trigger_type
+     Optional: derived.file_path_datetime_regex
+
+   lakehouse.bronze.ingest.local.from_inbox
+     Same as from_file, plus from_inbox_options:
+       inbox_path, filename_pattern, landing_subdirectory
+
+   lakehouse.bronze.ingest.local.from_pdf
+     function_path, destination_table, input_path, date_pattern,
+     write_options
+     Optional: write_mode (default: "append")
+
+   lakehouse.bronze.ingest.net.from_url
+   lakehouse.bronze.ingest.net.from_sftp
+   lakehouse.bronze.ingest.net.from_rest
+     See examples in doc/examples/
+
+   lakehouse.silver.ingest.from_table.upsert.without_delete
+   lakehouse.silver.ingest.from_table.upsert.with_delete
+   lakehouse.silver.ingest.from_table.merge.with_delete
+     function_path, source_table, destination_table,
+     readStream_options, writeStream_options, business_key,
+     surrogate_key, column_map, data_type_map
+
+   lakehouse.silver.ingest.from_table.history.scd2
+     Same as above, plus ingest_time_column
+
+   Silver tables that depend on another silver table:
+     Add "source_table" pointing to a silver table, or add a
+     "depends_on" list containing silver table names. These run in a
+     separate later task (silver_dep_loop) in topological order.
+
+
+6. DISABLE A TABLE WITHOUT DELETING IT
+
+   Rename the settings file so it no longer ends in .json.
+   Example: powerPlay.json → powerPlay.json.disabled
+
+   The framework ignores any file that does not end in .json.
+
+
+----------------------------------------------------------------------
+NOTES ON SETTINGS FILE KEYS
+----------------------------------------------------------------------
+
+checkpointLocation
+  Put under writeStream_options.
+  Convention: /Volumes/<catalog>/<schema>/utility/<catalog>.<schema>.<table>/_checkpoints/
+
+schemaLocation  (bronze Auto Loader only)
+  Put under readStream_options.
+  Convention: /Volumes/<catalog>/bronze/utility/<catalog>.bronze.<table>/_schema/
+
+badRecordsPath  (bronze only)
+  Put under readStream_options.
+  Do not also set "mode" — badRecordsPath implies PERMISSIVE mode.
+  Convention: /Volumes/<catalog>/bronze/utility/<catalog>.bronze.<table>/_badRecords/
+
+destination_table
+  Must be in the form <catalog>.<schema>.<table>.
+  Bronze functions enforce that the schema is "bronze".
+
+modifiedAfter  (recovery option, bronze readStream_options)
+  Skip files modified at or before this ISO 8601 timestamp.
+  Remove after a successful recovery run.
