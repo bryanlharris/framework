@@ -1,0 +1,30 @@
+{
+    "function_path": "lakehouse.bronze.ingest.local.from_file",
+    "source_type": "cloudFiles",
+    "destination_table": "edsm.bronze.systemsWithCoordinates7days",
+    "readStream_path": "/Volumes/edsm/bronze/landing/",
+    "readStream_options": {
+        "cloudFiles.format": "json",
+        "cloudFiles.inferColumnTypes": "false",
+        "cloudFiles.inferSchema": "true",
+        "cloudFiles.schemaLocation": "/Volumes/edsm/bronze/utility/edsm.bronze.systemsWithCoordinates7days/_schema/",
+        "cloudFiles.schemaEvolutionMode": "addNewColumns",
+        "cloudFiles.useNotifications": "false",
+        "cloudFiles.validateOptions": "true",
+        "badRecordsPath": "/Volumes/edsm/bronze/utility/edsm.bronze.systemsWithCoordinates7days/_badRecords/",
+        "multiLine": "false",
+        "columnNameOfCorruptRecord": "corrupt_record",
+        "pathGlobFilter": "systemsWithCoordinates7days*.json"
+    },
+    "writeStream_format": "delta",
+    "writeStream_options": {
+        "mergeSchema": "true",
+        "checkpointLocation": "/Volumes/edsm/bronze/utility/edsm.bronze.systemsWithCoordinates7days/_checkpoints/",
+        "delta.columnMapping.mode": "name"
+    },
+    "writeStream_outputMode": "append",
+    "trigger_type": { "availableNow": true },
+    "derived": {
+        "file_path_datetime_regex": "(\\d{8}_\\d{6})\\.json"
+    }
+}
