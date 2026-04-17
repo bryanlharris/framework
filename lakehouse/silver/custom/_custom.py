@@ -1,4 +1,4 @@
-BRONZE_METADATA_COLS = ["_rescued_data", "source_metadata", "ingest_time"]
+BRONZE_METADATA_COLS = ["_rescued_data", "source_metadata", "ingest_time", "derived_ingest_time"]
 
 
 def systems_with_power(spark, settings):
