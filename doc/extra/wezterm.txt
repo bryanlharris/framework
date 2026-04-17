@@ -5,7 +5,9 @@
 The only reason for scoop is wezterm, and the only reason for that is MS
 can't get the cursor to work in either ps1 or pwsh. Oh my posh is a thing
 that gives ugly useless prompts. Posh git is from the power shell gallery
-and gives you a useful indicator of the git status.
+and gives you a useful indicator of the git status. Scoop is the windows
+analogy to homebrew i.e. developer packages. Otherwise you can use winget
+which is the analogy of yum i.e. it's the microsoft store.
 
 ----------------------------------------
 STEP 1: INSTALL SCOOP + ALL TOOLS
