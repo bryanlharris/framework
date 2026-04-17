@@ -1,0 +1,88 @@
+POWERPLAY REFACTOR: SILVER SCD2 SEPARATION
+==========================================
+
+Goal: Split the current silver.powerPlay (SCD2) into two tables:
+  - edsm.silver.powerPlay       -- new, normal non-SCD2 table, cleaned version of bronze
+  - edsm.silver.powerPlay_scd2  -- renamed existing SCD2 table, will source from silver instead of bronze
+
+
+PHASE 1 -- Rename silver.powerPlay to silver.powerPlay_scd2
+------------------------------------------------------------
+1. Rename settings/silver/powerPlay.json -> settings/silver/powerPlay_scd2.json
+
+2. In powerPlay_scd2.json:
+   - Update destination_table to edsm.silver.powerPlay_scd2
+   - Update checkpointLocation to .../edsm.silver.powerPlay_scd2/_checkpoints/
+   - Leave source_table as edsm.bronze.powerPlay for now
+
+3. In Databricks, deep clone the existing silver table:
+     CREATE TABLE edsm.silver.powerPlay_scd2 DEEP CLONE edsm.silver.powerPlay;
+
+4. Delete the old checkpoint folder:
+     /Volumes/edsm/silver/utility/edsm.silver.powerPlay/_checkpoints/
+
+5. Set startingVersion in powerPlay_scd2.json readStream_options to the current
+   version of edsm.bronze.powerPlay so the first run establishes the checkpoint
+   without replaying history.
+
+6. Run the pipeline once to initialize the checkpoint. Verify no duplicate rows
+   are written to edsm.silver.powerPlay_scd2.
+
+7. Drop the original edsm.silver.powerPlay table.
+
+8. Verify edsm.silver.powerPlay_scd2 looks correct.
+
+
+PHASE 2 -- Create new normal silver.powerPlay table
+----------------------------------------------------
+9. Create settings/silver/powerPlay.json using a non-SCD2 streaming function.
+   - source_table: edsm.bronze.powerPlay
+   - destination_table: edsm.silver.powerPlay
+   - checkpointLocation: /Volumes/edsm/silver/utility/edsm.silver.powerPlay/_checkpoints/
+
+10. Run the pipeline. Verify edsm.silver.powerPlay is a clean, flat version of bronze.
+
+
+PHASE 3 -- Re-wire powerPlay_scd2 to source from silver instead of bronze
+--------------------------------------------------------------------------
+11. In powerPlay_scd2.json, update source_table to edsm.silver.powerPlay.
+
+12. Note the current version of edsm.silver.powerPlay. Set startingVersion in
+    powerPlay_scd2.json readStream_options to that version.
+
+13. Delete the existing scd2 checkpoint:
+      /Volumes/edsm/silver/utility/edsm.silver.powerPlay_scd2/_checkpoints/
+
+14. Run once to initialize the new checkpoint against the silver source.
+    Verify no rows are written (expected -- starting from current version).
+
+15. On the next incremental run, verify new changes flow correctly from
+    silver -> powerPlay_scd2.
+
+
+PHASE 4 -- Update downstream references
+-----------------------------------------
+16. settings/silver/systems_with_power.json
+    - Update depends_on: replace edsm.bronze.powerPlay with edsm.silver.powerPlay
+
+17. lakehouse/silver/custom/_custom.py (systems_with_power function)
+    - Update read table from edsm.bronze.powerPlay to edsm.silver.powerPlay
+
+18. doc/views/edsm.silver.v_powerPlay.sql
+    - Review columns; update if the normal silver table schema differs from the old SCD2 table.
+
+19. doc/extra/powerplay_dashboard.sql
+    - Update any queries that need to distinguish between powerPlay and powerPlay_scd2.
+
+20. doc/extra/SQL_powerplay_scd_changes.ipynb
+    - Update table/view references as needed.
+
+
+NOTES
+-----
+- The SCD2 table stores history in the rows themselves (valid_from/valid_to),
+  so the deep clone in step 3 preserves all historical records without a stream replay.
+- startingVersion is only used on initial checkpoint creation; it can be removed
+  from the config after the first successful run or left in place safely.
+- Verify edsm.silver.powerPlay has complete history before cutting over the scd2
+  source in Phase 3.
