@@ -1,0 +1,65 @@
+========================================
+ POWERSHELL + SCOOP + WEZTERM SETUP
+========================================
+
+The only reason for scoop is wezterm, and the only reason for that is MS
+can't get the cursor to work in either ps1 or pwsh. Oh my posh is a thing
+that gives ugly useless prompts. Posh git is from the power shell gallery
+and gives you a useful indicator of the git status.
+
+----------------------------------------
+STEP 1: INSTALL SCOOP + ALL TOOLS
+----------------------------------------
+Run in PowerShell (non-admin):
+
+  Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+  irm get.scoop.sh | iex
+  scoop install pwsh
+  scoop bucket add extras
+  scoop install wezterm oh-my-posh
+  Install-Module posh-git -Scope CurrentUser -Force
+
+
+----------------------------------------
+STEP 2: CREATE WEZTERM CONFIG
+----------------------------------------
+Run in PowerShell:
+
+  @'
+return {
+  font_size = 14.0,
+  default_prog = { "pwsh.exe", "-NoLogo" },
+  enable_tab_bar = true,
+  default_cursor_style = "SteadyBlock",
+}
+'@ | Set-Content "$HOME\.wezterm.lua"
+
+
+----------------------------------------
+STEP 3: CREATE POWERSHELL PROFILE
+----------------------------------------
+Run in PowerShell:
+(Run $PROFILE to confirm exact path)
+
+  New-Item -ItemType Directory -Force -Path (Split-Path $PROFILE)
+
+  @'
+Import-Module posh-git
+# Themes: https://ohmyposh.dev/docs/themes
+# This gives you the ugliest prompt or you can choose from other ugly prompts
+# oh-my-posh init pwsh --config "$env:POSH_THEMES_PATH\jandedobbeleer.omp.json" | Invoke-Expression
+Set-PSReadLineOption -EditMode Windows
+Set-PSReadLineOption -ViModeIndicator None
+Set-PSReadLineKeyHandler -Key Tab -Function Complete
+Set-PSReadLineKeyHandler -Key Shift+Tab -Function MenuComplete
+Set-PSReadLineKeyHandler -Key Alt+f -Function ForwardWord
+Set-PSReadLineKeyHandler -Key Alt+b -Function BackwardWord
+Set-PSReadLineKeyHandler -Key Alt+Backspace -Function BackwardKillWord
+Set-PSReadLineKeyHandler -Key Ctrl+u -Function BackwardDeleteLine
+Set-PSReadLineKeyHandler -Key Ctrl+d -Function ViExit
+Set-PSReadLineKeyHandler -Key Ctrl+a -Function BeginningOfLine
+Set-PSReadLineKeyHandler -Key Ctrl+e -Function EndOfLine
+Set-Alias vdir Get-ChildItem
+Set-Alias which Get-Command
+Set-Alias vi vim
+'@ | Set-Content $PROFILE
