@@ -109,9 +109,10 @@ def from_rest(spark, settings):
     Call a REST API endpoint, write response as a JSON file to the landing
     volume, then ingest via from_file.
 
-    Required keys: url, params.
+    Required keys: url.
+    Optional keys: method (default GET), params (for GET), body (for POST), filename.
 
-    Example settings:
+    Example settings (GET):
     {
         "function_path": "lakehouse.bronze.ingest.net.from_rest",
         "from_rest_options": {
@@ -123,6 +124,23 @@ def from_rest(spark, settings):
             }
         }
     }
+
+    Example settings (POST):
+    {
+        "function_path": "lakehouse.bronze.ingest.net.from_rest",
+        "from_rest_options": {
+            "url": "https://api.osv.dev/v1/query",
+            "method": "POST",
+            "body": {
+                "version": "2.1.3",
+                "package": {
+                    "name": "numpy",
+                    "ecosystem": "PyPI"
+                }
+            },
+            "filename": "osv_numpy"
+        }
+    }
     """
     import requests
     from datetime import datetime
@@ -130,14 +148,19 @@ def from_rest(spark, settings):
 
     opts         = settings["from_rest_options"]
     url          = opts["url"]
-    params       = opts["params"]
+    method       = opts.get("method", "GET").upper()
+    params       = opts.get("params", {})
+    body         = opts.get("body", {})
     landing_path = settings["readStream_path"].rstrip("/")
     timestamp    = datetime.now().strftime("%Y%m%d_%H%M%S")
-    stem         = url.split("/")[-1]
+    stem         = opts.get("filename", url.split("/")[-1])
     filename     = f"{stem}_{timestamp}.json"
 
     # Call API
-    response = requests.get(url, params=params, timeout=300)
+    if method == "POST":
+        response = requests.post(url, json=body, timeout=300)
+    else:
+        response = requests.get(url, params=params, timeout=300)
     response.raise_for_status()
 
     # Write JSON response to landing volume
