@@ -1,0 +1,41 @@
+Naming the without_delete upsert pattern
+-----------------------------------------
+The function name upsert.without_delete describes the mechanism (no deletes happen) but
+not the result. "Rolling snapshot" better describes what the table becomes: an accumulation
+of every entity the source has ever seen, preserving last-known state even after rows
+disappear from the source. The with_delete counterpart is more of a mirror (matches source
+exactly), while without_delete is more of an archive (remembers everything).
+
+Alternative names that lean toward intent rather than mechanism:
+- accumulating_upsert — grows but never shrinks
+- append_upsert — adds and updates, never removes
+- retain_upsert — keeps all rows ever seen
+- persistent_upsert — rows persist even when gone from source
+
+The mirror/archive framing could also apply to the pair as a whole.
+
+Open question: should the name communicate to the developer writing the job, or to someone
+reading the resulting table catalog? "rolling_snapshot" may be more valuable as documentation
+language (docstring, settings schema field like "table_pattern") than as a function name.
+The function name without_delete is already clear to developers; the richer framing belongs
+in prose.
+
+Pre-silver validation notebook
+------------------------------
+Currently, PK-level duplicate checking (same id, different ingest_time across bronze
+ingestions) happens inside the silver streaming foreachBatch in _checks.py. This means
+the error only surfaces at silver runtime.
+
+Idea: refactor this into a dedicated pre-silver notebook (e.g. 08_validate_silver_prereqs
+or similar), sitting between validate_bronze_loop and silver_loop in the job yaml. It would
+read the silver settings (to get pk columns), query bronze for PK-level duplicates before
+the streaming job starts, and raise the same actionable error with startingVersion guidance.
+
+Benefits:
+- Catches the problem before any streaming state is written
+- Keeps validation logic in notebooks (visible, debuggable) rather than buried in library code
+- Mirrors the existing validate_bronze_loop pattern
+- Could eventually absorb _check_duplicate_pk from the silver pipeline entirely
+
+Coupling to solve: the notebook needs silver pk columns, so task_config would need to
+include them (or the notebook reads the silver settings file directly).
