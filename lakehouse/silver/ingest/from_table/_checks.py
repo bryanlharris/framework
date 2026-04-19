@@ -50,19 +50,36 @@ def _check_duplicate_pk(df, pk_columns, source_table):
 
     restore_version = bad_version - 1 if bad_version is not None else "<version before earlier file>"
 
+    starting_version_clean  = current_version
+    starting_version_bronze = current_version + 2 if current_version is not None else "<post-restore version + 1>"
+
     raise ValueError(
         f"Duplicate primary keys detected in micro-batch.\n\n"
-        f"Most likely cause: two source files contain conflicting data for the same entity.\n\n"
+        f"The same primary key appears in multiple source files in this micro-batch:\n\n"
         f"  Earlier file: {earlier_path}\n"
         f"  Later file:   {later_path}\n\n"
-        f"Recovery steps (retains data from the later file):\n\n"
+        f"Most likely cause: the same dataset was ingested more than once into bronze\n"
+        f"(e.g. daily downloads of a rolling snapshot). Bronze is probably fine.\n\n"
+        f"Quick fix — start silver from the latest bronze version only:\n\n"
+        f"  1. In the silver readStream_options, add:\n"
+        f'       "startingVersion": {starting_version_clean}\n'
+        f"  2. Clear the silver checkpoint\n"
+        f"  3. Re-run the job\n"
+        f"  4. After a successful run, remove startingVersion from the silver settings\n\n"
+        f"If you believe the conflicting files represent bad data rather than repeated\n"
+        f"ingestion, fix bronze first then follow up with a silver fix:\n\n"
         f"  1. RESTORE TABLE {source_table} TO VERSION AS OF {restore_version}\n"
         f"  2. Clear the bronze checkpoint\n"
         f"  3. Choose one:\n"
         f"       a. Delete the earlier file from the landing zone, OR\n"
         f'       b. In the bronze settings set:  "modifiedAfter": "{modified_after}"\n'
-        f"  4. Clear the silver checkpoint\n"
-        f"  5. Re-run the job\n"
-        f"  6. After a successful run:\n"
+        f"  4. Re-run bronze\n"
+        f"  5. In the silver readStream_options, add:\n"
+        f'       "startingVersion": {starting_version_bronze}\n'
+        f'       "ignoreDeletes": true\n'
+        f"  6. Clear the silver checkpoint\n"
+        f"  7. Re-run the job\n"
+        f"  8. After a successful run:\n"
+        f"       - Remove startingVersion and ignoreDeletes from the silver settings\n"
         f"       - Remove modifiedAfter from the bronze settings (if used in step 3b)"
     )
