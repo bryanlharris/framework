@@ -2,7 +2,7 @@
     "function_path": "lakehouse.bronze.ingest.local.from_file",
     "source_type": "cloudFiles",
     "destination_table": "osv.bronze.cran",
-    "readStream_path": "/Volumes/osv/bronze/landing/",
+    "readStream_path": "/Volumes/osv/bronze/landing/CRAN/",
     "readStream_options": {
         "cloudFiles.format": "json",
         "cloudFiles.inferColumnTypes": "false",
@@ -15,7 +15,7 @@
         "multiLine": "true",
         "columnNameOfCorruptRecord": "corrupt_record",
         "rescuedDataColumn": "rescued_data",
-        "pathGlobFilter": "CRAN*/*.json"
+        "pathGlobFilter": "*.json"
     },
     "writeStream_format": "delta",
     "writeStream_options": {
