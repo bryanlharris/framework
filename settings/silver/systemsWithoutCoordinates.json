@@ -3,7 +3,9 @@
     "source_table": "edsm.bronze.systemsWithoutCoordinates",
     "destination_table": "edsm.silver.systemsWithoutCoordinates",
     "source_type": "table",
-    "readStream_options": {},
+    "readStream_options": {
+        "startingVersion": 2
+    },
     "writeStream_options": {
         "checkpointLocation": "/Volumes/edsm/silver/utility/edsm.silver.systemsWithoutCoordinates/_checkpoints/"
     },

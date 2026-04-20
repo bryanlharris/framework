@@ -3,7 +3,9 @@
     "source_table": "edsm.bronze.systemsWithCoordinates7days",
     "destination_table": "edsm.silver.systemsWithCoordinates7days",
     "source_type": "table",
-    "readStream_options": {},
+    "readStream_options": {
+        "startingVersion": 4
+    },
     "writeStream_options": {
         "checkpointLocation": "/Volumes/edsm/silver/utility/edsm.silver.systemsWithCoordinates7days/_checkpoints/"
     },
