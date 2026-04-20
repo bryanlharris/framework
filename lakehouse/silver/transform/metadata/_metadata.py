@@ -53,15 +53,17 @@ def add_ingest_metadata(df):
     """
     Promote file_path and file_modification_time from the nested source_metadata
     struct to top-level columns, and add an ingest_time column with the current
-    timestamp.
+    timestamp. Drops any pre-existing versions of these columns first so this
+    function is safe to call on silver tables that already carry them.
     """
-    return df.select(
-        "*",
-        col("source_metadata.file_path").alias("file_path"),
-        col("source_metadata.file_modification_time").alias(
-            "file_modification_time"
-        ),
-        current_timestamp().alias("ingest_time"),
+    return (
+        df.drop("file_path", "file_modification_time", "ingest_time")
+        .select(
+            "*",
+            col("source_metadata.file_path").alias("file_path"),
+            col("source_metadata.file_modification_time").alias("file_modification_time"),
+            current_timestamp().alias("ingest_time"),
+        )
     )
 
 

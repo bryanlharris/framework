@@ -1,0 +1,15 @@
+{
+    "function_path": "lakehouse.silver.ingest.from_table.upsert.without_delete",
+    "source_table": "osv.bronze.cran",
+    "destination_table": "osv.silver.cran",
+    "readStream_options": {},
+    "writeStream_options": {
+        "checkpointLocation": "/Volumes/osv/silver/utility/osv.silver.cran/_checkpoints/"
+    },
+    "column_map": {},
+    "data_type_map": {},
+    "pk": {
+        "name": "primary_key",
+        "columns": ["id"]
+    }
+}

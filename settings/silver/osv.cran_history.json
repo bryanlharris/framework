@@ -1,0 +1,16 @@
+{
+    "function_path": "lakehouse.silver.ingest.from_table.history.scd2",
+    "source_table": "osv.silver.cran",
+    "destination_table": "osv.silver.cran_history",
+    "readStream_options": {},
+    "writeStream_options": {
+        "checkpointLocation": "/Volumes/osv/silver/utility/osv.silver.cran_history/_checkpoints/"
+    },
+    "business_key": ["id"],
+    "surrogate_key": ["affected", "details", "references", "schema_version", "summary", "upstream", "modified", "published"],
+    "column_map": {},
+    "data_type_map": {},
+    "use_row_hash": true,
+    "row_hash_col": "row_hash",
+    "ingest_time_column": "ingest_time"
+}
