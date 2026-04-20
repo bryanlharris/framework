@@ -1,0 +1,28 @@
+{
+    "function_path": "lakehouse.bronze.ingest.local.from_file",
+    "source_type": "cloudFiles",
+    "destination_table": "osv.bronze.cran",
+    "readStream_path": "/Volumes/osv/bronze/landing/",
+    "readStream_options": {
+        "cloudFiles.format": "json",
+        "cloudFiles.inferColumnTypes": "false",
+        "cloudFiles.inferSchema": "true",
+        "cloudFiles.schemaLocation": "/Volumes/osv/bronze/utility/osv.bronze.cran/_schema/",
+        "cloudFiles.schemaEvolutionMode": "addNewColumns",
+        "cloudFiles.useNotifications": "false",
+        "cloudFiles.validateOptions": "true",
+        "badRecordsPath": "/Volumes/osv/bronze/utility/osv.bronze.cran/_badRecords/",
+        "multiLine": "true",
+        "columnNameOfCorruptRecord": "corrupt_record",
+        "rescuedDataColumn": "rescued_data",
+        "pathGlobFilter": "CRAN*/*.json"
+    },
+    "writeStream_format": "delta",
+    "writeStream_options": {
+        "mergeSchema": "true",
+        "checkpointLocation": "/Volumes/osv/bronze/utility/osv.bronze.cran/_checkpoints/",
+        "delta.columnMapping.mode": "name"
+    },
+    "writeStream_outputMode": "append",
+    "trigger_type": { "availableNow": true }
+}
