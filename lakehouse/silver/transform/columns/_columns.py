@@ -1,5 +1,5 @@
 import pyspark.sql.functions as F
-from pyspark.sql.functions import col, regexp_replace
+from pyspark.sql.functions import col, regexp_replace, from_json
 from pyspark.sql.functions import to_date, to_timestamp, when
 
 
@@ -122,3 +122,26 @@ def cast_data_types(df, data_type_map):
     df = df.select([cast_expressions.get(c, col(c)) for c in df.columns])
 
     return df
+
+
+def parse_json_columns(df, json_column_map):
+    """
+    Parse JSON string columns into structured Spark types using from_json.
+    json_column_map maps column names to Spark DDL type strings (e.g. "ARRAY<STRING>").
+    Preserves column order.
+    """
+    if not json_column_map:
+        return df
+
+    unmatched = [k for k in json_column_map if k not in df.columns]
+    if unmatched:
+        raise ValueError(
+            f"parse_json_columns: the following json_column_map keys do not exist in the DataFrame:\n"
+            f"  Missing: {unmatched}\n"
+            f"  Available columns: {df.columns}\n\n"
+            f"Possible causes: typo in the settings JSON, or the source schema has changed "
+            f"(column renamed or dropped at bronze)."
+        )
+
+    parse_expressions = {c: from_json(col(c), ddl).alias(c) for c, ddl in json_column_map.items()}
+    return df.select([parse_expressions.get(c, col(c)) for c in df.columns])

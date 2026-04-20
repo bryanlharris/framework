@@ -7,7 +7,15 @@
         "checkpointLocation": "/Volumes/osv/silver/utility/osv.silver.cran/_checkpoints/"
     },
     "column_map": {},
-    "data_type_map": {},
+    "data_type_map": {
+        "modified": "timestamp",
+        "published": "timestamp"
+    },
+    "json_column_map": {
+        "upstream": "ARRAY<STRING>",
+        "references": "ARRAY<STRUCT<type: STRING, url: STRING>>",
+        "affected": "ARRAY<STRUCT<package: STRUCT<ecosystem: STRING, name: STRING, purl: STRING>, severity: ARRAY<STRUCT<type: STRING, score: STRING>>, ranges: ARRAY<STRUCT<type: STRING, repo: STRING, events: ARRAY<STRUCT<introduced: STRING, fixed: STRING, last_affected: STRING, `limit`: STRING>>, database_specific: STRING>>, versions: ARRAY<STRING>, ecosystem_specific: STRING, database_specific: STRING>>"
+    },
     "pk": {
         "name": "primary_key",
         "columns": ["id"]

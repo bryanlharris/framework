@@ -1,6 +1,6 @@
 from lakehouse.silver.merge import upsertByPK, fullSyncMerge
 from lakehouse.silver.transform.metadata import add_row_hash, add_ingest_metadata
-from lakehouse.silver.transform.columns import cast_data_types, rename_columns, _check_cast_nulls
+from lakehouse.silver.transform.columns import cast_data_types, parse_json_columns, rename_columns, _check_cast_nulls
 from lakehouse.silver.ingest.from_table._checks import _check_duplicate_pk
 
 
@@ -28,6 +28,7 @@ def without_delete(spark, settings):
     destination_table   = settings["destination_table"]
     column_map          = settings["column_map"]
     data_type_map       = settings["data_type_map"]
+    json_column_map     = settings.get("json_column_map", {})
     writeStream_options = settings["writeStream_options"]
     pk                  = settings["pk"]["name"]
     pk_columns          = settings["pk"]["columns"]
@@ -41,6 +42,7 @@ def without_delete(spark, settings):
         .drop("ingest_time")
         .transform(rename_columns, column_map)
         .transform(cast_data_types, data_type_map)
+        .transform(parse_json_columns, json_column_map)
         .transform(add_ingest_metadata)
         .transform(add_row_hash, col_name=pk, columns=pk_columns_str)
     )
@@ -91,6 +93,7 @@ def with_delete(spark, settings):
     destination_table   = settings["destination_table"]
     column_map          = settings["column_map"]
     data_type_map       = settings["data_type_map"]
+    json_column_map     = settings.get("json_column_map", {})
     writeStream_options = settings["writeStream_options"]
     pk                  = settings["pk"]["name"]
     pk_columns          = settings["pk"]["columns"]
@@ -104,6 +107,7 @@ def with_delete(spark, settings):
         .drop("ingest_time")
         .transform(rename_columns, column_map)
         .transform(cast_data_types, data_type_map)
+        .transform(parse_json_columns, json_column_map)
         .transform(add_ingest_metadata)
         .transform(add_row_hash, col_name=pk, columns=pk_columns_str)
     )
