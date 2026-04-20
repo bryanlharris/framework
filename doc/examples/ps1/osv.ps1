@@ -5,6 +5,8 @@ $files = @(
     @{ url = "https://osv-vulnerabilities.storage.googleapis.com/CRAN/all.zip"; name = "CRAN" }
 )
 
+$inbox = "dbfs:/Volumes/utility/file_router/inbox"
+
 foreach ($f in $files) {
     $zip    = "$downloads\osv_$($f.name)_all.zip"
     $outDir = "$downloads\osv_bronze_landing_$($f.name)"
@@ -18,7 +20,10 @@ foreach ($f in $files) {
     Expand-Archive -Path $zip -DestinationPath $outDir
 
     Remove-Item $zip
-    Write-Host "Done: $outDir"
-}
 
-start $downloads
+    $dest = "$inbox/osv_bronze_landing_$($f.name)"
+    Write-Host "Uploading $($f.name) to $dest..."
+    databricks fs cp $outDir $dest -r
+
+    Write-Host "Done: $($f.name)"
+}
