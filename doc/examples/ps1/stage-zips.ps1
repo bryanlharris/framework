@@ -2,7 +2,7 @@ param(
     [string]$f
 )
 
-$inbox = "dbfs:/Volumes/utility/file_router/inbox"
+$inbox = "dbfs:/Volumes/catalog/schema/volume"
 
 # Regex: name_yyyyMM[_optional_suffix].zip
 $pattern = '^(.+?)_(\d{4})(\d{2})(_.+)?\.zip$'
@@ -82,7 +82,7 @@ foreach ($zip in $zips) {
     Write-Progress -Activity $activity -Completed
     Write-Host "Done: $stem"
 
-    $commands += "databricks fs cp -r `"$extractDir`" $inbox/$stem"
+    $commands += "databricks fs cp -r ```n    `"$extractDir`" ```n    $inbox/$stem"
 }
 
 Write-Host ""
