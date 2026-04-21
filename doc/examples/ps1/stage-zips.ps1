@@ -65,22 +65,15 @@ foreach ($zip in $zips) {
     $extractDir = Join-Path $targetDir $stem
     $prefixDir  = Join-Path (Split-Path $zip.FullName) $prefix
 
-    $activity = "$name ($index of $total)"
-
-    Write-Progress -Activity $activity -Status "Creating folders..." -PercentComplete 0
+    Write-Host "[$index/$total] $name"
 
     New-Item -ItemType Directory -Path $targetDir  -Force | Out-Null
     New-Item -ItemType Directory -Path $extractDir -Force | Out-Null
 
-    Write-Progress -Activity $activity -Status "Moving zip..." -PercentComplete 20
-
     Move-Item -Path $zip.FullName -Destination $targetZip -Force
-
-    Write-Progress -Activity $activity -Status "Extracting..." -PercentComplete 40
 
     Expand-Archive -Path $targetZip -DestinationPath $extractDir -Force
 
-    Write-Progress -Activity $activity -Completed
     Write-Host "Done: $stem"
 
     $commands += "aws s3 sync --dryrun ```n    `"$prefixDir`" ```n    $inbox/$prefix"
