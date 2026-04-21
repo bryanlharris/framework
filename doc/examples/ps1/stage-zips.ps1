@@ -63,6 +63,7 @@ foreach ($zip in $zips) {
     $targetDir  = Join-Path (Split-Path $zip.FullName) "$prefix\$year\$month"
     $targetZip  = Join-Path $targetDir $name
     $extractDir = Join-Path $targetDir $stem
+    $prefixDir  = Join-Path (Split-Path $zip.FullName) $prefix
 
     $activity = "$name ($index of $total)"
 
@@ -82,7 +83,7 @@ foreach ($zip in $zips) {
     Write-Progress -Activity $activity -Completed
     Write-Host "Done: $stem"
 
-    $commands += "databricks fs cp -r ```n    `"$extractDir`" ```n    $inbox/$stem"
+    $commands += "databricks fs cp -r ```n    `"$prefixDir`" ```n    $inbox/$prefix"
 }
 
 Write-Host ""
