@@ -83,7 +83,7 @@ foreach ($zip in $zips) {
     Write-Progress -Activity $activity -Completed
     Write-Host "Done: $stem"
 
-    $commands += "aws s3 sync ```n    `"$prefixDir`" ```n    $inbox/$prefix"
+    $commands += "aws s3 sync --dryrun ```n    `"$prefixDir`" ```n    $inbox/$prefix"
 }
 
 Write-Host ""
