@@ -2,7 +2,7 @@ param(
     [string]$f
 )
 
-$inbox = "dbfs:/Volumes/catalog/schema/volume"
+$inbox = "s3://your-bucket/your-prefix"
 
 # Regex: name_yyyyMM[_optional_suffix].zip
 $pattern = '^(.+?)_(\d{4})(\d{2})(_.+)?\.zip$'
@@ -83,7 +83,7 @@ foreach ($zip in $zips) {
     Write-Progress -Activity $activity -Completed
     Write-Host "Done: $stem"
 
-    $commands += "databricks fs cp -r ```n    `"$prefixDir`" ```n    $inbox/$prefix"
+    $commands += "aws s3 sync ```n    `"$prefixDir`" ```n    $inbox/$prefix"
 }
 
 Write-Host ""
