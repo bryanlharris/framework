@@ -2,7 +2,9 @@
     "function_path": "lakehouse.silver.ingest.from_table.history.scd2",
     "source_table": "osv.silver.pypi",
     "destination_table": "osv.silver.pypi_history",
-    "readStream_options": {},
+    "readStream_options": {
+        "ignoreChanges": "true"
+    },
     "writeStream_options": {
         "checkpointLocation": "/Volumes/osv/silver/utility/osv.silver.pypi_history/_checkpoints/"
     },

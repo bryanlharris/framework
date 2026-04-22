@@ -2,7 +2,9 @@
     "function_path": "lakehouse.silver.ingest.from_table.history.scd2",
     "source_table": "osv.silver.cran",
     "destination_table": "osv.silver.cran_history",
-    "readStream_options": {},
+    "readStream_options": {
+        "ignoreChanges": "true"
+    },
     "writeStream_options": {
         "checkpointLocation": "/Volumes/osv/silver/utility/osv.silver.cran_history/_checkpoints/"
     },
