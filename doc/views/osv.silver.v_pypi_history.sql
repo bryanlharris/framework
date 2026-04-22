@@ -13,6 +13,9 @@ select
   upstream,
   references,
   affected,
+  aliases,
+  severity,
+  credits,
   row_hash,
   ingest_time
 from

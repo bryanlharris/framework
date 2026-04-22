@@ -14,7 +14,10 @@
     "json_column_map": {
         "upstream": "ARRAY<STRING>",
         "references": "ARRAY<STRUCT<type: STRING, url: STRING>>",
-        "affected": "ARRAY<STRUCT<package: STRUCT<ecosystem: STRING, name: STRING, purl: STRING>, severity: ARRAY<STRUCT<type: STRING, score: STRING>>, ranges: ARRAY<STRUCT<type: STRING, repo: STRING, events: ARRAY<STRUCT<introduced: STRING, fixed: STRING, last_affected: STRING, `limit`: STRING>>, database_specific: STRING>>, versions: ARRAY<STRING>, ecosystem_specific: STRING, database_specific: STRING>>"
+        "affected": "ARRAY<STRUCT<package: STRUCT<ecosystem: STRING, name: STRING, purl: STRING>, severity: ARRAY<STRUCT<type: STRING, score: STRING>>, ranges: ARRAY<STRUCT<type: STRING, repo: STRING, events: ARRAY<STRUCT<introduced: STRING, fixed: STRING, last_affected: STRING, `limit`: STRING>>, database_specific: STRING>>, versions: ARRAY<STRING>, ecosystem_specific: STRING, database_specific: STRING>>",
+        "aliases": "ARRAY<STRING>",
+        "severity": "ARRAY<STRUCT<type: STRING, score: STRING>>",
+        "credits": "ARRAY<STRUCT<name: STRING, contact: ARRAY<STRING>, type: STRING>>"
     },
     "pk": {
         "name": "primary_key",
