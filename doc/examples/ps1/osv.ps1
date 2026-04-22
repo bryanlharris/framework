@@ -1,3 +1,12 @@
+if (-not (Get-Command gsutil -ErrorAction SilentlyContinue)) {
+    Write-Error @"
+gsutil not found. Install the Google Cloud SDK:
+  winget:    winget install Google.CloudSDK
+  Installer: https://dl.google.com/dl/cloudsdk/channels/rapid/GoogleCloudSDKInstaller.exe
+"@
+    exit 1
+}
+
 $downloads = "$env:USERPROFILE\Downloads"
 
 $files = @(
