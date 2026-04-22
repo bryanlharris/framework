@@ -7,40 +7,45 @@ gcloud not found. Install the Google Cloud SDK:
     exit 1
 }
 
-$downloads = "$env:USERPROFILE\Downloads"
+$downloads  = "$env:USERPROFILE\Downloads"
+$since      = (Get-Date).AddDays(-1).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss")
+$date       = Get-Date -Format "yyyyMMdd"
+$deltaRoot  = "$downloads\osv\delta"
+$inbox      = "dbfs:/Volumes/utility/file_router/inbox"
 
-$files = @(
-    @{ url = "https://osv-vulnerabilities.storage.googleapis.com/PyPI/all.zip"; name = "PyPI" },
-    @{ url = "https://osv-vulnerabilities.storage.googleapis.com/CRAN/all.zip"; name = "CRAN" }
-)
+$ecosystems = @("PyPI", "CRAN")
 
-$inbox = "dbfs:/Volumes/utility/file_router/inbox"
+if (Test-Path $deltaRoot) { Remove-Item $deltaRoot -Recurse -Force }
 
-foreach ($f in $files) {
-    $zip    = "$downloads\osv_$($f.name)_all.zip"
-    $outDir = "$downloads\osv_bronze_landing_$($f.name)"
+foreach ($eco in $ecosystems) {
+    $fullDir  = "$downloads\osv\full\osv_bronze_landing_$eco"
+    $deltaDir = "$downloads\osv\delta\$date\osv_bronze_landing_$eco"
 
-    Write-Progress -Activity $f.name -Status "Downloading..." -PercentComplete 0
-    Invoke-WebRequest -Uri $f.url -OutFile $zip
+    Write-Host "Syncing $eco..."
+    gsutil -m rsync -r -c -x "all\.zip" "gs://osv-vulnerabilities/$eco/" $fullDir
 
-    if (Test-Path $outDir) { Remove-Item $outDir -Recurse -Force }
+    $deltaIds = Get-Content "$fullDir\modified_id.csv" |
+        Where-Object { $_.Split(',')[0] -gt $since } |
+        ForEach-Object { $_.Split(',')[1] }
 
-    Write-Progress -Activity $f.name -Status "Extracting..." -PercentComplete 33
-    Expand-Archive -Path $zip -DestinationPath $outDir
-    Remove-Item $zip
+    Write-Host "Found $($deltaIds.Count) changed files for $eco"
 
-    $dest      = "$inbox/osv_bronze_landing_$($f.name)"
-    $total     = (Get-ChildItem $outDir -Recurse -File).Count
-    $uploaded  = 0
-
-    Write-Progress -Activity $f.name -Status "Uploading 0 / $total files..." -PercentComplete 34
-
-    & databricks fs cp $outDir $dest -r 2>&1 | ForEach-Object {
-        $uploaded++
-        $pct = 34 + [int](($uploaded / $total) * 66)
-        Write-Progress -Activity $f.name -Status "Uploading $uploaded / $total files..." -PercentComplete $pct
+    New-Item -ItemType Directory -Path $deltaDir -Force | Out-Null
+    foreach ($id in $deltaIds) {
+        $src = "$fullDir\$id.json"
+        if (Test-Path $src) { Copy-Item $src $deltaDir }
     }
 
-    Write-Progress -Activity $f.name -Completed
-    Write-Host "Done: $($f.name)"
+    $dest     = "$inbox/osv_bronze_landing_$eco"
+    $total    = (Get-ChildItem $deltaDir -File).Count
+    $uploaded = 0
+
+    Write-Progress -Activity $eco -Status "Uploading 0 / $total files..." -PercentComplete 0
+    & databricks fs cp $deltaDir $dest -r 2>&1 | ForEach-Object {
+        $uploaded++
+        $pct = [int](($uploaded / $total) * 100)
+        Write-Progress -Activity $eco -Status "Uploading $uploaded / $total files..." -PercentComplete $pct
+    }
+    Write-Progress -Activity $eco -Completed
+    Write-Host "Done: $eco"
 }
