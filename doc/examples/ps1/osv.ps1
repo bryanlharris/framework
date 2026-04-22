@@ -1,6 +1,6 @@
-if (-not (Get-Command gsutil -ErrorAction SilentlyContinue)) {
+if (-not (Get-Command gcloud -ErrorAction SilentlyContinue)) {
     Write-Error @"
-gsutil not found. Install the Google Cloud SDK:
+gcloud not found. Install the Google Cloud SDK:
   winget:    winget install Google.CloudSDK
   Installer: https://dl.google.com/dl/cloudsdk/channels/rapid/GoogleCloudSDKInstaller.exe
 "@
