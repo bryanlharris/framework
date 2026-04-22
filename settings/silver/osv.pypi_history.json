@@ -9,7 +9,7 @@
         "checkpointLocation": "/Volumes/osv/silver/utility/osv.silver.pypi_history/_checkpoints/"
     },
     "business_key": ["id"],
-    "surrogate_key": ["affected", "details", "references", "schema_version", "summary", "upstream", "modified", "published"],
+    "surrogate_key": ["affected", "details", "references", "schema_version", "summary", "upstream", "modified", "published", "withdrawn"],
     "column_map": {},
     "data_type_map": {},
     "use_row_hash": true,
