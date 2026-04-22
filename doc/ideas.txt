@@ -39,3 +39,12 @@ Benefits:
 
 Coupling to solve: the notebook needs silver pk columns, so task_config would need to
 include them (or the notebook reads the silver settings file directly).
+
+Rename surrogate_key to change_key in history settings
+-------------------------------------------------------
+In the SCD2 history settings (e.g. osv.pypi_history.json), the field "surrogate_key" is
+misnamed — surrogate key traditionally means a system-generated unique identifier, but here
+it means the set of columns whose change triggers a new SCD2 version.
+
+"change_key" is clearer: a change in these columns = a new history row. The rename would
+touch the settings schema, the _history.py ingest code, and any existing settings files.
