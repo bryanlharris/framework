@@ -2,7 +2,9 @@
     "function_path": "lakehouse.silver.ingest.from_table.upsert.without_delete",
     "source_table": "osv.bronze.pypi",
     "destination_table": "osv.silver.pypi",
-    "readStream_options": {},
+    "readStream_options": {
+        "ignoreChanges": "true"
+    },
     "writeStream_options": {
         "checkpointLocation": "/Volumes/osv/silver/utility/osv.silver.pypi/_checkpoints/"
     },
