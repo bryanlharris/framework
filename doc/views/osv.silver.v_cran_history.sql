@@ -4,11 +4,16 @@ select
   to_date(from_utc_timestamp(valid_to,   'America/New_York')) as valid_to,
   current_flag,
   id,
+  schema_version,
   summary,
   details,
-  schema_version,
   published,
   modified,
-  withdrawn
+  withdrawn,
+  upstream,
+  references,
+  affected,
+  row_hash,
+  ingest_time
 from
   osv.silver.cran_history;
