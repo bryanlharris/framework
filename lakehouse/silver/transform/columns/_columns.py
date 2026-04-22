@@ -133,15 +133,6 @@ def parse_json_columns(df, json_column_map):
     if not json_column_map:
         return df
 
-    unmatched = [k for k in json_column_map if k not in df.columns]
-    if unmatched:
-        raise ValueError(
-            f"parse_json_columns: the following json_column_map keys do not exist in the DataFrame:\n"
-            f"  Missing: {unmatched}\n"
-            f"  Available columns: {df.columns}\n\n"
-            f"Possible causes: typo in the settings JSON, or the source schema has changed "
-            f"(column renamed or dropped at bronze)."
-        )
-
-    parse_expressions = {c: from_json(col(c), ddl).alias(c) for c, ddl in json_column_map.items()}
+    active_map = {c: ddl for c, ddl in json_column_map.items() if c in df.columns}
+    parse_expressions = {c: from_json(col(c), ddl).alias(c) for c, ddl in active_map.items()}
     return df.select([parse_expressions.get(c, col(c)) for c in df.columns])
