@@ -41,6 +41,7 @@ def add_row_hash(df, col_name='row_hash', columns=None):
         cols = df.columns
 
     field_map = {f.name: f.dataType for f in df.schema.fields}
+    cols = [c for c in cols if c in field_map]
 
     normalized = [
         make_null_safe(field_map[c], col(c)).alias(c) for c in cols
