@@ -9,13 +9,13 @@ select
   details,
   published,
   modified,
-  withdrawn,
+  -- withdrawn,
   upstream,
   references,
   affected,
-  aliases,
-  severity,
-  credits,
+  -- aliases,
+  -- severity,
+  -- credits,
   row_hash,
   ingest_time
 from
