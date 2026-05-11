@@ -5,7 +5,7 @@
     "readStream_options": {
         "ignoreDeletes": "true",
         "ignoreChanges": "true",
-        "startingVersion": 48
+        "startingVersion": 53
     },
     "writeStream_options": {
         "checkpointLocation": "/Volumes/edsm/silver/utility/edsm.silver.powerPlay/_checkpoints/"
