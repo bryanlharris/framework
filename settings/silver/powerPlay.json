@@ -4,6 +4,7 @@
     "destination_table": "edsm.silver.powerPlay",
     "readStream_options": {
         "ignoreDeletes": "true",
+        "ignoreChanges": "true",
         "startingVersion": 48
     },
     "writeStream_options": {
