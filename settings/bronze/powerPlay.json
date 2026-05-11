@@ -14,8 +14,7 @@
         "badRecordsPath": "/Volumes/edsm/bronze/utility/edsm.bronze.powerPlay/_badRecords/",
         "multiLine": "false",
         "columnNameOfCorruptRecord": "corrupt_record",
-        "pathGlobFilter": "powerPlay*.json",
-        "modifiedAfter": "2026-05-11T01:16:26.000Z"
+        "pathGlobFilter": "powerPlay*.json"
     },
     "writeStream_format": "delta",
     "writeStream_options": {
