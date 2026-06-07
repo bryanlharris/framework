@@ -10,9 +10,18 @@ resources:
           min_retry_interval_millis: 900000
           disable_auto_optimization: true
           environment_key: Default
-        - task_key: bronze_loop
+        - task_key: validate_landing
           depends_on:
             - task_key: task_values
+          notebook_task:
+            notebook_path: 04_validate_landing
+            source: GIT
+          min_retry_interval_millis: 900000
+          disable_auto_optimization: true
+          environment_key: Default
+        - task_key: bronze_loop
+          depends_on:
+            - task_key: validate_landing
           for_each_task:
             inputs: "{{tasks.task_values.values.bronze}}"
             task:
