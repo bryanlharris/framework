@@ -15,7 +15,7 @@ lakehouse.bronze.transform.file.add_source_metadata()             - Add _metadat
 lakehouse.bronze.transform.derived.add_ingest_time_from_path()    - Extract datetime from file_path via regex, add as derived_ingest_time column
 lakehouse.silver.transform.columns.rename_columns()               - Apply column name mapping
 lakehouse.silver.transform.columns.cast_data_types()              - Cast columns to target types
-lakehouse.silver.transform.metadata.add_row_hash()        - SHA256 hash of specified columns
+lakehouse.silver.transform.metadata.add_row_hash()                - SHA256 hash of specified columns
 lakehouse.silver.transform.metadata.flatten_source_metadata()     - Flatten nested source_metadata struct
 
 BRONZE - Utilities
