@@ -29,6 +29,12 @@ df = (
     .withColumn("table_name", F.lit(full_table_name))
     .withColumn('primary_key', F.expr(' coalesce(table_name, "") || "_" || coalesce(cast(version as string), "") '))
     .selectExpr("table_name", "* except (table_name)")
+    # job/notebook are structs whose nested fields Databricks changes over time,
+    # which breaks "update set *" merges once the target table's frozen schema
+    # no longer matches. Store them as JSON strings so the merge target never
+    # has to track their internal shape.
+    .withColumn("job", F.to_json("job"))
+    .withColumn("notebook", F.to_json("notebook"))
     )
 
 # Ensure target table exists before merge
