@@ -1,40 +1,50 @@
-LAKEHOUSE API REFERENCE
+LAKEHOUSE API REFERENCE (table of contents — see doc/api/* for details)
 
-CORE - Configuration
+CORE - Configuration                                           -> doc/api/lakehouse/core/config.txt
 lakehouse.core.config.scan_settings_folder()                      - List all .json files in settings/{color}/
 lakehouse.core.config.extract_destination_tables()                - Extract destination_table from all configs
 
-CORE - Utilities
+CORE - Utilities                                               -> doc/api/lakehouse/core/utils.txt
 lakehouse.core.utils.read_json_and_decode()                       - Read JSON file -> put into a variable
 lakehouse.core.utils.get_table_schema()                           - Get schema from table, optionally drop columns
 lakehouse.core.utils.ensure_table_exists()                        - Create table (w/schema) if missing
 
-ALL/BRONZE/SILVER - Transforms
+CORE - Transforms (metadata)                                   -> doc/api/lakehouse/core/transform/metadata.txt
 lakehouse.core.transform.metadata.add_timestamp_column()          - Add current_timestamp() column
+
+BRONZE - Transforms (file)                                     -> doc/api/lakehouse/bronze/transform/file.txt
 lakehouse.bronze.transform.file.add_source_metadata()             - Add _metadata as named column
+
+BRONZE - Transforms (derived)                                  -> doc/api/lakehouse/bronze/transform/derived.txt
 lakehouse.bronze.transform.derived.add_ingest_time_from_path()    - Extract datetime from file_path via regex, add as derived_ingest_time column
+
+SILVER - Transforms (columns)                                  -> doc/api/lakehouse/silver/transform/columns.txt
 lakehouse.silver.transform.columns.rename_columns()               - Apply column name mapping
 lakehouse.silver.transform.columns.cast_data_types()              - Cast columns to target types
+
+SILVER - Transforms (metadata)                                 -> doc/api/lakehouse/silver/transform/metadata.txt
 lakehouse.silver.transform.metadata.add_row_hash()                - SHA256 hash of specified columns
 lakehouse.silver.transform.metadata.flatten_source_metadata()     - Flatten nested source_metadata struct
 
-BRONZE - Utilities
+BRONZE - Utilities                                             -> doc/api/lakehouse/bronze/utils.txt
 lakehouse.bronze.utils.get_latest_file_path()                     - Find latest file matching date pattern (YYYYMMDD)
 
-BRONZE LAYER - Data Ingestion (local)
+BRONZE LAYER - Data Ingestion (local)                          -> doc/api/lakehouse/bronze/ingest/local.txt
 lakehouse.bronze.ingest.local.from_file()                         - Ingest files from landing zone via Auto Loader
 lakehouse.bronze.ingest.local.from_inbox()                        - Move files from inbox to landing, then ingest
 lakehouse.bronze.ingest.local.from_pdf()                          - Read latest PDF from volume, parse with ai_parse_document, write to Delta (batch)
 
-BRONZE LAYER - Data Ingestion (net)
+BRONZE LAYER - Data Ingestion (net)                            -> doc/api/lakehouse/bronze/ingest/net.txt
 lakehouse.bronze.ingest.net.from_url()                            - Download file, land, then ingest
 lakehouse.bronze.ingest.net.from_sftp()                           - Download from SFTP, land, then ingest
 lakehouse.bronze.ingest.net.from_rest()                           - Call REST API, land JSON response, then ingest
 
-SILVER LAYER - Data Ingestion
-lakehouse.silver.ingest.from_table.upsert.without_delete()        - Stream bronze➜silver with upsertByPK()
-lakehouse.silver.ingest.from_table.upsert.with_delete()           - Stream bronze➜silver with fullSyncMerge()
-lakehouse.silver.ingest.from_table.merge.with_delete()            - Stream bronze➜silver with fullSyncMergeSQL()
-lakehouse.silver.ingest.from_table.history.scd2()                 - Stream bronze➜silver with scd2UpsertByBusinessKey()
+SILVER LAYER - Data Ingestion (upsert)                         -> doc/api/lakehouse/silver/ingest/from_table/upsert.txt
+lakehouse.silver.ingest.from_table.upsert.without_delete()        - Stream bronze->silver with upsertByPK()
+lakehouse.silver.ingest.from_table.upsert.with_delete()           - Stream bronze->silver with fullSyncMerge()
 
+SILVER LAYER - Data Ingestion (merge/with_delete)              -> doc/api/lakehouse/silver/ingest/from_table/merge/with_delete.txt
+lakehouse.silver.ingest.from_table.merge.with_delete()            - Stream bronze->silver with fullSyncMergeSQL()
 
+SILVER LAYER - Data Ingestion (history)                        -> doc/api/lakehouse/silver/ingest/from_table/history.txt
+lakehouse.silver.ingest.from_table.history.scd2()                 - Stream bronze->silver with scd2UpsertByBusinessKey()
