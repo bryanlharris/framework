@@ -15,5 +15,6 @@
     "pk": {
         "name": "primary_key",
         "columns": [ "observation_date", "FEDFUNDS" ]
-    }
+    },
+    "on_duplicate_pk": "raise"
 }

@@ -33,8 +33,17 @@ def without_delete(spark, settings):
         "pk": {
             "name": "primary_key",
             "columns": ["observation_date", "FEDFUNDS"]
-        }
+        },
+        "on_duplicate_pk": "raise"
     }
+
+    on_duplicate_pk (optional, default "raise"): what to do when a micro-batch
+    contains more than one row for the same pk. "raise" fails the batch with a
+    diagnostic (default, unchanged behavior). "dedupe_latest" keeps only the
+    row with the most recent file_modification_time per pk and drops the rest
+    — use this when duplicate pks are an expected/benign source quirk (e.g.
+    upstream re-publishes the same record under a different file) rather than
+    a data-quality bug worth failing on.
     """
     source_table        = settings["source_table"]
     destination_table   = settings["destination_table"]
@@ -101,8 +110,17 @@ def with_delete(spark, settings):
         "pk": {
             "name": "primary_key",
             "columns": ["market_id"]
-        }
+        },
+        "on_duplicate_pk": "raise"
     }
+
+    on_duplicate_pk (optional, default "raise"): what to do when a micro-batch
+    contains more than one row for the same pk. "raise" fails the batch with a
+    diagnostic (default, unchanged behavior). "dedupe_latest" keeps only the
+    row with the most recent file_modification_time per pk and drops the rest
+    — use this when duplicate pks are an expected/benign source quirk (e.g.
+    upstream re-publishes the same record under a different file) rather than
+    a data-quality bug worth failing on.
     """
     source_table        = settings["source_table"]
     destination_table   = settings["destination_table"]
