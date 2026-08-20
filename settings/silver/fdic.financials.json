@@ -15,8 +15,7 @@
         "DEP": "double",
         "NETINC": "double",
         "EQ": "double",
-        "ROA": "double",
-        "ROE": "double"
+        "ROA": "double"
     },
     "pk": {
         "name": "primary_key",

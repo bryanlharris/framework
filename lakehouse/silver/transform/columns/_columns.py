@@ -107,6 +107,7 @@ def cast_data_types(df, data_type_map):
                 when(col(column_name).rlike(r'\d{1,2}/\d{1,2}/\d{4}'), to_date(col(column_name), 'M/d/yyyy'))
                 .when(col(column_name).rlike(r'\d{1,2}-\d{1,2}-\d{4}'), to_date(col(column_name), 'd-M-yyyy'))
                 .when(col(column_name).rlike(r'\d{4}-\d{1,2}-\d{1,2}'), to_date(col(column_name), 'yyyy-M-d'))
+                .when(col(column_name).rlike(r'^\d{8}$'), to_date(col(column_name), 'yyyyMMdd'))
                 .alias(column_name)
             )
         elif data_type == "timestamp":
