@@ -1,0 +1,2 @@
+TODO
+1. Add a doc note that when creating a new pipeline, the catalog/schemas/volumes must be created by the user before the pipeline can run
