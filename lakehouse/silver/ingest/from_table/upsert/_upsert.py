@@ -1,7 +1,19 @@
 from lakehouse.silver.merge import upsertByPK, fullSyncMerge
 from lakehouse.silver.transform.metadata import add_row_hash, add_ingest_metadata
 from lakehouse.silver.transform.columns import cast_data_types, parse_json_columns, rename_columns, _check_cast_nulls
-from lakehouse.silver.ingest.from_table._checks import _check_duplicate_pk
+from lakehouse.silver.ingest.from_table._checks import _check_duplicate_pk, _dedupe_latest_pk
+
+_ON_DUPLICATE_PK_MODES = {"raise", "dedupe_latest"}
+
+
+def _resolve_on_duplicate_pk(settings):
+    mode = settings.get("on_duplicate_pk", "raise")
+    if mode not in _ON_DUPLICATE_PK_MODES:
+        raise ValueError(
+            f'Invalid "on_duplicate_pk" setting: {mode!r}. '
+            f"Must be one of {sorted(_ON_DUPLICATE_PK_MODES)}."
+        )
+    return mode
 
 
 def without_delete(spark, settings):
@@ -34,6 +46,7 @@ def without_delete(spark, settings):
     pk_columns          = settings["pk"]["columns"]
     pk_columns_str      = ",".join(pk_columns) if isinstance(pk_columns, list) else pk_columns
     readStream_options  = settings["readStream_options"]
+    on_duplicate_pk     = _resolve_on_duplicate_pk(settings)
 
     df = (
         spark.readStream
@@ -51,6 +64,8 @@ def without_delete(spark, settings):
 
     def _do_upsert(microBatchDF, batchId):
         _check_cast_nulls(microBatchDF, data_type_map, source_table)
+        if on_duplicate_pk == "dedupe_latest":
+            microBatchDF = _dedupe_latest_pk(microBatchDF, pk_columns, source_table)
         _check_duplicate_pk(microBatchDF, pk_columns, source_table)
         _merge_fn(microBatchDF, batchId)
 
@@ -99,6 +114,7 @@ def with_delete(spark, settings):
     pk_columns          = settings["pk"]["columns"]
     pk_columns_str      = ",".join(pk_columns) if isinstance(pk_columns, list) else pk_columns
     readStream_options  = settings["readStream_options"]
+    on_duplicate_pk     = _resolve_on_duplicate_pk(settings)
 
     df = (
         spark.readStream
@@ -116,6 +132,8 @@ def with_delete(spark, settings):
 
     def _do_upsert(microBatchDF, batchId):
         _check_cast_nulls(microBatchDF, data_type_map, source_table)
+        if on_duplicate_pk == "dedupe_latest":
+            microBatchDF = _dedupe_latest_pk(microBatchDF, pk_columns, source_table)
         _check_duplicate_pk(microBatchDF, pk_columns, source_table)
         _merge_fn(microBatchDF, batchId)
 

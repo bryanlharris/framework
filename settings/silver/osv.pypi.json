@@ -5,6 +5,7 @@
     "readStream_options": {
         "ignoreChanges": "true"
     },
+    "on_duplicate_pk": "dedupe_latest",
     "writeStream_options": {
         "checkpointLocation": "/Volumes/osv/silver/utility/osv.silver.pypi/_checkpoints/"
     },

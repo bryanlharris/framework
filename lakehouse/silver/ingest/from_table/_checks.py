@@ -1,6 +1,36 @@
 from datetime import timedelta
 
 
+def _dedupe_latest_pk(df, pk_columns, source_table):
+    """
+    Keep only the most recently modified row per pk within a micro-batch,
+    dropping earlier duplicates. Used by jobs that opt in via
+    settings["on_duplicate_pk"] == "dedupe_latest" instead of failing hard
+    on duplicate primary keys.
+    """
+    from pyspark.sql import Window
+    from pyspark.sql.functions import row_number, col
+
+    before = df.count()
+
+    w = Window.partitionBy(*pk_columns).orderBy(col("file_modification_time").desc())
+    deduped = (
+        df.withColumn("_rn", row_number().over(w))
+        .filter(col("_rn") == 1)
+        .drop("_rn")
+    )
+
+    after = deduped.count()
+    if after < before:
+        print(
+            f"[{source_table}] on_duplicate_pk=dedupe_latest: dropped {before - after} "
+            f"duplicate-pk row(s) from micro-batch, keeping the most recently modified "
+            f"file per key."
+        )
+
+    return deduped
+
+
 def _check_duplicate_pk(df, pk_columns, source_table):
     from pyspark.sql.functions import count
 
