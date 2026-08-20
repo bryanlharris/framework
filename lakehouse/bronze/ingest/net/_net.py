@@ -112,6 +112,15 @@ def from_rest(spark, settings):
     Required keys: url.
     Optional keys: method (default GET), params (for GET), body (for POST), filename.
 
+    Optional keys for enveloped list responses: records_path, record_key. Some APIs
+    wrap a list of records inside an envelope, e.g.
+    {"data": [{"data": {...fields...}, "score": 0}, ...], "meta": {...}}. Set
+    records_path to the top-level key holding the list ("data"), and, if each list
+    item itself wraps the record under a nested key, set record_key to that key
+    ("data"). When either is set, one JSON object is written per line
+    (newline-delimited JSON) instead of the raw response body, so the bronze
+    settings' readStream_options must set "multiLine": "false" to match.
+
     Example settings (GET):
     {
         "function_path": "lakehouse.bronze.ingest.net.from_rest",
@@ -141,7 +150,25 @@ def from_rest(spark, settings):
             "filename": "osv_numpy"
         }
     }
+
+    Example settings (enveloped list, one row per record):
+    {
+        "function_path": "lakehouse.bronze.ingest.net.from_rest",
+        "from_rest_options": {
+            "url": "https://api.fdic.gov/banks/financials",
+            "params": {
+                "filters": "REPDTE:20260331",
+                "fields": "CERT,REPDTE,ASSET,DEP,NETINC,EQ,ROA,ROE",
+                "limit": "500",
+                "format": "json"
+            },
+            "filename": "fdic_financials",
+            "records_path": "data",
+            "record_key": "data"
+        }
+    }
     """
+    import json
     import requests
     from datetime import datetime
     from pathlib import Path
@@ -151,6 +178,8 @@ def from_rest(spark, settings):
     method       = opts.get("method", "GET").upper()
     params       = opts.get("params", {})
     body         = opts.get("body", {})
+    records_path = opts.get("records_path")
+    record_key   = opts.get("record_key")
     landing_path = settings["readStream_path"].rstrip("/")
     timestamp    = datetime.now().strftime("%Y%m%d_%H%M%S")
     stem         = opts.get("filename", url.split("/")[-1])
@@ -163,9 +192,19 @@ def from_rest(spark, settings):
         response = requests.get(url, params=params, timeout=300)
     response.raise_for_status()
 
-    # Write JSON response to landing volume
     output_path = Path(landing_path) / filename
-    output_path.write_bytes(response.content)
+
+    if records_path:
+        records = response.json()[records_path]
+        if record_key:
+            records = [record[record_key] for record in records]
+        output_path.write_text(
+            "\n".join(json.dumps(record) for record in records),
+            encoding="utf-8",
+        )
+    else:
+        # Write JSON response to landing volume
+        output_path.write_bytes(response.content)
 
     # Execute standard file ingestion
     from_file(spark, settings)

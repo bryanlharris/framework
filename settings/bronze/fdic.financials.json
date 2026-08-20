@@ -1,0 +1,43 @@
+{
+    "function_path": "lakehouse.bronze.ingest.net.from_rest",
+    "from_rest_options": {
+        "url": "https://api.fdic.gov/banks/financials",
+        "method": "GET",
+        "params": {
+            "filters": "REPDTE:20260331",
+            "fields": "CERT,REPDTE,ASSET,DEP,NETINC,EQ,ROA,ROE",
+            "limit": "500",
+            "format": "json"
+        },
+        "filename": "fdic_financials",
+        "records_path": "data",
+        "record_key": "data"
+    },
+    "source_type": "cloudFiles",
+    "destination_table": "fdic.bronze.financials",
+    "readStream_path": "/Volumes/fdic/bronze/landing/",
+    "readStream_options": {
+        "cloudFiles.format": "json",
+        "cloudFiles.inferColumnTypes": "false",
+        "cloudFiles.inferSchema": "true",
+        "cloudFiles.schemaLocation": "/Volumes/fdic/bronze/utility/fdic.bronze.financials/_schema/",
+        "cloudFiles.schemaEvolutionMode": "addNewColumns",
+        "cloudFiles.useNotifications": "false",
+        "cloudFiles.validateOptions": "true",
+        "badRecordsPath": "/Volumes/fdic/bronze/utility/fdic.bronze.financials/_badRecords/",
+        "multiLine": "false",
+        "columnNameOfCorruptRecord": "corrupt_record",
+        "pathGlobFilter": "fdic_financials*.json"
+    },
+    "writeStream_format": "delta",
+    "writeStream_options": {
+        "mergeSchema": "true",
+        "checkpointLocation": "/Volumes/fdic/bronze/utility/fdic.bronze.financials/_checkpoints/",
+        "delta.columnMapping.mode": "name"
+    },
+    "writeStream_outputMode": "append",
+    "trigger_type": { "availableNow": true },
+    "derived": {
+        "file_path_datetime_regex": "(\\d{8}_\\d{6})\\.json"
+    }
+}
