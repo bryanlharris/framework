@@ -1,0 +1,22 @@
+{
+    "function_path": "lakehouse.silver.ingest.from_table.upsert.without_delete",
+    "source_table": "winlog.bronze.security",
+    "destination_table": "winlog.silver.security",
+    "readStream_options": {
+        "ignoreChanges": "true"
+    },
+    "writeStream_options": {
+        "checkpointLocation": "/Volumes/winlog/silver/utility/winlog.silver.security/_checkpoints/"
+    },
+    "column_map": {},
+    "data_type_map": {
+        "record_id": "long",
+        "event_id": "int",
+        "time_created": "timestamp"
+    },
+    "pk": {
+        "name": "primary_key",
+        "columns": ["record_id"]
+    },
+    "on_duplicate_pk": "raise"
+}

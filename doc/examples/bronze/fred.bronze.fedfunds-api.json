@@ -9,17 +9,17 @@
         }
     },
     "source_type": "cloudFiles",
-    "destination_table": "demo.bronze.fedfunds",
-    "readStream_path": "/Volumes/demo/bronze/landing/",
+    "destination_table": "fred.bronze.fedfunds",
+    "readStream_path": "/Volumes/fred/bronze/landing/",
     "readStream_options": {
         "cloudFiles.format": "json",
         "cloudFiles.inferColumnTypes": "false",
         "cloudFiles.inferSchema": "true",
-        "cloudFiles.schemaLocation": "/Volumes/demo/bronze/utility/demo.bronze.fedfunds/_schema/",
+        "cloudFiles.schemaLocation": "/Volumes/fred/bronze/utility/fred.bronze.fedfunds/_schema/",
         "cloudFiles.schemaEvolutionMode": "addNewColumns",
         "cloudFiles.useNotifications": "false",
         "cloudFiles.validateOptions": "true",
-        "badRecordsPath": "/Volumes/demo/bronze/utility/demo.bronze.fedfunds/_badRecords/",
+        "badRecordsPath": "/Volumes/fred/bronze/utility/fred.bronze.fedfunds/_badRecords/",
         "multiLine": "false",
         "columnNameOfCorruptRecord": "corrupt_record",
         "pathGlobFilter": "observations*.json"
@@ -27,7 +27,7 @@
     "writeStream_format": "delta",
     "writeStream_options": {
         "mergeSchema": "true",
-        "checkpointLocation": "/Volumes/demo/bronze/utility/demo.bronze.fedfunds/_checkpoints/",
+        "checkpointLocation": "/Volumes/fred/bronze/utility/fred.bronze.fedfunds/_checkpoints/",
         "delta.columnMapping.mode": "name"
     },
     "writeStream_outputMode": "append",
