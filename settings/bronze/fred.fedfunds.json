@@ -1,0 +1,29 @@
+{
+    "function_path": "lakehouse.bronze.ingest.local.from_file",
+    "source_type": "cloudFiles",
+    "destination_table": "fred.bronze.fedfunds",
+    "readStream_path": "/Volumes/fred/bronze/landing/",
+    "readStream_options": {
+        "cloudFiles.format": "csv",
+        "header": "true",
+        "cloudFiles.inferColumnTypes": "false",
+        "cloudFiles.inferSchema": "true",
+        "cloudFiles.schemaLocation": "/Volumes/fred/bronze/utility/fred.bronze.fedfunds/_schema/",
+        "cloudFiles.schemaEvolutionMode": "addNewColumns",
+        "cloudFiles.useNotifications": "false",
+        "cloudFiles.validateOptions": "true",
+        "badRecordsPath": "/Volumes/fred/bronze/utility/fred.bronze.fedfunds/_badRecords/",
+        "pathGlobFilter": "fedfunds*.csv"
+    },
+    "writeStream_format": "delta",
+    "writeStream_options": {
+        "mergeSchema": "true",
+        "checkpointLocation": "/Volumes/fred/bronze/utility/fred.bronze.fedfunds/_checkpoints/",
+        "delta.columnMapping.mode": "name"
+    },
+    "writeStream_outputMode": "append",
+    "trigger_type": { "availableNow": true },
+    "derived": {
+        "file_path_datetime_regex": "(\\d{8}_\\d{6})\\.csv"
+    }
+}

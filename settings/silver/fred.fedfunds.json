@@ -1,0 +1,21 @@
+{
+    "function_path": "lakehouse.silver.ingest.from_table.upsert.without_delete",
+    "source_table": "fred.bronze.fedfunds",
+    "destination_table": "fred.silver.fedfunds",
+    "readStream_options": {
+        "ignoreChanges": "true"
+    },
+    "writeStream_options": {
+        "checkpointLocation": "/Volumes/fred/silver/utility/fred.silver.fedfunds/_checkpoints/"
+    },
+    "column_map": {},
+    "data_type_map": {
+        "observation_date": "date",
+        "FEDFUNDS": "double"
+    },
+    "pk": {
+        "name": "primary_key",
+        "columns": ["observation_date"]
+    },
+    "on_duplicate_pk": "raise"
+}
