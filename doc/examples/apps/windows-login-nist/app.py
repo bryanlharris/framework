@@ -60,7 +60,7 @@ def query_login_counts():
             SELECT 
                 event_id,
                 COUNT(*) as count
-            FROM winlog.silver.security
+            FROM staging_monthly.winlog.security_demo
             WHERE event_id IN ('4624', '4625')
             GROUP BY event_id
         """)
@@ -83,7 +83,7 @@ def query_logon_types():
               SELECT
                 CAST(regexp_extract(message, 'Logon Type:\\\\s+(\\\\d+)', 1) AS INT) as logon_type,
                 regexp_extract(message, 'New Logon:[\\\\s\\\\S]*?Account Name:\\\\s+([^\\\\r\\\\n]+)', 1) as account_name
-              FROM winlog.silver.security
+              FROM staging_monthly.winlog.security_demo
               WHERE event_id = '4624'
             )
             SELECT
@@ -125,7 +125,7 @@ def query_recent_events():
                     ELSE 'Unknown'
                 END as status,
                 machine_name
-            FROM winlog.silver.security
+            FROM staging_monthly.winlog.security_demo
             WHERE event_id IN ('4624', '4625')
             ORDER BY time_created DESC
             LIMIT 20
@@ -143,7 +143,7 @@ def query_events_over_time():
                 DATE_TRUNC('hour', time_created) as hour,
                 event_id,
                 COUNT(*) as count
-            FROM winlog.silver.security
+            FROM staging_monthly.winlog.security_demo
             WHERE event_id IN ('4624', '4625')
             GROUP BY hour, event_id
             ORDER BY hour
@@ -160,7 +160,7 @@ def query_activity_by_machine():
             SELECT 
                 machine_name,
                 COUNT(*) as login_count
-            FROM winlog.silver.security
+            FROM staging_monthly.winlog.security_demo
             WHERE event_id IN ('4624', '4625')
             GROUP BY machine_name
             ORDER BY login_count DESC
@@ -178,7 +178,7 @@ def query_patterns_by_time():
             SELECT 
                 HOUR(time_created) as hour_of_day,
                 COUNT(*) as login_count
-            FROM winlog.silver.security
+            FROM staging_monthly.winlog.security_demo
             WHERE event_id IN ('4624', '4625')
             GROUP BY hour_of_day
             ORDER BY hour_of_day
@@ -197,7 +197,7 @@ def query_logon_type_analysis():
                 CAST(regexp_extract(message, 'Logon Type:\\\\s+(\\\\d+)', 1) AS INT) as logon_type,
                 regexp_extract(message, 'New Logon:[\\\\s\\\\S]*?Account Name:\\\\s+([^\\\\r\\\\n]+)', 1) as account_name,
                 time_created
-              FROM winlog.silver.security
+              FROM staging_monthly.winlog.security_demo
               WHERE event_id = '4624'
                 AND message IS NOT NULL
             )
@@ -286,7 +286,7 @@ app.layout = html.Div([
             'marginRight': 'auto',
             'listStyleType': 'disc'
         }),
-        html.P("Data Source: winlog.silver.security | Event Focus: 4624 (Successful Logons)", style={
+        html.P("Data Source: staging_monthly.winlog.security_demo | Event Focus: 4624 (Successful Logons)", style={
             'color': 'white',
             'margin': '0 0 10px 0',
             'padding': '0 20px',
@@ -630,7 +630,7 @@ def update_dashboard(n):
             nist_control as `NIST Control`,
             status as `Status`,
             auditor as `Auditor`
-        FROM winlog.silver.nist_audit_log
+        FROM staging_monthly.winlog.nist_audit_log
         ORDER BY audit_timestamp DESC
         LIMIT 50
     """
@@ -709,7 +709,7 @@ def log_audit(pass_clicks, fail_clicks):
         # Insert a record for each control
         for control in nist_controls:
             insert_query = f"""
-                INSERT INTO winlog.silver.nist_audit_log 
+                INSERT INTO staging_monthly.winlog.nist_audit_log 
                 (audit_timestamp, nist_control, status, auditor)
                 VALUES ('{current_time}', '{control}', '{status}', '{auditor}')
             """
