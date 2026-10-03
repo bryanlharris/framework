@@ -1,0 +1,98 @@
+NOTEBOOKS
+
+The numbered notebooks in the repo root are the tasks of the framework
+job (doc/jobs/framework.yaml). They run in this order:
+
+  01_task_values
+  04_validate_landing
+  05_ingest                  (bronze_loop)
+  08_validate_bronze
+  05_ingest                  (silver_loop, then silver_dep_loop)
+  06_file_version_history  \
+  07_transaction_history   /  run in parallel after silver_dep_loop
+
+There is no 02 or 03. The numbers are names, not the run order;
+08 runs before silver.
+
+
+----------------------------------------------------------------------
+01_task_values
+----------------------------------------------------------------------
+
+Scans settings/bronze/ and settings/silver/ for active .json files and
+publishes the lists as job task values. Every loop task reads its
+inputs from these:
+
+  bronze                bronze settings files
+  silver                silver settings whose source is not silver
+  silver_dep            silver settings that read from another silver
+                        table, in dependency order
+  bronze_tables         bronze destination tables
+  file_version_history  bronze destination tables
+  transaction_history   bronze and silver destination tables
+
+
+----------------------------------------------------------------------
+04_validate_landing
+----------------------------------------------------------------------
+
+Runs once before the bronze loop. For each active settings file in
+settings/bronze/, it compares the files in readStream_path (top level
+only, filtered by pathGlobFilter) with the file paths already ingested
+into the destination table, then:
+
+  0 new files   -> skip
+  >1 new files  -> error
+  1 new file    -> error if the file contains duplicate rows
+
+All errors are collected and raised together, so one failing source
+stops the whole job.
+
+Why: built for snapshot sources, where each file is a full copy of
+the data. Two snapshots in one batch give silver the same primary key
+twice with different values, which breaks the upsert.
+
+Opt out per source with "validate_landing": false (see NOTES ON
+SETTINGS FILE KEYS in doc/procedures.txt). Do this for append-only
+sources, not to get past a snapshot source that is failing.
+
+
+----------------------------------------------------------------------
+05_ingest
+----------------------------------------------------------------------
+
+Runs once per settings file, for bronze, silver and silver_dep. Reads
+the settings file, imports the function named in function_path, and
+calls it with (spark, settings). All ingest logic lives in the
+lakehouse package; see doc/api.txt.
+
+
+----------------------------------------------------------------------
+06_file_version_history
+----------------------------------------------------------------------
+
+Runs once per bronze table. For each STREAMING UPDATE or MERGE version
+still inside the table's deletedFileRetentionDuration, records which
+source files first appeared in that version. Merges into
+<catalog>.bronze.file_version_history, keyed on <table>_<version>.
+
+
+----------------------------------------------------------------------
+07_transaction_history
+----------------------------------------------------------------------
+
+Runs once per bronze and silver table. Copies DESCRIBE HISTORY into
+<catalog>.bronze.transaction_history, keyed on <table>_<version>. The
+job and notebook columns are stored as JSON strings so schema changes
+on the Databricks side don't break the merge.
+
+
+----------------------------------------------------------------------
+08_validate_bronze
+----------------------------------------------------------------------
+
+Runs once per bronze table, after bronze ingest and before silver.
+Compares count() with distinct().count() over the whole table. If
+there are duplicate rows, it fails and lists the source files that
+contain them, along with recovery steps (RESTORE the table, fix the
+source files, restart silver from the right version).

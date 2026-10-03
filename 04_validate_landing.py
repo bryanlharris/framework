@@ -4,6 +4,9 @@
 # MAGIC Validate each bronze landing zone before ingestion. For every settings file in
 # MAGIC `settings/bronze/`, assert that exactly one new (unread) file is queued and that
 # MAGIC file contains no duplicate rows. All errors are collected and raised together.
+# MAGIC
+# MAGIC Sources with `"validate_landing": false` in their settings are skipped.
+# MAGIC See `doc/notebooks.txt`.
 
 # COMMAND ----------
 
@@ -24,6 +27,9 @@ for settings_path in sorted(Path("settings/bronze").iterdir()):
 
     with settings_path.open() as f:
         settings = json.load(f)
+
+    if not settings.get("validate_landing", True):
+        continue
 
     readStream_options = settings.get("readStream_options", {})
 

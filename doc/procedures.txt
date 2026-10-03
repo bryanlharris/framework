@@ -84,7 +84,7 @@ ADD A NEW TABLE TO THE PIPELINE
      function_path, source_type, destination_table, readStream_path,
      readStream_options, writeStream_format, writeStream_options,
      writeStream_outputMode, trigger_type
-     Optional: derived.file_path_datetime_regex
+     Optional: derived.file_path_datetime_regex, validate_landing
 
    lakehouse.bronze.ingest.local.from_inbox
      Same as from_file, plus from_inbox_options:
@@ -148,3 +148,11 @@ destination_table
 modifiedAfter  (recovery option, bronze readStream_options)
   Skip files modified at or before this ISO 8601 timestamp.
   Remove after a successful recovery run.
+
+validate_landing  (bronze only, top-level key)
+  Default: true. Set to false to skip the landing zone check in
+  04_validate_landing for this source.
+  Use for append-only sources that deliver many files per run
+  (e.g. Firehose), where the one-new-file rule does not apply.
+  Duplicates from these sources are handled by the silver merge.
+  See doc/notebooks.txt.
