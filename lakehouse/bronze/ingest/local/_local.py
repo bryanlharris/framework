@@ -101,6 +101,7 @@ def from_file(spark, settings):
       - ingest_time: current timestamp at the time of ingestion
       - source_metadata: struct containing file_path and file_modification_time
       - derived_ingest_time: timestamp parsed from the file path using file_path_datetime_regex
+                             and file_path_datetime_format (default "yyyyMMdd_HHmmss")
 
     Recovery options (set in readStream_options):
       - modifiedAfter: skip files with modification time at or before this
@@ -143,6 +144,7 @@ def from_file(spark, settings):
 
     derived = settings.get("derived", {})
     derived_regex = derived.get("file_path_datetime_regex", r"(\d{8}_\d{6})")
+    derived_format = derived.get("file_path_datetime_format", "yyyyMMdd_HHmmss")
     df = (
         spark.readStream
         .format(source_type)
@@ -150,7 +152,7 @@ def from_file(spark, settings):
         .load(readStream_path)
         .transform(add_timestamp_column, "ingest_time")
         .transform(add_source_metadata, "source_metadata")
-        .transform(add_ingest_time_from_path, "derived_ingest_time", derived_regex)
+        .transform(add_ingest_time_from_path, "derived_ingest_time", derived_regex, derived_format)
     )
 
     query_name = destination_table

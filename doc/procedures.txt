@@ -63,6 +63,19 @@ ADD A NEW TABLE TO THE PIPELINE
    settings file under derived.file_path_datetime_regex, but the
    default pattern is strongly preferred for consistency.
 
+   If the captured value is not in YYYYMMdd_HHmmss form, also set
+   derived.file_path_datetime_format to a Spark datetime pattern
+   that matches it. Use this for sources whose file names you don't
+   control. Example for Amazon Data Firehose, whose object names end
+   in <stream>-<version>-YYYY-MM-DD-HH-MM-SS-<random>[.ext]:
+
+     "derived": {
+         "file_path_datetime_regex": "(\\d{4}-\\d{2}-\\d{2}-\\d{2}-\\d{2}-\\d{2})-[^/]*$",
+         "file_path_datetime_format": "yyyy-MM-dd-HH-mm-ss"
+     }
+
+   Firehose timestamps are in UTC.
+
    The extracted value becomes the derived_ingest_time column in
    bronze, which silver uses to track when data was originally
    produced rather than when it was ingested.
@@ -84,7 +97,8 @@ ADD A NEW TABLE TO THE PIPELINE
      function_path, source_type, destination_table, readStream_path,
      readStream_options, writeStream_format, writeStream_options,
      writeStream_outputMode, trigger_type
-     Optional: derived.file_path_datetime_regex, validate_landing,
+     Optional: derived.file_path_datetime_regex,
+       derived.file_path_datetime_format, validate_landing,
        validate_bronze
 
    lakehouse.bronze.ingest.local.from_inbox
