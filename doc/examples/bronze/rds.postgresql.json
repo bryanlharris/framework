@@ -1,0 +1,25 @@
+{
+    "function_path": "lakehouse.bronze.ingest.local.from_file",
+    "source_type": "cloudFiles",
+    "destination_table": "rds.bronze.postgresql",
+    "readStream_path": "s3://<landing-zone-bucket>/rds/postgresql/*/data/",
+    "readStream_options": {
+        "cloudFiles.format": "text",
+        "cloudFiles.useNotifications": "false",
+        "cloudFiles.validateOptions": "true"
+    },
+    "writeStream_format": "delta",
+    "writeStream_options": {
+        "mergeSchema": "true",
+        "checkpointLocation": "/Volumes/rds/bronze/utility/rds.bronze.postgresql/_checkpoints/",
+        "delta.columnMapping.mode": "name"
+    },
+    "writeStream_outputMode": "append",
+    "trigger_type": { "availableNow": true },
+    "validate_landing": false,
+    "validate_bronze": false,
+    "derived": {
+        "file_path_datetime_regex": "(\\d{4}-\\d{2}-\\d{2}-\\d{2}-\\d{2}-\\d{2})-[^/]*$",
+        "file_path_datetime_format": "yyyy-MM-dd-HH-mm-ss"
+    }
+}

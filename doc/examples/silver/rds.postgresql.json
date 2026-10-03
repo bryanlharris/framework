@@ -1,0 +1,31 @@
+{
+    "function_path": "lakehouse.silver.ingest.from_table.upsert.without_delete",
+    "source_table": "rds.bronze.postgresql",
+    "destination_table": "rds.silver.postgresql",
+    "readStream_options": {
+        "ignoreChanges": "true"
+    },
+    "writeStream_options": {
+        "checkpointLocation": "/Volumes/rds/silver/utility/rds.silver.postgresql/_checkpoints/"
+    },
+    "column_map": { "value": "line" },
+    "data_type_map": {},
+    "regex_extract": [
+        {
+            "source": "source_metadata.file_path",
+            "pattern": "rds/postgresql/([^/]+)/data/",
+            "columns": ["instance"]
+        },
+        {
+            "source": "line",
+            "pattern": "^(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}) \\w+:(.*?):([^:@]*)@([^:]*):\\[(\\d+)\\]:([A-Z0-9]+):\\s+(.*)$",
+            "columns": ["log_time", "remote", "db_user", "db_name", "pid", "severity", "message"],
+            "types": { "log_time": "timestamp", "pid": "int" }
+        }
+    ],
+    "pk": {
+        "name": "primary_key",
+        "columns": ["instance", "line"]
+    },
+    "on_duplicate_pk": "dedupe_latest"
+}
