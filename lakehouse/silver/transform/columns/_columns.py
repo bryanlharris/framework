@@ -1,5 +1,5 @@
 import pyspark.sql.functions as F
-from pyspark.sql.functions import col, regexp_replace, from_json
+from pyspark.sql.functions import col, regexp_replace, regexp_extract, from_json
 from pyspark.sql.functions import to_date, to_timestamp, when
 
 
@@ -137,3 +137,47 @@ def parse_json_columns(df, json_column_map):
     active_map = {c: ddl for c, ddl in json_column_map.items() if c in df.columns}
     parse_expressions = {c: from_json(col(c), ddl).alias(c) for c, ddl in active_map.items()}
     return df.select([parse_expressions.get(c, col(c)) for c in df.columns])
+
+
+def regex_extract(df, regex_extract_list):
+    """
+    Add columns by matching a regex against a source column. Each entry in
+    regex_extract_list is a dict:
+      - source:  column to match against; may be nested (e.g. "source_metadata.file_path")
+      - pattern: Java regex with one capture group per name in columns
+      - columns: new column names, filled from capture groups 1, 2, ... in order
+      - types (optional): maps a new column name to a Spark SQL type (e.g. "timestamp", "int")
+
+    Rows where the pattern does not match get null in every column of that entry,
+    so unparsed rows are kept and easy to find. Type conversion uses try_cast,
+    so it never fails the batch; let the pattern enforce the shape of each value.
+    New columns are added at the end, replacing any existing column of the same name.
+    """
+    if not regex_extract_list:
+        return df
+
+    for entry in regex_extract_list:
+        source  = entry["source"]
+        pattern = entry["pattern"]
+        columns = entry["columns"]
+        types   = entry.get("types", {})
+
+        if source.split(".")[0] not in df.columns:
+            raise ValueError(
+                f"regex_extract: source column {source!r} does not exist in the DataFrame "
+                f"(checked after column renames have been applied).\n"
+                f"  Available columns: {df.columns}"
+            )
+        unknown_types = [c for c in types if c not in columns]
+        if unknown_types:
+            raise ValueError(
+                f"regex_extract: 'types' names columns that are not in 'columns': {unknown_types}"
+            )
+
+        matched = col(source).rlike(pattern)
+        for group, name in enumerate(columns, start=1):
+            df = df.withColumn(name, when(matched, regexp_extract(col(source), pattern, group)))
+            if name in types:
+                df = df.withColumn(name, F.expr(f"try_cast(`{name}` AS {types[name]})"))
+
+    return df

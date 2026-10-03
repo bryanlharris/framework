@@ -21,6 +21,7 @@ lakehouse.bronze.transform.derived.add_ingest_time_from_path()    - Extract date
 SILVER - Transforms (columns)                                  -> doc/api/lakehouse/silver/transform/columns.txt
 lakehouse.silver.transform.columns.rename_columns()               - Apply column name mapping
 lakehouse.silver.transform.columns.cast_data_types()              - Cast columns to target types
+lakehouse.silver.transform.columns.regex_extract()                - Add columns from regex capture groups (null when no match)
 
 SILVER - Transforms (metadata)                                 -> doc/api/lakehouse/silver/transform/metadata.txt
 lakehouse.silver.transform.metadata.add_row_hash()                - SHA256 hash of specified columns

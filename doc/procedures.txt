@@ -121,6 +121,7 @@ ADD A NEW TABLE TO THE PIPELINE
      function_path, source_table, destination_table,
      readStream_options, writeStream_options, business_key,
      surrogate_key, column_map, data_type_map
+     Optional (upsert.without_delete only): regex_extract
 
    lakehouse.silver.ingest.from_table.history.scd2
      Same as above, plus ingest_time_column
@@ -178,3 +179,28 @@ validate_bronze  (bronze only, top-level key)
   Use for the same append-only sources as validate_landing, where
   at-least-once delivery puts expected duplicates into bronze.
   See doc/notebooks.txt.
+
+regex_extract  (silver upsert.without_delete only)
+  A list of entries, each adding columns from the capture groups of a
+  regex. Runs after column_map and before data_type_map.
+    source   column to match; may be nested, e.g. source_metadata.file_path
+    pattern  regex with one capture group per name in columns
+    columns  new column names, filled from groups 1, 2, ... in order
+    types    optional; maps a new column to a type, e.g. "timestamp"
+  Rows that don't match get null in every column of that entry and
+  are kept. Use "types" here rather than data_type_map for these
+  columns: data_type_map fails the batch on any null, "types" does
+  not. Make the pattern strict enough that a match always converts.
+  Example (RDS Postgres logs from Firehose, bronze column value):
+    "column_map": { "value": "line" },
+    "regex_extract": [
+      { "source": "source_metadata.file_path",
+        "pattern": "rds/postgresql/([^/]+)/data/",
+        "columns": ["instance"] },
+      { "source": "line",
+        "pattern": "^(\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}) \\w+:(.*?):([^:@]*)@([^:]*):\\[(\\d+)\\]:([A-Z0-9]+):\\s+(.*)$",
+        "columns": ["log_time", "remote", "db_user", "db_name", "pid", "severity", "message"],
+        "types": { "log_time": "timestamp", "pid": "int" } }
+    ],
+    "pk": { "name": "primary_key", "columns": ["instance", "line"] },
+    "on_duplicate_pk": "dedupe_latest"

@@ -1,6 +1,6 @@
 from lakehouse.silver.merge import upsertByPK, fullSyncMerge
 from lakehouse.silver.transform.metadata import add_row_hash, add_ingest_metadata
-from lakehouse.silver.transform.columns import cast_data_types, parse_json_columns, rename_columns, _check_cast_nulls
+from lakehouse.silver.transform.columns import cast_data_types, parse_json_columns, rename_columns, regex_extract, _check_cast_nulls
 from lakehouse.silver.ingest.from_table._checks import _check_duplicate_pk, _dedupe_latest_pk
 
 _ON_DUPLICATE_PK_MODES = {"raise", "dedupe_latest"}
@@ -44,12 +44,19 @@ def without_delete(spark, settings):
     — use this when duplicate pks are an expected/benign source quirk (e.g.
     upstream re-publishes the same record under a different file) rather than
     a data-quality bug worth failing on.
+
+    regex_extract (optional): list of entries that add columns from regex capture
+    groups, applied after column renames and before type casts. See
+    lakehouse.silver.transform.columns.regex_extract. Columns it creates should
+    use its own "types" rather than data_type_map, so rows that don't match the
+    pattern stay null instead of failing the cast check.
     """
     source_table        = settings["source_table"]
     destination_table   = settings["destination_table"]
     column_map          = settings["column_map"]
     data_type_map       = settings["data_type_map"]
     json_column_map     = settings.get("json_column_map", {})
+    regex_extract_list  = settings.get("regex_extract", [])
     writeStream_options = settings["writeStream_options"]
     pk                  = settings["pk"]["name"]
     pk_columns          = settings["pk"]["columns"]
@@ -63,6 +70,7 @@ def without_delete(spark, settings):
         .table(source_table)
         .drop("ingest_time")
         .transform(rename_columns, column_map)
+        .transform(regex_extract, regex_extract_list)
         .transform(cast_data_types, data_type_map)
         .transform(parse_json_columns, json_column_map)
         .transform(add_ingest_metadata)
