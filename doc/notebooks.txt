@@ -77,7 +77,7 @@ lakehouse package; see doc/api.txt.
 Runs once per bronze table. For each STREAMING UPDATE or MERGE version
 still inside the table's deletedFileRetentionDuration, records which
 source files first appeared in that version. Merges into
-<catalog>.bronze.file_version_history, keyed on <table>_<version>.
+<catalog>.bronze.file_version_history, keyed on (table_name, version).
 
 
 ----------------------------------------------------------------------
@@ -85,7 +85,7 @@ source files first appeared in that version. Merges into
 ----------------------------------------------------------------------
 
 Runs once per bronze and silver table. Copies DESCRIBE HISTORY into
-<catalog>.bronze.transaction_history, keyed on <table>_<version>. The
+<catalog>.bronze.transaction_history, keyed on (table_name, version). The
 job and notebook columns are stored as JSON strings so schema changes
 on the Databricks side don't break the merge.
 

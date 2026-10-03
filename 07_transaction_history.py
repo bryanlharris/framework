@@ -23,11 +23,10 @@ transaction_table_name = f"{catalog_name}.bronze.transaction_history"
 
 # COMMAND ----------
 
-# Put table_name, history, and primary_key into df
+# Put table_name and history into df; (table_name, version) is the key
 df = (
     spark.sql(f"describe history {full_table_name}")
     .withColumn("table_name", F.lit(full_table_name))
-    .withColumn('primary_key', F.expr(' coalesce(table_name, "") || "_" || coalesce(cast(version as string), "") '))
     .selectExpr("table_name", "* except (table_name)")
     # job/notebook are structs whose nested fields Databricks changes over time,
     # which breaks "update set *" merges once the target table's frozen schema
@@ -46,7 +45,7 @@ df.createOrReplaceTempView("df")
 spark.sql(f"""
             merge into {transaction_table_name} as target
             using df as source
-            on target.primary_key = source.primary_key
+            on target.table_name = source.table_name and target.version = source.version
             when matched then update set *
             when not matched then insert *
           """)

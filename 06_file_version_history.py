@@ -74,23 +74,24 @@ for version in version_list:
     # Keep a set of all prev_files as we go up to higher versions
     prev_files.update(new_files)
     if len(new_files) > 0:
-        file_version_history_records.append((f"{full_table_name}_{version}", list(new_files)))
+        file_version_history_records.append((full_table_name, version, list(new_files)))
 
 # Only do this if we have records to append (save time I hope)
 if len(file_version_history_records) > 0:
     # Create df
-    df = spark.createDataFrame(file_version_history_records, "primary_key STRING, file_path ARRAY<STRING>")
+    schema_string = "table_name STRING, version BIGINT, file_path ARRAY<STRING>"
+    df = spark.createDataFrame(file_version_history_records, schema_string)
     df.createOrReplaceTempView("df")
 
     # Ensure target table exists before merge
-    ensure_table_exists(spark, file_version_table_name, "primary_key STRING, file_path ARRAY<STRING>")
+    ensure_table_exists(spark, file_version_table_name, schema_string)
 
     # Merge
     df.createOrReplaceTempView("df")
     spark.sql(f"""
                 merge into {file_version_table_name} as target
                 using df as source
-                on target.primary_key = source.primary_key
+                on target.table_name = source.table_name and target.version = source.version
                 when matched then update set *
                 when not matched then insert *
             """)
