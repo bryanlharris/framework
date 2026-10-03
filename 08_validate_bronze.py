@@ -3,14 +3,25 @@
 # MAGIC
 # MAGIC Validate bronze table for exact duplicate rows. If duplicates are found,
 # MAGIC raise an error listing the offending files and recovery steps.
+# MAGIC
+# MAGIC Tables with `"validate_bronze": false` in their settings are skipped.
+# MAGIC See `doc/notebooks.txt`.
 
 # COMMAND ----------
 
 import json
 
+from lakehouse.core.utils import read_json_and_decode
+
 # Workflow parameters and task values
 task_config     = json.loads(dbutils.widgets.get("task_config"))
 full_table_name = task_config['full_table_name']
+settings        = read_json_and_decode(task_config["settings_file"])
+
+# COMMAND ----------
+
+if not settings.get("validate_bronze", True):
+    dbutils.notebook.exit(f"Skipped: validate_bronze is false for {full_table_name}")
 
 # COMMAND ----------
 

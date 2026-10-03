@@ -31,6 +31,9 @@ inputs from these:
   file_version_history  bronze destination tables
   transaction_history   bronze and silver destination tables
 
+Each destination table entry also carries the path of its settings
+file, so a per-table notebook can read its own settings.
+
 
 ----------------------------------------------------------------------
 04_validate_landing
@@ -96,3 +99,15 @@ Compares count() with distinct().count() over the whole table. If
 there are duplicate rows, it fails and lists the source files that
 contain them, along with recovery steps (RESTORE the table, fix the
 source files, restart silver from the right version).
+
+Why: for snapshot sources, duplicate rows in bronze mean a file was
+ingested twice or a bad export got through, and silver should not
+run on top of that.
+
+Opt out per table with "validate_bronze": false in the bronze
+settings file (see NOTES ON SETTINGS FILE KEYS in
+doc/procedures.txt). The task still runs for that table but exits
+straight away as a success. Do this for append-only sources such as
+Firehose, which deliver at least once, so duplicates in bronze are
+expected and are removed by the silver merge. Note that the check
+scans the whole table, so it gets slower as the table grows.

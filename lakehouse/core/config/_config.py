@@ -100,7 +100,7 @@ def extract_destination_tables(color: str) -> list[dict]:
     Read all active .json files in settings/{color}/ and extract destination_table.
 
     Skips files that lack the destination_table field.
-    Returns list of dicts with 'full_table_name' key.
+    Returns list of dicts with 'full_table_name' and 'settings_file' keys.
     """
     folder = Path(f"settings/{color}")
     result = []
@@ -109,7 +109,10 @@ def extract_destination_tables(color: str) -> list[dict]:
             try:
                 data = json.loads(path.read_text(encoding="utf-8"))
                 if "destination_table" in data:
-                    result.append({"full_table_name": data["destination_table"]})
+                    result.append({
+                        "full_table_name": data["destination_table"],
+                        "settings_file": str(path),
+                    })
             except Exception:
                 pass
     return result
