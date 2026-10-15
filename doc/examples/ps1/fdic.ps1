@@ -1,6 +1,10 @@
 param(
-    [string]$Repdte = "20260331"
+    [string]$Repdte = "20260331",
+    [Alias("Profile", "p")]
+    [string]$DatabricksProfile   # Databricks CLI profile; empty uses DEFAULT
 )
+
+$dbArgs = if ($DatabricksProfile) { @("--profile", $DatabricksProfile) } else { @() }
 
 $downloads = "$env:USERPROFILE\Downloads"
 $inbox     = "dbfs:/Volumes/utility/file_router/inbox"
@@ -44,7 +48,7 @@ $records |
     Set-Content -Path $localFile -Encoding utf8
 
 Write-Host "Uploading to $dest..."
-& databricks fs cp $localFile $dest
+& databricks fs cp $localFile $dest @dbArgs
 if ($LASTEXITCODE -ne 0) {
     Write-Error "databricks fs cp failed"
     exit 1

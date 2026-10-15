@@ -10,6 +10,9 @@ Usage:
     databricks configure   # once, if the CLI isn't already set up
     .\winlog_demo.ps1 -VolumePath "/Volumes/<catalog>/<schema>/<volume>"
 
+    # With a named CLI profile (e.g. after 'databricks auth login -p dev'):
+    .\winlog_demo.ps1 -VolumePath "/Volumes/<catalog>/<schema>/<volume>" -p dev
+
     # Or, if the CLI isn't set up (e.g. a work laptop): produce the local
     # file only, then drag-and-drop it into the volume via the Databricks UI.
     .\winlog_demo.ps1 -SkipUpload
@@ -17,8 +20,12 @@ Usage:
 param(
     [string]$VolumePath,   # e.g. /Volumes/winlog/bronze/landing — required unless -SkipUpload
     [int]$MaxEvents = 200,
-    [switch]$SkipUpload
+    [switch]$SkipUpload,
+    [Alias("Profile", "p")]
+    [string]$DatabricksProfile   # Databricks CLI profile; empty uses DEFAULT
 )
+
+$dbArgs = if ($DatabricksProfile) { @("--profile", $DatabricksProfile) } else { @() }
 
 if (-not $SkipUpload -and -not $VolumePath) {
     Write-Error "-VolumePath is required unless -SkipUpload is set."
@@ -87,7 +94,7 @@ if ($SkipUpload) {
 }
 
 Write-Host "Uploading to $dest..."
-& databricks fs cp $localFile $dest --overwrite
+& databricks fs cp $localFile $dest --overwrite @dbArgs
 if ($LASTEXITCODE -ne 0) {
     Write-Error "databricks fs cp failed"
     exit 1

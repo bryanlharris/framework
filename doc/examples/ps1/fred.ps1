@@ -1,6 +1,10 @@
 param(
-    [string]$SeriesId = "FEDFUNDS"
+    [string]$SeriesId = "FEDFUNDS",
+    [Alias("Profile", "p")]
+    [string]$DatabricksProfile   # Databricks CLI profile; empty uses DEFAULT
 )
+
+$dbArgs = if ($DatabricksProfile) { @("--profile", $DatabricksProfile) } else { @() }
 
 $downloads = "$env:USERPROFILE\Downloads"
 $inbox     = "dbfs:/Volumes/utility/file_router/inbox"
@@ -20,7 +24,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host "Uploading to $dest..."
-& databricks fs cp $localFile $dest
+& databricks fs cp $localFile $dest @dbArgs
 if ($LASTEXITCODE -ne 0) {
     Write-Error "databricks fs cp failed"
     exit 1

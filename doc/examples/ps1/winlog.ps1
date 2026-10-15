@@ -1,6 +1,10 @@
 param(
-    [int]$MaxEvents = 500
+    [int]$MaxEvents = 500,
+    [Alias("Profile", "p")]
+    [string]$DatabricksProfile   # Databricks CLI profile; empty uses DEFAULT
 )
+
+$dbArgs = if ($DatabricksProfile) { @("--profile", $DatabricksProfile) } else { @() }
 
 # Get-WinEvent on the Security log requires an elevated session.
 $isAdmin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
@@ -55,7 +59,7 @@ $records |
     Set-Content -Path $localFile -Encoding utf8
 
 Write-Host "Uploading to $dest..."
-& databricks fs cp $localFile $dest
+& databricks fs cp $localFile $dest @dbArgs
 if ($LASTEXITCODE -ne 0) {
     Write-Error "databricks fs cp failed"
     exit 1

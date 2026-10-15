@@ -1,6 +1,10 @@
 param(
-    [string]$Since
+    [string]$Since,
+    [Alias("Profile", "p")]
+    [string]$DatabricksProfile   # Databricks CLI profile; empty uses DEFAULT
 )
+
+$dbArgs = if ($DatabricksProfile) { @("--profile", $DatabricksProfile) } else { @() }
 
 if (-not (Get-Command gcloud -ErrorAction SilentlyContinue)) {
     Write-Error @"
@@ -137,7 +141,7 @@ foreach ($eco in $ecosystems) {
     $uploaded = 0
 
     Write-Progress -Activity $eco -Status "Uploading 0 / $total files..." -PercentComplete 0
-    & databricks fs cp $deltaDir $dest -r 2>&1 | ForEach-Object {
+    & databricks fs cp $deltaDir $dest -r @dbArgs 2>&1 | ForEach-Object {
         $uploaded++
         $pct = [int](($uploaded / $total) * 100)
         Write-Progress -Activity $eco -Status "Uploading $uploaded / $total files..." -PercentComplete $pct

@@ -1,3 +1,10 @@
+param(
+    [Alias("Profile", "p")]
+    [string]$DatabricksProfile   # Databricks CLI profile; empty uses DEFAULT
+)
+
+$dbArgs = if ($DatabricksProfile) { @("--profile", $DatabricksProfile) } else { @() }
+
 $downloads = "$env:USERPROFILE\Downloads"
 
 $files = @(
@@ -31,7 +38,7 @@ foreach ($f in $files) {
 
     Write-Progress -Activity $f.name -Status "Uploading..." -PercentComplete 66
 
-    & databricks fs cp $json $dest 2>&1 | Out-Null
+    & databricks fs cp $json $dest @dbArgs 2>&1 | Out-Null
 
     Remove-Item $json
 
