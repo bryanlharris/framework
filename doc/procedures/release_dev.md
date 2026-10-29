@@ -80,10 +80,10 @@ databricks bundle deploy -t dev -p dev     (rerun once if a new volume is "not f
 databricks fs mkdir --profile dev dbfs:/Volumes/dev_utility/raw/files/edsm
 ```
 
-8. Smoke test: upload a file and watch file_router, then ingest:
+8. Smoke test: run fetch_url, then watch file_router and ingest pick up the edsm file:
 
 ```
-.\fred.ps1 -Profile dev -Catalog dev_utility
+databricks bundle run fetch_url -t dev -p dev
 ```
 
 9. Verify: a dev job's Git commit (Job details > Git) equals
