@@ -120,13 +120,9 @@ targets:
         treasury_bronze:
           catalog_name: treasury
           name: bronze
-          lifecycle:
-            prevent_destroy: true
         treasury_silver:
           catalog_name: treasury
           name: silver
-          lifecycle:
-            prevent_destroy: true
       volumes:
         raw_inbox:
           catalog_name: utility
