@@ -1,0 +1,9 @@
+command:
+  - python
+  - app.py
+
+resources:
+  - name: sql-warehouse
+    description: SQL warehouse for querying Windows event logs
+    sql_warehouse:
+      id: 8dbacdcdf037944a

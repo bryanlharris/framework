@@ -1,0 +1,7 @@
+{
+    "name": "edsm_powerPlay",
+    "system_type": "OTHER",
+    "entity_type": "file",
+    "url": "https://www.edsm.net/dump/powerPlay.json.gz",
+    "description": "EDSM powerPlay dump"
+}

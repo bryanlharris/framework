@@ -1,0 +1,5 @@
+{
+    "environments": ["free"],
+    "url": "https://raw.githubusercontent.com/python/cpython/v3.12.0/LICENSE",
+    "inbox_name": "fetchtest_license.txt"
+}

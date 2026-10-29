@@ -1,0 +1,515 @@
+# Databricks Asset Bundle: defines the ingest, file_router, fetch_url,
+# fetch_sftp and fetch_rest jobs for every workspace. Deploy with:
+#   databricks bundle deploy -t <target>
+#
+# The bundle creates and updates the jobs and, in free, test and dev,
+# the schemas and volumes; catalogs are always made by hand. The jobs
+# always pull their code from GitHub when they run (git_source), never
+# from this checkout.
+#
+# Each target is one workspace, named by a CLI profile in ~/.databrickscfg
+# (which holds the host, so no host is written here), and states everything
+# that differs there; test is a second target in free's workspace. See
+# doc/environments.md for the prefix and environment table, and
+# doc/procedures/git_workflow.md for branches and tags.
+
+bundle:
+  name: framework
+
+include:
+  - resources/*.yml
+
+# Jobs pull from GitHub, so don't upload this checkout to the workspace.
+# This makes validate and deploy warn "There are no files to sync"; that
+# warning is expected.
+sync:
+  exclude:
+    - "*"
+
+variables:
+  catalog_prefix:
+    description: Put in front of catalog names. dev_, staging_, or empty in prod and free.
+  environment:
+    description: free, test, dev, staging or prod. Selects settings by their "environments" list.
+  git_provider:
+    description: gitHub for github.com, or gitHubEnterprise for a GitHub Enterprise server.
+  fetch_pause_status:
+    description: PAUSED or UNPAUSED, for the fetch jobs' daily schedules. Paused jobs can still be run by hand.
+  job_name_prefix:
+    description: Put in front of job names. "[test] " in the test target, so its jobs stand apart from free's.
+    default: ""
+
+targets:
+
+  free:
+    # No default target: every bundle command names one with -t, so a
+    # command can't land on a workspace by accident.
+    workspace:
+      profile: DEFAULT
+    variables:
+      catalog_prefix: ""
+      environment: free
+      fetch_pause_status: PAUSED
+      git_provider: gitHub
+    resources:
+      jobs:
+        ingest:
+          git_source:
+            git_branch: master
+        file_router:
+          git_source:
+            git_branch: master
+        fetch_url:
+          git_source:
+            git_branch: master
+        fetch_sftp:
+          git_source:
+            git_branch: master
+        fetch_rest:
+          git_source:
+            git_branch: master
+      # Bound to the schemas and volumes made by hand (doc/procedures/bundle_deploy.md
+      # "Bind Existing Schemas and Volumes"). Catalogs stay manual: free's Default Storage catalogs
+      # can only be created in the UI or SQL.
+      schemas:
+        utility_raw:
+          catalog_name: utility
+          name: raw
+          lifecycle:
+            prevent_destroy: true
+        utility_bronze:
+          catalog_name: utility
+          name: bronze
+          lifecycle:
+            prevent_destroy: true
+        utility_silver:
+          catalog_name: utility
+          name: silver
+          lifecycle:
+            prevent_destroy: true
+        edsm_bronze:
+          catalog_name: edsm
+          name: bronze
+          lifecycle:
+            prevent_destroy: true
+        edsm_silver:
+          catalog_name: edsm
+          name: silver
+          lifecycle:
+            prevent_destroy: true
+        fdic_bronze:
+          catalog_name: fdic
+          name: bronze
+          lifecycle:
+            prevent_destroy: true
+        fdic_silver:
+          catalog_name: fdic
+          name: silver
+          lifecycle:
+            prevent_destroy: true
+        fred_bronze:
+          catalog_name: fred
+          name: bronze
+          lifecycle:
+            prevent_destroy: true
+        fred_silver:
+          catalog_name: fred
+          name: silver
+          lifecycle:
+            prevent_destroy: true
+        treasury_bronze:
+          catalog_name: treasury
+          name: bronze
+          lifecycle:
+            prevent_destroy: true
+        treasury_silver:
+          catalog_name: treasury
+          name: silver
+          lifecycle:
+            prevent_destroy: true
+      volumes:
+        raw_inbox:
+          catalog_name: utility
+          schema_name: ${resources.schemas.utility_raw.name}
+          name: inbox
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
+        raw_files:
+          catalog_name: utility
+          schema_name: ${resources.schemas.utility_raw.name}
+          name: files
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
+        bronze_state:
+          catalog_name: utility
+          schema_name: ${resources.schemas.utility_bronze.name}
+          name: state
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
+        silver_state:
+          catalog_name: utility
+          schema_name: ${resources.schemas.utility_silver.name}
+          name: state
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
+
+  # Test copy of free, in the same workspace: its own jobs ("[test] ..."),
+  # catalogs (test_...) and state. The bundle also creates its schemas and
+  # volumes, to try bundle management safely (doc/planning/decisions.md). Its catalogs
+  # are made by hand: free's Default Storage catalogs can only be created
+  # in the UI (or SQL), not by the bundle.
+  test:
+    workspace:
+      profile: DEFAULT
+    variables:
+      catalog_prefix: test_
+      environment: test
+      job_name_prefix: "[test] "
+      fetch_pause_status: PAUSED
+      git_provider: gitHub
+    resources:
+      # The jobs pull whatever branch is checked out where you deploy from
+      # (local checkout or the workspace Git folder).
+      jobs:
+        ingest:
+          git_source:
+            git_branch: ${bundle.git.branch}
+          # Same path as resources/ingest.job.yml, written as a reference so
+          # the bundle creates the volume before the job (its trigger needs it).
+          trigger:
+            file_arrival:
+              url: /Volumes/${resources.volumes.raw_files.catalog_name}/${resources.volumes.raw_files.schema_name}/${resources.volumes.raw_files.name}/
+        file_router:
+          git_source:
+            git_branch: ${bundle.git.branch}
+          trigger:
+            file_arrival:
+              url: /Volumes/${resources.volumes.raw_inbox.catalog_name}/${resources.volumes.raw_inbox.schema_name}/${resources.volumes.raw_inbox.name}/
+        fetch_url:
+          git_source:
+            git_branch: ${bundle.git.branch}
+        fetch_sftp:
+          git_source:
+            git_branch: ${bundle.git.branch}
+        fetch_rest:
+          git_source:
+            git_branch: ${bundle.git.branch}
+      schemas:
+        utility_raw:
+          catalog_name: test_utility
+          name: raw
+          lifecycle:
+            prevent_destroy: true
+        utility_bronze:
+          catalog_name: test_utility
+          name: bronze
+          lifecycle:
+            prevent_destroy: true
+        utility_silver:
+          catalog_name: test_utility
+          name: silver
+          lifecycle:
+            prevent_destroy: true
+        edsm_bronze:
+          catalog_name: test_edsm
+          name: bronze
+          lifecycle:
+            prevent_destroy: true
+        edsm_silver:
+          catalog_name: test_edsm
+          name: silver
+          lifecycle:
+            prevent_destroy: true
+        fdic_bronze:
+          catalog_name: test_fdic
+          name: bronze
+          lifecycle:
+            prevent_destroy: true
+        fdic_silver:
+          catalog_name: test_fdic
+          name: silver
+          lifecycle:
+            prevent_destroy: true
+        fred_bronze:
+          catalog_name: test_fred
+          name: bronze
+          lifecycle:
+            prevent_destroy: true
+        fred_silver:
+          catalog_name: test_fred
+          name: silver
+          lifecycle:
+            prevent_destroy: true
+      volumes:
+        raw_inbox:
+          catalog_name: test_utility
+          schema_name: ${resources.schemas.utility_raw.name}
+          name: inbox
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
+        raw_files:
+          catalog_name: test_utility
+          schema_name: ${resources.schemas.utility_raw.name}
+          name: files
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
+        bronze_state:
+          catalog_name: test_utility
+          schema_name: ${resources.schemas.utility_bronze.name}
+          name: state
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
+        silver_state:
+          catalog_name: test_utility
+          schema_name: ${resources.schemas.utility_silver.name}
+          name: state
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
+
+  # Work workspaces. Each needs its profile (dev, staging, prod) in
+  # ~/.databrickscfg on the machine you deploy from. Dev's schemas and volumes are bundle-managed
+  # like free's; if they already exist there, bind them first
+  # (doc/procedures/bundle_deploy.md "Bind Existing Schemas and Volumes"). Catalogs are made by hand.
+  #
+  # Dev has no prevent_destroy, so bundle destroy -t dev can wipe it
+  # (doc/planning/decisions.md 1).
+  #
+  # The jobs pull the exact commit you deploy from (git_commit). Deploy
+  # only from a clean checkout of a tag (dev_v0.NNN, staging_v0.NN,
+  # prod_v0.N), from the CLI: doc/procedures/git_workflow.md.
+
+  dev:
+    workspace:
+      profile: dev
+    variables:
+      catalog_prefix: dev_
+      environment: dev
+      fetch_pause_status: PAUSED
+      git_provider: gitHub
+    resources:
+      jobs:
+        ingest:
+          git_source:
+            git_commit: ${bundle.git.commit}
+          trigger:
+            file_arrival:
+              url: /Volumes/${resources.volumes.raw_files.catalog_name}/${resources.volumes.raw_files.schema_name}/${resources.volumes.raw_files.name}/
+        file_router:
+          git_source:
+            git_commit: ${bundle.git.commit}
+          trigger:
+            file_arrival:
+              url: /Volumes/${resources.volumes.raw_inbox.catalog_name}/${resources.volumes.raw_inbox.schema_name}/${resources.volumes.raw_inbox.name}/
+        fetch_url:
+          git_source:
+            git_commit: ${bundle.git.commit}
+        fetch_sftp:
+          git_source:
+            git_commit: ${bundle.git.commit}
+        fetch_rest:
+          git_source:
+            git_commit: ${bundle.git.commit}
+      schemas:
+        utility_raw:
+          catalog_name: dev_utility
+          name: raw
+        utility_bronze:
+          catalog_name: dev_utility
+          name: bronze
+        utility_silver:
+          catalog_name: dev_utility
+          name: silver
+        edsm_bronze:
+          catalog_name: dev_edsm
+          name: bronze
+        edsm_silver:
+          catalog_name: dev_edsm
+          name: silver
+      volumes:
+        raw_inbox:
+          catalog_name: dev_utility
+          schema_name: ${resources.schemas.utility_raw.name}
+          name: inbox
+          volume_type: MANAGED
+        raw_files:
+          catalog_name: dev_utility
+          schema_name: ${resources.schemas.utility_raw.name}
+          name: files
+          volume_type: MANAGED
+        bronze_state:
+          catalog_name: dev_utility
+          schema_name: ${resources.schemas.utility_bronze.name}
+          name: state
+          volume_type: MANAGED
+        silver_state:
+          catalog_name: dev_utility
+          schema_name: ${resources.schemas.utility_silver.name}
+          name: state
+          volume_type: MANAGED
+
+  # staging and prod stay commented until they are wanted. Each holds the
+  # jobs and the utility schemas and volumes, but no datasets. To turn one
+  # on: uncomment it, add its profile, and add dataset schemas when wanted
+  # (copy dev's, with this target's catalog prefix).
+
+  # staging:
+  #   workspace:
+  #     profile: staging
+  #   variables:
+  #     catalog_prefix: staging_
+  #     environment: staging
+  #     fetch_pause_status: UNPAUSED
+  #     git_provider: gitHub
+  #   resources:
+  #     jobs:
+  #       ingest:
+  #         git_source:
+  #           git_commit: ${bundle.git.commit}
+  #         trigger:
+  #           file_arrival:
+  #             url: /Volumes/${resources.volumes.raw_files.catalog_name}/${resources.volumes.raw_files.schema_name}/${resources.volumes.raw_files.name}/
+  #       file_router:
+  #         git_source:
+  #           git_commit: ${bundle.git.commit}
+  #         trigger:
+  #           file_arrival:
+  #             url: /Volumes/${resources.volumes.raw_inbox.catalog_name}/${resources.volumes.raw_inbox.schema_name}/${resources.volumes.raw_inbox.name}/
+  #       fetch_url:
+  #         git_source:
+  #           git_commit: ${bundle.git.commit}
+  #       fetch_sftp:
+  #         git_source:
+  #           git_commit: ${bundle.git.commit}
+  #       fetch_rest:
+  #         git_source:
+  #           git_commit: ${bundle.git.commit}
+  #     schemas:
+  #       utility_raw:
+  #         catalog_name: staging_utility
+  #         name: raw
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       utility_bronze:
+  #         catalog_name: staging_utility
+  #         name: bronze
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       utility_silver:
+  #         catalog_name: staging_utility
+  #         name: silver
+  #         lifecycle:
+  #           prevent_destroy: true
+  #     volumes:
+  #       raw_inbox:
+  #         catalog_name: staging_utility
+  #         schema_name: ${resources.schemas.utility_raw.name}
+  #         name: inbox
+  #         volume_type: MANAGED
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       raw_files:
+  #         catalog_name: staging_utility
+  #         schema_name: ${resources.schemas.utility_raw.name}
+  #         name: files
+  #         volume_type: MANAGED
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       bronze_state:
+  #         catalog_name: staging_utility
+  #         schema_name: ${resources.schemas.utility_bronze.name}
+  #         name: state
+  #         volume_type: MANAGED
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       silver_state:
+  #         catalog_name: staging_utility
+  #         schema_name: ${resources.schemas.utility_silver.name}
+  #         name: state
+  #         volume_type: MANAGED
+  #         lifecycle:
+  #           prevent_destroy: true
+
+  # prod:
+  #   workspace:
+  #     profile: prod
+  #   variables:
+  #     catalog_prefix: ""
+  #     environment: prod
+  #     fetch_pause_status: UNPAUSED
+  #     git_provider: gitHub
+  #   resources:
+  #     jobs:
+  #       ingest:
+  #         git_source:
+  #           git_commit: ${bundle.git.commit}
+  #         trigger:
+  #           file_arrival:
+  #             url: /Volumes/${resources.volumes.raw_files.catalog_name}/${resources.volumes.raw_files.schema_name}/${resources.volumes.raw_files.name}/
+  #       file_router:
+  #         git_source:
+  #           git_commit: ${bundle.git.commit}
+  #         trigger:
+  #           file_arrival:
+  #             url: /Volumes/${resources.volumes.raw_inbox.catalog_name}/${resources.volumes.raw_inbox.schema_name}/${resources.volumes.raw_inbox.name}/
+  #       fetch_url:
+  #         git_source:
+  #           git_commit: ${bundle.git.commit}
+  #       fetch_sftp:
+  #         git_source:
+  #           git_commit: ${bundle.git.commit}
+  #       fetch_rest:
+  #         git_source:
+  #           git_commit: ${bundle.git.commit}
+  #     schemas:
+  #       utility_raw:
+  #         catalog_name: utility
+  #         name: raw
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       utility_bronze:
+  #         catalog_name: utility
+  #         name: bronze
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       utility_silver:
+  #         catalog_name: utility
+  #         name: silver
+  #         lifecycle:
+  #           prevent_destroy: true
+  #     volumes:
+  #       raw_inbox:
+  #         catalog_name: utility
+  #         schema_name: ${resources.schemas.utility_raw.name}
+  #         name: inbox
+  #         volume_type: MANAGED
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       raw_files:
+  #         catalog_name: utility
+  #         schema_name: ${resources.schemas.utility_raw.name}
+  #         name: files
+  #         volume_type: MANAGED
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       bronze_state:
+  #         catalog_name: utility
+  #         schema_name: ${resources.schemas.utility_bronze.name}
+  #         name: state
+  #         volume_type: MANAGED
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       silver_state:
+  #         catalog_name: utility
+  #         schema_name: ${resources.schemas.utility_silver.name}
+  #         name: state
+  #         volume_type: MANAGED
+  #         lifecycle:
+  #           prevent_destroy: true

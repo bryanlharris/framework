@@ -1,0 +1,32 @@
+{
+    "function_path": "lakehouse.bronze.ingest.local.from_file",
+    "environments": ["free"],
+    "source_type": "cloudFiles",
+    "destination_table": "${catalog_prefix}treasury.bronze.yieldCurve",
+    "readStream_path": "/Volumes/${catalog_prefix}utility/raw/files/treasury/",
+    "readStream_options": {
+        "rowTag": "m:properties",
+        "ignoreNamespace": "true",
+        "excludeAttribute": "true",
+        "encoding": "UTF-8",
+        "cloudFiles.format": "xml",
+        "cloudFiles.inferColumnTypes": "false",
+        "cloudFiles.inferSchema": "true",
+        "cloudFiles.schemaLocation": "/Volumes/${catalog_prefix}utility/bronze/state/${catalog_prefix}treasury.bronze.yieldCurve/_schema/",
+        "cloudFiles.schemaEvolutionMode": "addNewColumns",
+        "cloudFiles.useNotifications": "false",
+        "cloudFiles.validateOptions": "true",
+        "badRecordsPath": "/Volumes/${catalog_prefix}utility/bronze/state/${catalog_prefix}treasury.bronze.yieldCurve/_badRecords/",
+        "columnNameOfCorruptRecord": "corrupt_record",
+        "rescuedDataColumn": "rescued_data",
+        "pathGlobFilter": "yieldCurve*.xml"
+    },
+    "writeStream_format": "delta",
+    "writeStream_options": {
+        "mergeSchema": "true",
+        "checkpointLocation": "/Volumes/${catalog_prefix}utility/bronze/state/${catalog_prefix}treasury.bronze.yieldCurve/_checkpoints/",
+        "delta.columnMapping.mode": "name"
+    },
+    "writeStream_outputMode": "append",
+    "trigger_type": { "availableNow": true }
+}

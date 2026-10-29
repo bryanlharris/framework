@@ -1,0 +1,62 @@
+# fetch_sftp job. Downloads each remote file in fetch_sftp/settings/ into
+# the inbox, where file_router and the ingest job take over. Per-workspace
+# values (catalog prefix, environment, git branch or commit) come from the
+# targets in databricks.yml.
+# Free workspace job_id: 218443793259980 (created by the bundle; never
+# made by hand, so no bind).
+resources:
+  jobs:
+    fetch_sftp:
+      name: ${var.job_name_prefix}fetch_sftp
+      max_concurrent_runs: 1
+      queue:
+        enabled: true
+      # Daily, off the hour. Every source is fetched at this one time.
+      # Paused in free (fetch_pause_status in databricks.yml); run it by hand there.
+      schedule:
+        quartz_cron_expression: "0 17 4 * * ?"
+        timezone_id: America/Chicago
+        pause_status: ${var.fetch_pause_status}
+      # catalog_prefix picks the inbox (/Volumes/<prefix>utility/raw/inbox/).
+      # environment selects settings whose "environments" list includes it.
+      parameters:
+        - name: catalog_prefix
+          default: ${var.catalog_prefix}
+        - name: environment
+          default: ${var.environment}
+      tasks:
+        - task_key: task_values
+          notebook_task:
+            notebook_path: fetch_sftp/task_values
+            source: GIT
+          min_retry_interval_millis: 900000
+          disable_auto_optimization: true
+          environment_key: Default
+        - task_key: fetch_loop
+          depends_on:
+            - task_key: task_values
+          for_each_task:
+            inputs: "{{tasks.task_values.values.fetch}}"
+            concurrency: 4
+            task:
+              task_key: fetch_iteration
+              notebook_task:
+                notebook_path: fetch_sftp/fetch
+                base_parameters:
+                  task_config: "{{input}}"
+                source: GIT
+              min_retry_interval_millis: 900000
+              disable_auto_optimization: true
+              environment_key: Default
+      # Code is pulled from git on every run, from origin of the checkout you
+      # deploy from. Each target in databricks.yml adds git_branch or git_commit.
+      git_source:
+        git_url: ${bundle.git.origin_url}
+        git_provider: ${var.git_provider}
+      environments:
+        - environment_key: Default
+          spec:
+            environment_version: "6"
+            dependencies:
+              - paramiko==3.5.1
+      performance_target: PERFORMANCE_OPTIMIZED

@@ -1,0 +1,29 @@
+{
+    "function_path": "lakehouse.bronze.ingest.local.from_file",
+    "environments": ["free", "dev", "staging", "prod"],
+    "source_type": "cloudFiles",
+    "destination_table": "${catalog_prefix}workspace.bronze.example_xml",
+    "readStream_path": "/Volumes/${catalog_prefix}utility/raw/files/workspace/",
+    "readStream_options": {
+        "rowTag": "EXAMPLE_ROW_TAG",
+        "encoding": "UTF-8",
+        "cloudFiles.format": "xml",
+        "cloudFiles.inferColumnTypes": "false",
+        "cloudFiles.inferSchema": "true",
+        "cloudFiles.schemaLocation": "/Volumes/${catalog_prefix}utility/bronze/state/${catalog_prefix}workspace.bronze.example_xml/_schema/",
+        "cloudFiles.schemaEvolutionMode": "none",
+        "cloudFiles.useNotifications": "false",
+        "cloudFiles.validateOptions": "true",
+        "badRecordsPath": "/Volumes/${catalog_prefix}utility/bronze/state/${catalog_prefix}workspace.bronze.example_xml/_badRecords/",
+        "columnNameOfCorruptRecord": "corrupt_record",
+        "rescuedDataColumn": "rescued_data"
+    },
+    "writeStream_format": "delta",
+    "writeStream_options": {
+        "mergeSchema": "true",
+        "checkpointLocation": "/Volumes/${catalog_prefix}utility/bronze/state/${catalog_prefix}workspace.bronze.example_xml/_checkpoints/",
+        "delta.columnMapping.mode": "name"
+    },
+    "writeStream_outputMode": "append",
+    "trigger_type": { "availableNow": true }
+}

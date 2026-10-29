@@ -1,0 +1,5 @@
+{
+    "source": { "external_metadata": { "name": "edsm_systemsWithoutCoordinates" } },
+    "target": { "table": { "name": "dev_edsm.bronze.systemsWithoutCoordinates" } },
+    "properties": { "fetched_by": "fetch_url" }
+}

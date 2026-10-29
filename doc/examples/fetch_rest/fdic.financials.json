@@ -1,0 +1,13 @@
+{
+    "environments": ["dev", "staging", "prod"],
+    "url": "https://api.fdic.gov/banks/financials",
+    "params": {
+        "filters": "REPDTE:20260331",
+        "fields": "CERT,REPDTE,ASSET,DEP,NETINC,EQ,ROA,ROE",
+        "limit": "500",
+        "format": "json"
+    },
+    "records_path": "data",
+    "record_key": "data",
+    "inbox_name": "fdic_financials.json"
+}

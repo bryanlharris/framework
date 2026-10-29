@@ -1,0 +1,5 @@
+{
+    "source": { "external_metadata": { "name": "edsm_powerPlay" } },
+    "target": { "table": { "name": "dev_edsm.bronze.powerPlay" } },
+    "properties": { "fetched_by": "fetch_url" }
+}

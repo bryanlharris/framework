@@ -1,0 +1,37 @@
+{
+    "function_path": "lakehouse.silver.ingest.from_table.upsert.without_delete",
+    "environments": ["free"],
+    "source_table": "${catalog_prefix}treasury.bronze.yieldCurve",
+    "destination_table": "${catalog_prefix}treasury.silver.yieldCurve",
+    "readStream_options": {
+        "ignoreDeletes": "true"
+    },
+    "writeStream_options": {
+        "checkpointLocation": "/Volumes/${catalog_prefix}utility/silver/state/${catalog_prefix}treasury.silver.yieldCurve/_checkpoints/"
+    },
+    "column_map": {},
+    "data_type_map": {
+        "Id": "int",
+        "NEW_DATE": "date",
+        "BC_1MONTH": "double",
+        "BC_1_5MONTH": "double",
+        "BC_2MONTH": "double",
+        "BC_3MONTH": "double",
+        "BC_4MONTH": "double",
+        "BC_6MONTH": "double",
+        "BC_1YEAR": "double",
+        "BC_2YEAR": "double",
+        "BC_3YEAR": "double",
+        "BC_5YEAR": "double",
+        "BC_7YEAR": "double",
+        "BC_10YEAR": "double",
+        "BC_20YEAR": "double",
+        "BC_30YEAR": "double",
+        "BC_30YEARDISPLAY": "double"
+    },
+    "pk": {
+        "name": "yieldcurve_pk",
+        "columns": ["NEW_DATE"]
+    },
+    "on_duplicate_pk": "dedupe_latest"
+}

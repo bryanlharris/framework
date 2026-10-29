@@ -1,0 +1,6 @@
+{
+    "environments": ["dev"],
+    "url": "https://www.edsm.net/dump/powerPlay.json.gz",
+    "inbox_name": "edsm_powerPlay.json",
+    "gunzip": true
+}

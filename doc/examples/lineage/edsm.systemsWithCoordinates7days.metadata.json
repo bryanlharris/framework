@@ -1,0 +1,7 @@
+{
+    "name": "edsm_systemsWithCoordinates7days",
+    "system_type": "OTHER",
+    "entity_type": "file",
+    "url": "https://www.edsm.net/dump/systemsWithCoordinates7days.json.gz",
+    "description": "EDSM systems with coordinates, last 7 days"
+}

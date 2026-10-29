@@ -1,0 +1,6 @@
+{
+    "environments": ["dev"],
+    "url": "https://www.edsm.net/dump/systemsWithoutCoordinates.json.gz",
+    "inbox_name": "edsm_systemsWithoutCoordinates.json",
+    "gunzip": true
+}

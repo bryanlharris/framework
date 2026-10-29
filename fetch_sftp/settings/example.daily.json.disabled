@@ -1,0 +1,11 @@
+{
+    "environments": ["dev", "staging", "prod"],
+    "host": "sftp.example.com",
+    "port": 22,
+    "host_key": "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIExampleExampleExampleExampleExampleExampl",
+    "username": "svc_account",
+    "secret_scope": "my-scope",
+    "secret_key": "sftp-private-key",
+    "remote_file": "/outbound/export.csv",
+    "inbox_name": "partner_export.csv"
+}

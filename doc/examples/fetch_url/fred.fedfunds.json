@@ -1,0 +1,5 @@
+{
+    "environments": ["free", "dev", "staging", "prod"],
+    "url": "https://fred.stlouisfed.org/graph/fredgraph.csv?id=FEDFUNDS",
+    "inbox_name": "fred_fedfunds.csv"
+}

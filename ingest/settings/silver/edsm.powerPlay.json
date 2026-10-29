@@ -1,0 +1,21 @@
+{
+    "function_path": "lakehouse.silver.ingest.from_table.upsert.without_delete",
+    "environments": ["free", "test", "dev"],
+    "source_table": "${catalog_prefix}edsm.bronze.powerPlay",
+    "destination_table": "${catalog_prefix}edsm.silver.powerPlay",
+    "readStream_options": {
+        "ignoreDeletes": "true"
+    },
+    "writeStream_options": {
+        "checkpointLocation": "/Volumes/${catalog_prefix}utility/silver/state/${catalog_prefix}edsm.silver.powerPlay/_checkpoints/"
+    },
+    "column_map": {},
+    "data_type_map": {
+        "date": "timestamp"
+    },
+    "pk": {
+        "name": "powerplay_pk",
+        "columns": ["id", "power"]
+    },
+    "on_duplicate_pk": "dedupe_latest"
+}

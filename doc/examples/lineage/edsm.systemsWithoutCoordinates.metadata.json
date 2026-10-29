@@ -1,0 +1,7 @@
+{
+    "name": "edsm_systemsWithoutCoordinates",
+    "system_type": "OTHER",
+    "entity_type": "file",
+    "url": "https://www.edsm.net/dump/systemsWithoutCoordinates.json.gz",
+    "description": "EDSM systems without coordinates"
+}

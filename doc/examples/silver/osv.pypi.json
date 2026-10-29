@@ -1,0 +1,30 @@
+{
+    "function_path": "lakehouse.silver.ingest.from_table.upsert.without_delete",
+    "environments": ["free", "dev", "staging", "prod"],
+    "source_table": "${catalog_prefix}osv.bronze.pypi",
+    "destination_table": "${catalog_prefix}osv.silver.pypi",
+    "readStream_options": {
+        "ignoreChanges": "true"
+    },
+    "on_duplicate_pk": "dedupe_latest",
+    "writeStream_options": {
+        "checkpointLocation": "/Volumes/${catalog_prefix}utility/silver/state/${catalog_prefix}osv.silver.pypi/_checkpoints/"
+    },
+    "column_map": {},
+    "data_type_map": {
+        "modified": "timestamp",
+        "published": "timestamp"
+    },
+    "json_column_map": {
+        "upstream": "ARRAY<STRING>",
+        "references": "ARRAY<STRUCT<type: STRING, url: STRING>>",
+        "affected": "ARRAY<STRUCT<package: STRUCT<ecosystem: STRING, name: STRING, purl: STRING>, severity: ARRAY<STRUCT<type: STRING, score: STRING>>, ranges: ARRAY<STRUCT<type: STRING, repo: STRING, events: ARRAY<STRUCT<introduced: STRING, fixed: STRING, last_affected: STRING, `limit`: STRING>>, database_specific: STRING>>, versions: ARRAY<STRING>, ecosystem_specific: STRING, database_specific: STRING>>",
+        "aliases": "ARRAY<STRING>",
+        "severity": "ARRAY<STRUCT<type: STRING, score: STRING>>",
+        "credits": "ARRAY<STRUCT<name: STRING, contact: ARRAY<STRING>, type: STRING>>"
+    },
+    "pk": {
+        "name": "primary_key",
+        "columns": ["id"]
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "function_path": "lakehouse.silver.custom.systems_with_power",
+    "environments": ["free", "dev"],
+    "destination_table": "${catalog_prefix}edsm.silver.systems_with_power",
+    "depends_on": [
+        "${catalog_prefix}edsm.bronze.systemsWithCoordinates7days",
+        "${catalog_prefix}edsm.silver.powerPlay"
+    ]
+}

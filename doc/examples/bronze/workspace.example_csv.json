@@ -1,0 +1,35 @@
+{
+    "function_path": "lakehouse.bronze.ingest.local.from_file",
+    "environments": ["free", "dev", "staging", "prod"],
+    "source_type": "cloudFiles",
+    "destination_table": "${catalog_prefix}workspace.bronze.example_csv",
+    "readStream_path": "/Volumes/${catalog_prefix}utility/raw/files/workspace/",
+    "readStream_options": {
+        "header": true,
+        "quote": "\"",
+        "escape": "\"",
+        "delimiter": ",",
+        "pathGlobFilter": "*.csv",
+        "encoding": "UTF-8",
+        "cloudFiles.format": "csv",
+        "cloudFiles.inferColumnTypes": "false",
+        "cloudFiles.inferSchema": "false",
+        "cloudFiles.schemaLocation": "/Volumes/${catalog_prefix}utility/bronze/state/${catalog_prefix}workspace.bronze.example_csv/_schema/",
+        "cloudFiles.schemaEvolutionMode": "none",
+        "cloudFiles.useNotifications": "false",
+        "cloudFiles.validateOptions": "true",
+        "badRecordsPath": "/Volumes/${catalog_prefix}utility/bronze/state/${catalog_prefix}workspace.bronze.example_csv/_badRecords/",
+        "multiLine": "true",
+        "ignoreLeadingWhiteSpace": "false",
+        "ignoreTrailingWhiteSpace": "false",
+        "treatEmptyValuesAsNulls": "true"
+    },
+    "writeStream_format": "delta",
+    "writeStream_options": {
+        "mergeSchema": "true",
+        "checkpointLocation": "/Volumes/${catalog_prefix}utility/bronze/state/${catalog_prefix}workspace.bronze.example_csv/_checkpoints/",
+        "delta.columnMapping.mode": "name"
+    },
+    "writeStream_outputMode": "append",
+    "trigger_type": { "availableNow": true }
+}

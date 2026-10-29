@@ -1,0 +1,105 @@
+# ingest job. Per-workspace values (catalog prefix, environment, git
+# branch or tag) come from the targets in databricks.yml.
+# Free workspace job_id: 179063231760295 (bind before the first deploy).
+resources:
+  jobs:
+    ingest:
+      name: ${var.job_name_prefix}ingest
+      max_concurrent_runs: 1
+      queue:
+        enabled: true
+      trigger:
+        pause_status: UNPAUSED
+        file_arrival:
+          url: /Volumes/${var.catalog_prefix}utility/raw/files/
+          min_time_between_triggers_seconds: 0
+          wait_after_last_change_seconds: 60
+      # catalog_prefix fills the catalog prefix token in settings files.
+      # environment selects settings whose "environments" list includes it.
+      parameters:
+        - name: catalog_prefix
+          default: ${var.catalog_prefix}
+        - name: environment
+          default: ${var.environment}
+      tasks:
+        - task_key: task_values
+          notebook_task:
+            notebook_path: ingest/task_values
+            source: GIT
+          min_retry_interval_millis: 900000
+          disable_auto_optimization: true
+          environment_key: Default
+        - task_key: bronze_loop
+          depends_on:
+            - task_key: task_values
+          for_each_task:
+            inputs: "{{tasks.task_values.values.bronze}}"
+            concurrency: 4
+            task:
+              task_key: bronze_iteration
+              notebook_task:
+                notebook_path: ingest/ingest
+                base_parameters:
+                  task_config: "{{input}}"
+                source: GIT
+              min_retry_interval_millis: 900000
+              disable_auto_optimization: true
+              environment_key: Default
+        - task_key: validate_bronze_loop
+          depends_on:
+            - task_key: bronze_loop
+          for_each_task:
+            inputs: "{{tasks.task_values.values.bronze_tables}}"
+            concurrency: 4
+            task:
+              task_key: validate_bronze_iteration
+              notebook_task:
+                notebook_path: ingest/validate_bronze
+                base_parameters:
+                  task_config: "{{input}}"
+                source: GIT
+              min_retry_interval_millis: 900000
+              disable_auto_optimization: true
+              environment_key: Default
+        - task_key: silver_loop
+          depends_on:
+            - task_key: validate_bronze_loop
+          for_each_task:
+            inputs: "{{tasks.task_values.values.silver}}"
+            concurrency: 4
+            task:
+              task_key: silver_iteration
+              notebook_task:
+                notebook_path: ingest/ingest
+                base_parameters:
+                  task_config: "{{input}}"
+                source: GIT
+              min_retry_interval_millis: 900000
+              disable_auto_optimization: true
+              environment_key: Default
+        - task_key: silver_dep_loop
+          depends_on:
+            - task_key: silver_loop
+          for_each_task:
+            inputs: "{{tasks.task_values.values.silver_dep}}"
+            concurrency: 1
+            task:
+              task_key: silver_dep_iteration
+              notebook_task:
+                notebook_path: ingest/ingest
+                base_parameters:
+                  task_config: "{{input}}"
+                source: GIT
+              min_retry_interval_millis: 900000
+              disable_auto_optimization: true
+              environment_key: Default
+      # Code is pulled from git on every run, from origin of the checkout you
+      # deploy from. Each target in databricks.yml adds git_branch or git_commit.
+      git_source:
+        git_url: ${bundle.git.origin_url}
+        git_provider: ${var.git_provider}
+      environments:
+        - environment_key: Default
+          spec:
+            environment_version: "6"
+      performance_target: PERFORMANCE_OPTIMIZED

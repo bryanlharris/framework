@@ -1,0 +1,7 @@
+{
+    "environments": ["free"],
+    "url": "https://pypi.org/simple/requests/",
+    "headers": { "Accept": "application/vnd.pypi.simple.v1+json" },
+    "records_path": "files",
+    "inbox_name": "fetchtest_pypi_requests.json"
+}

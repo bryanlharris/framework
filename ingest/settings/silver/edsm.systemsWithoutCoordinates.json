@@ -1,0 +1,21 @@
+{
+    "function_path": "lakehouse.silver.ingest.from_table.upsert.without_delete",
+    "environments": ["free", "test", "dev"],
+    "source_table": "${catalog_prefix}edsm.bronze.systemsWithoutCoordinates",
+    "destination_table": "${catalog_prefix}edsm.silver.systemsWithoutCoordinates",
+    "source_type": "table",
+    "readStream_options": {},
+    "writeStream_options": {
+        "checkpointLocation": "/Volumes/${catalog_prefix}utility/silver/state/${catalog_prefix}edsm.silver.systemsWithoutCoordinates/_checkpoints/"
+    },
+    "column_map": {},
+    "data_type_map": {
+        "id": "integer",
+        "id64": "long",
+        "date": "timestamp"
+    },
+    "pk": {
+        "name": "system_pk",
+        "columns": ["id"]
+    }
+}

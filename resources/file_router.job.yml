@@ -1,0 +1,51 @@
+# file_router job. Its code is file_router/file_router.py in this repo.
+# Per-workspace values (catalog prefix, git branch or commit) come from the
+# targets in databricks.yml.
+# Free workspace job_id: 1011420299706363 (bind before the first deploy).
+resources:
+  jobs:
+    file_router:
+      name: ${var.job_name_prefix}file_router
+      max_concurrent_runs: 1
+      timeout_seconds: 0
+      performance_target: PERFORMANCE_OPTIMIZED
+      queue:
+        enabled: true
+      email_notifications:
+        no_alert_for_skipped_runs: false
+
+      trigger:
+        pause_status: UNPAUSED
+        file_arrival:
+          url: /Volumes/${var.catalog_prefix}utility/raw/inbox/
+          min_time_between_triggers_seconds: 0
+          wait_after_last_change_seconds: 60
+
+      parameters:
+        - name: catalog
+          default: ${var.catalog_prefix}utility
+
+      # Code is pulled from git on every run, from origin of the checkout you
+      # deploy from. Each target in databricks.yml adds git_branch or git_commit.
+      git_source:
+        git_url: ${bundle.git.origin_url}
+        git_provider: ${var.git_provider}
+
+      environments:
+        - environment_key: Default
+          spec:
+            environment_version: "6"
+
+      tasks:
+        - task_key: file_router
+          environment_key: Default
+          disable_auto_optimization: true
+          max_retries: 0
+          min_retry_interval_millis: 900000
+          retry_on_timeout: false
+          run_if: ALL_SUCCESS
+          timeout_seconds: 0
+          spark_python_task:
+            python_file: file_router/file_router.py
+            source: GIT
+            parameters: ["--catalog", "{{job.parameters.catalog}}"]

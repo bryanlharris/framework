@@ -1,0 +1,5 @@
+{
+    "source": { "external_metadata": { "name": "edsm_systemsWithCoordinates7days" } },
+    "target": { "table": { "name": "dev_edsm.bronze.systemsWithCoordinates7days" } },
+    "properties": { "fetched_by": "fetch_url" }
+}
