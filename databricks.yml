@@ -117,12 +117,6 @@ targets:
           name: silver
           lifecycle:
             prevent_destroy: true
-        treasury_bronze:
-          catalog_name: treasury
-          name: bronze
-        treasury_silver:
-          catalog_name: treasury
-          name: silver
       volumes:
         raw_inbox:
           catalog_name: utility
@@ -333,6 +327,12 @@ targets:
           name: bronze
         dev_edsm_silver:
           catalog_name: dev_edsm
+          name: silver
+        dev_treasury_bronze:
+          catalog_name: dev_treasury
+          name: bronze
+        dev_treasury_silver:
+          catalog_name: dev_treasury
           name: silver
       volumes:
         dev_utility_raw_inbox:

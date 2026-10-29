@@ -26,7 +26,7 @@ dataset   targets
 edsm      free, test, dev
 fdic      free, test
 fred      free, test
-treasury  free
+treasury  dev
 ```
 
 staging and prod have no datasets yet: only the jobs and the utility
