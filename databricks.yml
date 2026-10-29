@@ -282,6 +282,11 @@ targets:
   # Dev has no prevent_destroy, so bundle destroy -t dev can wipe it
   # (doc/planning/decisions.md 1).
   #
+  # Schema and volume keys are their real names with _ for the dots
+  # (dev_utility_bronze is dev_utility.bronze), so plan and destroy
+  # output says which catalog it means. Free and prod keep the short
+  # keys (utility_bronze, raw_inbox): their real names have no prefix.
+  #
   # The jobs pull the exact commit you deploy from (git_commit). Deploy
   # only from a clean checkout of a tag (dev_v0.NNN, staging_v0.NN,
   # prod_v0.N), from the CLI: doc/procedures/git_workflow.md.
@@ -301,13 +306,13 @@ targets:
             git_commit: ${bundle.git.commit}
           trigger:
             file_arrival:
-              url: /Volumes/${resources.volumes.raw_files.catalog_name}/${resources.volumes.raw_files.schema_name}/${resources.volumes.raw_files.name}/
+              url: /Volumes/${resources.volumes.dev_utility_raw_files.catalog_name}/${resources.volumes.dev_utility_raw_files.schema_name}/${resources.volumes.dev_utility_raw_files.name}/
         file_router:
           git_source:
             git_commit: ${bundle.git.commit}
           trigger:
             file_arrival:
-              url: /Volumes/${resources.volumes.raw_inbox.catalog_name}/${resources.volumes.raw_inbox.schema_name}/${resources.volumes.raw_inbox.name}/
+              url: /Volumes/${resources.volumes.dev_utility_raw_inbox.catalog_name}/${resources.volumes.dev_utility_raw_inbox.schema_name}/${resources.volumes.dev_utility_raw_inbox.name}/
         fetch_url:
           git_source:
             git_commit: ${bundle.git.commit}
@@ -318,47 +323,47 @@ targets:
           git_source:
             git_commit: ${bundle.git.commit}
       schemas:
-        utility_raw:
+        dev_utility_raw:
           catalog_name: dev_utility
           name: raw
-        utility_bronze:
+        dev_utility_bronze:
           catalog_name: dev_utility
           name: bronze
-        utility_silver:
+        dev_utility_silver:
           catalog_name: dev_utility
           name: silver
-        edsm_bronze:
+        dev_edsm_bronze:
           catalog_name: dev_edsm
           name: bronze
-        edsm_silver:
+        dev_edsm_silver:
           catalog_name: dev_edsm
           name: silver
       volumes:
-        raw_inbox:
+        dev_utility_raw_inbox:
           catalog_name: dev_utility
-          schema_name: ${resources.schemas.utility_raw.name}
+          schema_name: ${resources.schemas.dev_utility_raw.name}
           name: inbox
           volume_type: MANAGED
-        raw_files:
+        dev_utility_raw_files:
           catalog_name: dev_utility
-          schema_name: ${resources.schemas.utility_raw.name}
+          schema_name: ${resources.schemas.dev_utility_raw.name}
           name: files
           volume_type: MANAGED
-        bronze_state:
+        dev_utility_bronze_state:
           catalog_name: dev_utility
-          schema_name: ${resources.schemas.utility_bronze.name}
+          schema_name: ${resources.schemas.dev_utility_bronze.name}
           name: state
           volume_type: MANAGED
-        silver_state:
+        dev_utility_silver_state:
           catalog_name: dev_utility
-          schema_name: ${resources.schemas.utility_silver.name}
+          schema_name: ${resources.schemas.dev_utility_silver.name}
           name: state
           volume_type: MANAGED
 
   # staging and prod stay commented until they are wanted. Each holds the
   # jobs and the utility schemas and volumes, but no datasets. To turn one
   # on: uncomment it, add its profile, and add dataset schemas when wanted
-  # (copy dev's, with this target's catalog prefix).
+  # (copy dev's, with this target's prefix on catalogs and keys).
 
   # staging:
   #   workspace:
@@ -375,13 +380,13 @@ targets:
   #           git_commit: ${bundle.git.commit}
   #         trigger:
   #           file_arrival:
-  #             url: /Volumes/${resources.volumes.raw_files.catalog_name}/${resources.volumes.raw_files.schema_name}/${resources.volumes.raw_files.name}/
+  #             url: /Volumes/${resources.volumes.staging_utility_raw_files.catalog_name}/${resources.volumes.staging_utility_raw_files.schema_name}/${resources.volumes.staging_utility_raw_files.name}/
   #       file_router:
   #         git_source:
   #           git_commit: ${bundle.git.commit}
   #         trigger:
   #           file_arrival:
-  #             url: /Volumes/${resources.volumes.raw_inbox.catalog_name}/${resources.volumes.raw_inbox.schema_name}/${resources.volumes.raw_inbox.name}/
+  #             url: /Volumes/${resources.volumes.staging_utility_raw_inbox.catalog_name}/${resources.volumes.staging_utility_raw_inbox.schema_name}/${resources.volumes.staging_utility_raw_inbox.name}/
   #       fetch_url:
   #         git_source:
   #           git_commit: ${bundle.git.commit}
@@ -392,46 +397,46 @@ targets:
   #         git_source:
   #           git_commit: ${bundle.git.commit}
   #     schemas:
-  #       utility_raw:
+  #       staging_utility_raw:
   #         catalog_name: staging_utility
   #         name: raw
   #         lifecycle:
   #           prevent_destroy: true
-  #       utility_bronze:
+  #       staging_utility_bronze:
   #         catalog_name: staging_utility
   #         name: bronze
   #         lifecycle:
   #           prevent_destroy: true
-  #       utility_silver:
+  #       staging_utility_silver:
   #         catalog_name: staging_utility
   #         name: silver
   #         lifecycle:
   #           prevent_destroy: true
   #     volumes:
-  #       raw_inbox:
+  #       staging_utility_raw_inbox:
   #         catalog_name: staging_utility
-  #         schema_name: ${resources.schemas.utility_raw.name}
+  #         schema_name: ${resources.schemas.staging_utility_raw.name}
   #         name: inbox
   #         volume_type: MANAGED
   #         lifecycle:
   #           prevent_destroy: true
-  #       raw_files:
+  #       staging_utility_raw_files:
   #         catalog_name: staging_utility
-  #         schema_name: ${resources.schemas.utility_raw.name}
+  #         schema_name: ${resources.schemas.staging_utility_raw.name}
   #         name: files
   #         volume_type: MANAGED
   #         lifecycle:
   #           prevent_destroy: true
-  #       bronze_state:
+  #       staging_utility_bronze_state:
   #         catalog_name: staging_utility
-  #         schema_name: ${resources.schemas.utility_bronze.name}
+  #         schema_name: ${resources.schemas.staging_utility_bronze.name}
   #         name: state
   #         volume_type: MANAGED
   #         lifecycle:
   #           prevent_destroy: true
-  #       silver_state:
+  #       staging_utility_silver_state:
   #         catalog_name: staging_utility
-  #         schema_name: ${resources.schemas.utility_silver.name}
+  #         schema_name: ${resources.schemas.staging_utility_silver.name}
   #         name: state
   #         volume_type: MANAGED
   #         lifecycle:
