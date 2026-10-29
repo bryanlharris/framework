@@ -4,7 +4,7 @@ Words used across these docs, especially ones that sound alike.
 
 ## Workspaces and Targets
 
-**workspace**: One Databricks workspace: free (personal), or dev, staging and prod at work.
+**workspace**: One Databricks workspace: free (a sandbox), or dev, staging and prod.
 
 **target**: One entry under targets: in **databricks.yml**. Usually one per workspace; test is a second target in the free workspace. Picked with -t **\<target>**.
 
@@ -12,7 +12,7 @@ Words used across these docs, especially ones that sound alike.
 
 **catalog_prefix**: What every catalog name starts with in a target: dev_, staging_, test_, or empty in free and prod. Makes dev_fred in dev and fred in prod. **environments.md**.
 
-**free**: The personal workspace, and its target. Runs master.
+**free**: The sandbox workspace (Databricks Free Edition), and its target. Runs master.
 
 **test**: A second target in the free workspace: "[test]" jobs, test_ catalogs. Runs the checked-out branch, for trying a topic without touching free.
 

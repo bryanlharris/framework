@@ -7,7 +7,7 @@ Environments:
 ```
 environment   catalog_prefix   used for
 -----------   --------------   ----------------------
-free          (empty)          personal free workspace
+free          (empty)          sandbox free workspace
 test          test_            test copy, in the free workspace
 dev           dev_             dev workspace
 staging       staging_         staging workspace

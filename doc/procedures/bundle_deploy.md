@@ -25,7 +25,7 @@ Deploying never copies code into the workspace.
 Each target in **databricks.yml** is one workspace, named by a CLI
 profile (workspace.profile), and states everything that differs
 there. The host is in that profile in **~/.databrickscfg**, never in
-the repo, so the work hosts stay out of the home code.
+the repo.
 
 Targets:
 
