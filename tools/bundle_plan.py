@@ -1,4 +1,5 @@
-"""Show what a bundle deploy would do, by real name.
+"""
+Show what a bundle deploy would do, by real name.
 
 bundle plan lists resource keys (schemas.edsm_bronze); this prints the name
 each lands on (dev_edsm.bronze), grouped by type, with the fields a change
@@ -9,25 +10,71 @@ deploy.
 
 Usage: py tools/bundle_plan.py <target> [-v]      e.g. py tools/bundle_plan.py dev
 """
+import argparse
 import json
+import os
 import re
 import shutil
 import subprocess
 import sys
+from dataclasses import dataclass
 
+# bundle plan's action names, shown as plainer words.
 ACTIONS = {'skip': 'unchanged', 'update': 'change'}
+
+# Order of actions in the summary line.
+SUMMARY_ORDER = ['create', 'change', 'recreate', 'delete', 'unchanged']
+
+# Schemas and volumes print in layer order: raw first, then the rest.
 LAYERS = {'raw': 0, 'bronze': 1, 'silver': 2, 'gold': 3}
-VERBOSE = ('-v', '--verbose', '-verbose')
+
 COMMIT = 'git_source.git_commit'
-# Box lines on a console; plain ASCII when piped, since a pipe or file may not
-# be UTF-8 (PowerShell pipes show box lines as junk).
+
+# Width of the action column ("unchanged" plus a space).
+ACTION_WIDTH = 10
+
+
+# Box lines and arrow on a console; plain ASCII when piped
 if sys.stdout.isatty():
-    MID, LAST, BAR = '├──', '└──', '│  '
+    MID, LAST, BAR, ARROW = '├──', '└──', '│  ', '→'
 else:
-    MID, LAST, BAR = '|--', '`--', '|  '
+    MID, LAST, BAR, ARROW = '|--', '`--', '|  ', '->'
+
+
+# Action colors on a console, unless NO_COLOR is set
+RED    = '\x1b[38;2;204;85;85m'     # CC5555 deletes
+GREEN  = '\x1b[38;2;78;186;101m'    # 4EBA65 creates
+YELLOW = '\x1b[38;2;255;193;7m'     # FFC107 changes
+DIM    = '\x1b[2m'                  # unchanged
+RESET  = '\x1b[0m'
+CODES  = {
+    'delete':    RED,
+    'recreate':  RED,
+    'create':    GREEN,
+    'change':    YELLOW,
+    'unchanged': DIM,
+}
+COLOR  = sys.stdout.isatty() and not os.environ.get('NO_COLOR')
+
+
+@dataclass
+class Row:
+    """One resource in the tree."""
+    name: str      # job, schema or volume name
+    action: str    # create, change, delete, recreate or unchanged
+    note: str      # jobs: the commit or branch; schemas and volumes: prevent_destroy
+    key: str       # the bundle key, shown with -v
+    fields: list   # "field: old -> new" lines printed under the row
+
+
+def paint(action, text):
+    """text in the action's color."""
+    code = CODES.get(action)
+    return f'{code}{text}{RESET}' if COLOR and code else text
 
 
 def cli(*args):
+    """Run a databricks bundle command and return its JSON output."""
     exe = shutil.which('databricks')
     if not exe:
         sys.exit('databricks CLI not found on PATH')
@@ -40,39 +87,52 @@ def cli(*args):
 
 def workspace(config):
     """The target's workspace, by profile name."""
-    return f"workspace {config.get('workspace', {}).get('profile', '')}".strip()
+    profile = config.get('workspace', {}).get('profile', '')
+    return f'workspace {profile}'.strip()
 
 
 def state(entry):
     """The resource as it will be (create, change) or as it is (delete, unchanged)."""
     new = entry.get('new_state', {}).get('value')
-    return new if new is not None else entry.get('remote_state', {})
+    if new is not None:
+        return new
+    return entry.get('remote_state', {})
 
 
 def tags(commit):
     """ (dev_v0.001) when local tags point at the commit; jobs store only the commit."""
     run = subprocess.run(['git', 'tag', '--points-at', commit],
                          capture_output=True, text=True, encoding='utf-8')
-    found = run.stdout.split() if run.returncode == 0 else []
-    return f" ({', '.join(found)})" if found else ''
+    if run.returncode != 0 or not run.stdout.split():
+        return ''
+    return f" ({', '.join(run.stdout.split())})"
+
+
+def short(commit):
+    """A commit as git log shows it: 7 characters, plus any tags."""
+    return f'{commit[:7]}{tags(commit)}'
 
 
 def git_ref(s, entry):
     """A job's code: the commit or branch it pulls; old -> new when it changes."""
     git = s.get('git_source', {})
-    if git.get('git_commit'):
-        c = entry.get('changes', {}).get(COMMIT, {})
-        old = c.get('old', c.get('remote'))
-        if c.get('action', 'skip') != 'skip' and old:
-            return f"commit {old[:7]}{tags(old)} -> {git['git_commit'][:7]}{tags(git['git_commit'])}"
-        return f"commit {git['git_commit'][:7]}{tags(git['git_commit'])}"
-    return f"branch {git.get('git_branch')}"
+    new = git.get('git_commit')
+    if not new:
+        return f"branch {git.get('git_branch')}"
+
+    change = entry.get('changes', {}).get(COMMIT, {})
+    old = change.get('old', change.get('remote'))
+    if change.get('action', 'skip') != 'skip' and old:
+        return f'commit {short(old)} {ARROW} {short(new)}'
+    return f'commit {short(new)}'
 
 
 def protected(config, kind, key):
     """prevent_destroy when deploy refuses to delete it."""
-    lifecycle = config.get('resources', {}).get(kind, {}).get(key, {}).get('lifecycle', {})
-    return 'prevent_destroy' if lifecycle.get('prevent_destroy') else ''
+    resource = config.get('resources', {}).get(kind, {}).get(key, {})
+    if resource.get('lifecycle', {}).get('prevent_destroy'):
+        return 'prevent_destroy'
+    return ''
 
 
 def changes(entry, skip=()):
@@ -84,7 +144,7 @@ def changes(entry, skip=()):
             continue
         old = c.get('old', c.get('remote'))
         new = c.get('new')
-        out.append(f'{field}: {show(old)} -> {show(new)}')
+        out.append(f'{field}: {show(old)} {ARROW} {show(new)}')
     return out
 
 
@@ -95,67 +155,104 @@ def show(value):
     return json.dumps(value)
 
 
-def tree(groups, width, verbose):
-    """groups: [(root, root_note, [(leaf, action, note, key, fields)])], printed as
-    root, then each leaf with its action and note; notes line up with root_note.
-    width is the leaf column, shared by every tree so the actions line up."""
-    note_at = 4 + width + 2 + 11
-    for root, root_note, leaves in groups:
-        print(f'  {root:<{note_at}}{root_note}'.rstrip())
-        for i, (leaf, action, note, key, fields) in enumerate(leaves):
-            last = i == len(leaves) - 1
-            flag = '!' if action in ('delete', 'recreate') else ' '
-            key = f'   ({key})' if verbose else ''
-            print(f'  {LAST if last else MID} {leaf:<{width}} {flag}{action:<10} {note}{key}'.rstrip())
-            for f in fields:
-                print(f'  {"   " if last else BAR}     {f}')
+def layer_order(name):
+    """Sort key for schema names: raw, bronze, silver, gold, then the rest."""
+    return (LAYERS.get(name, len(LAYERS)), name)
+
+
+def volume_order(path):
+    """Sort key for /Volumes/<catalog>/<schema>: by the schema's layer."""
+    schema = path.rsplit('/', 1)[-1]
+    return (LAYERS.get(schema, len(LAYERS)), path)
+
+
+def print_tree(groups, width, verbose):
+    """groups: {heading: [Row, ...]}. Prints each heading, then its rows as
+    branches. width is the name column, the same for every section so the
+    actions line up."""
+    for heading, rows in groups.items():
+        print(f'  {heading}')
+        for i, row in enumerate(rows):
+            last = i == len(rows) - 1
+            branch = LAST if last else MID
+            flag = '!' if row.action in ('delete', 'recreate') else ' '
+            action = paint(row.action, flag + row.action)
+            padding = ' ' * (ACTION_WIDTH - len(row.action))
+            key = f'   ({row.key})' if verbose else ''
+            line = f'  {branch} {row.name:<{width}} {action}{padding} {row.note}{key}'
+            print(line.rstrip())
+
+            under = '   ' if last else BAR
+            for field in row.fields:
+                print(f'  {under}     {field}')
 
 
 def main():
-    args = sys.argv[1:]
-    verbose = any(a.lower() in VERBOSE for a in args)
-    args = [a for a in args if a.lower() not in VERBOSE]
-    if len(args) != 1 or args[0].startswith('-'):
-        sys.exit(__doc__.strip().split('\n')[-1])
-    target = args[0]
+    parser = argparse.ArgumentParser(description='Show what a bundle deploy would do, by real name.')
+    parser.add_argument('target', help='bundle target, e.g. dev')
+    parser.add_argument('-v', '--verbose', '-verbose', action='store_true',
+                        help='also show the bundle keys')
+    args = parser.parse_args()
+    target = args.target
+    verbose = args.verbose
+
     config = cli('validate', '-t', target)
     entries = cli('plan', '-t', target)['plan']
 
+    # Sort each resource into its section, and count the actions.
     counts = {}
-    jobs, catalogs, volumes = [], {}, {}
-    for key, entry in entries.items():
-        _, kind, name = key.split('.', 2)
+    jobs = []
+    catalogs = {}   # catalog name -> schema rows
+    volumes = {}    # /Volumes/<catalog>/<schema> -> volume rows
+    for full_key, entry in entries.items():
+        _, kind, key = full_key.split('.', 2)   # resources.schemas.edsm_bronze
         action = ACTIONS.get(entry['action'], entry['action'])
         counts[action] = counts.get(action, 0) + 1
         s = state(entry)
+
         if kind == 'jobs':
-            jobs.append((s.get('name'), action, git_ref(s, entry), name, changes(entry, skip=(COMMIT,))))
+            row = Row(s.get('name'), action, git_ref(s, entry), key,
+                      changes(entry, skip=(COMMIT,)))
+            jobs.append(row)
         elif kind == 'schemas':
-            catalogs.setdefault(s.get('catalog_name'), []).append(
-                (s.get('name'), action, protected(config, kind, name), name, changes(entry)))
+            row = Row(s.get('name'), action, protected(config, kind, key), key,
+                      changes(entry))
+            catalogs.setdefault(s.get('catalog_name'), []).append(row)
         else:
-            volumes.setdefault(f"/Volumes/{s.get('catalog_name')}/{s.get('schema_name')}", []).append(
-                (s.get('name'), action, protected(config, kind, name), name, changes(entry)))
+            row = Row(s.get('name'), action, protected(config, kind, key), key,
+                      changes(entry))
+            path = f"/Volumes/{s.get('catalog_name')}/{s.get('schema_name')}"
+            volumes.setdefault(path, []).append(row)
 
-    order = ['create', 'change', 'recreate', 'delete', 'unchanged']
-    order += sorted(a for a in counts if a not in order)
-    summary = ', '.join(f'{counts[a]} {a}' for a in order if a in counts)
-    print(f'Plan for {target}: {summary or "nothing"}')
+    # Summary line: "Plan for dev: 2 create, 18 unchanged"
+    order = SUMMARY_ORDER + sorted(a for a in counts if a not in SUMMARY_ORDER)
+    parts = [paint(a, f'{counts[a]} {a}') for a in order if a in counts]
+    print(f"Plan for {target}: {', '.join(parts) or 'nothing'}")
 
-    # Volumes hang from their schema; schemas in layer order, raw first.
-    layer = lambda p: (LAYERS.get(p.rsplit('/', 1)[-1], len(LAYERS)), p)
-    sections = [
-        ('Jobs', [(workspace(config), '', sorted(jobs))] if jobs else []),
-        ('Schemas', [(c, '', sorted(catalogs[c], key=lambda l: layer(l[0])))
-                     for c in sorted(catalogs)]),
-        ('Volumes', [(p, '', sorted(volumes[p])) for p in sorted(volumes, key=layer)]),
-    ]
-    width = max((len(l[0]) for _, groups in sections for _, _, leaves in groups for l in leaves),
-                default=0)
-    for title, groups in sections:
+    # Each section is {heading: rows}, headings and rows in print order.
+    job_section = {}
+    if jobs:
+        job_section[workspace(config)] = sorted(jobs, key=lambda r: r.name)
+
+    schema_section = {}
+    for catalog in sorted(catalogs):
+        schema_section[catalog] = sorted(catalogs[catalog], key=lambda r: layer_order(r.name))
+
+    volume_section = {}
+    for path in sorted(volumes, key=volume_order):
+        volume_section[path] = sorted(volumes[path], key=lambda r: r.name)
+
+    sections = {'Jobs': job_section, 'Schemas': schema_section, 'Volumes': volume_section}
+
+    # The name column is as wide as the longest name in any section.
+    all_rows = [row for section in sections.values()
+                for rows in section.values() for row in rows]
+    width = max((len(row.name) for row in all_rows), default=0)
+
+    for title, groups in sections.items():
         if groups:
             print(f'\n{title}')
-            tree(groups, width, verbose)
+            print_tree(groups, width, verbose)
 
 
 if __name__ == '__main__':
