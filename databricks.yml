@@ -328,12 +328,6 @@ targets:
         dev_edsm_silver:
           catalog_name: dev_edsm
           name: silver
-        dev_treasury_bronze:
-          catalog_name: dev_treasury
-          name: bronze
-        dev_treasury_silver:
-          catalog_name: dev_treasury
-          name: silver
       volumes:
         dev_utility_raw_inbox:
           catalog_name: dev_utility

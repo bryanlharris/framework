@@ -1,0 +1,11 @@
+# Treasury schemas
+targets:
+  dev:
+    resources:
+      schemas:
+        dev_treasury_bronze:
+          catalog_name: dev_treasury
+          name: bronze
+        dev_treasury_silver:
+          catalog_name: dev_treasury
+          name: silver
