@@ -1,6 +1,5 @@
 # ingest job. Per-workspace values (catalog prefix, environment, git
 # branch or tag) come from the targets in databricks.yml.
-# Free workspace job_id: 179063231760295 (bind before the first deploy).
 resources:
   jobs:
     ingest:

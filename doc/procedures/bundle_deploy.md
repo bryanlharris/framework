@@ -300,8 +300,7 @@ d. databricks bundle plan -t **\<target>**
 It must say "update jobs.\<new key>" with 0 to add and 0 to
 delete. Anything else: stop. Then deploy.
 
-Done in free on 2026-10-23: framework -> ingest, job ID
-179063231760295.
+Done in free on 2026-10-23: framework -> ingest.
 
 ## Worked Example: First Deploy to the Free Workspace
 
@@ -315,16 +314,15 @@ Situation before: the free workspace had both jobs, made by hand.
 Free jobs before binding:
 
 ```
-+-------------+------------------+-----------------------------+
-| Bundle key  | Job ID           | Trigger folder              |
-+-------------+------------------+-----------------------------+
-| framework   | 179063231760295  | /Volumes/utility/raw/files/ |
-| file_router | 1011420299706363 | /Volumes/utility/raw/inbox/ |
-+-------------+------------------+-----------------------------+
++-------------+--------------------------+-----------------------------+
+| Bundle key  | Job ID                   | Trigger folder              |
++-------------+--------------------------+-----------------------------+
+| framework   | <framework job id>       | /Volumes/utility/raw/files/ |
+| file_router | <file_router job id>     | /Volumes/utility/raw/inbox/ |
++-------------+--------------------------+-----------------------------+
 ```
 
-Added later: fetch_url (763610887760027), fetch_sftp
-(218443793259980) and fetch_rest (64242777793505), all on a daily
+Added later: fetch_url, fetch_sftp and fetch_rest, all on a daily
 schedule with no trigger folder, were created by a plain deploy,
 with no bind.
 
@@ -352,15 +350,15 @@ Step 4. Save the current job definitions, outside the repo, in
 case you want to compare or restore:
 
 ```
-databricks jobs get 179063231760295  > $HOME\Downloads\framework_before.json
-databricks jobs get 1011420299706363 > $HOME\Downloads\file_router_before.json
+databricks jobs get <framework job id>   > $HOME\Downloads\framework_before.json
+databricks jobs get <file_router job id> > $HOME\Downloads\file_router_before.json
 ```
 
 Step 5. Bind both jobs (answer y to each):
 
 ```
-databricks bundle deployment bind framework   179063231760295  -t free
-databricks bundle deployment bind file_router 1011420299706363 -t free
+databricks bundle deployment bind framework   <framework job id>   -t free
+databricks bundle deployment bind file_router <file_router job id> -t free
 ```
 
 Step 6. Deploy:

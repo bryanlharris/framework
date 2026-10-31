@@ -1,7 +1,6 @@
 # file_router job. Its code is file_router/file_router.py in this repo.
 # Per-workspace values (catalog prefix, git branch or commit) come from the
 # targets in databricks.yml.
-# Free workspace job_id: 1011420299706363 (bind before the first deploy).
 resources:
   jobs:
     file_router:

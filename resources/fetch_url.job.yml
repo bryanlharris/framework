@@ -2,8 +2,6 @@
 # where file_router and the ingest job take over. Per-workspace values
 # (catalog prefix, environment, git branch or commit) come from the targets
 # in databricks.yml.
-# Free workspace job_id: 763610887760027 (created by the bundle; never
-# made by hand, so no bind).
 resources:
   jobs:
     fetch_url:
