@@ -68,54 +68,6 @@ targets:
         fetch_rest:
           git_source:
             git_branch: master
-      # Bound to the schemas and volumes made by hand (doc/procedures/bundle_deploy.md
-      # "Bind Existing Schemas and Volumes"). Catalogs stay manual: free's Default Storage catalogs
-      # can only be created in the UI or SQL.
-      schemas:
-        utility_raw:
-          catalog_name: utility
-          name: raw
-          lifecycle:
-            prevent_destroy: true
-        utility_bronze:
-          catalog_name: utility
-          name: bronze
-          lifecycle:
-            prevent_destroy: true
-        utility_silver:
-          catalog_name: utility
-          name: silver
-          lifecycle:
-            prevent_destroy: true
-      volumes:
-        raw_inbox:
-          catalog_name: utility
-          schema_name: ${resources.schemas.utility_raw.name}
-          name: inbox
-          volume_type: MANAGED
-          lifecycle:
-            prevent_destroy: true
-        raw_files:
-          catalog_name: utility
-          schema_name: ${resources.schemas.utility_raw.name}
-          name: files
-          volume_type: MANAGED
-          lifecycle:
-            prevent_destroy: true
-        bronze_state:
-          catalog_name: utility
-          schema_name: ${resources.schemas.utility_bronze.name}
-          name: state
-          volume_type: MANAGED
-          lifecycle:
-            prevent_destroy: true
-        silver_state:
-          catalog_name: utility
-          schema_name: ${resources.schemas.utility_silver.name}
-          name: state
-          volume_type: MANAGED
-          lifecycle:
-            prevent_destroy: true
 
   # Test copy of free, in the same workspace: its own jobs ("[test] ..."),
   # catalogs (test_...) and state. The bundle also creates its schemas and
@@ -158,51 +110,6 @@ targets:
         fetch_rest:
           git_source:
             git_branch: ${bundle.git.branch}
-      schemas:
-        utility_raw:
-          catalog_name: test_utility
-          name: raw
-          lifecycle:
-            prevent_destroy: true
-        utility_bronze:
-          catalog_name: test_utility
-          name: bronze
-          lifecycle:
-            prevent_destroy: true
-        utility_silver:
-          catalog_name: test_utility
-          name: silver
-          lifecycle:
-            prevent_destroy: true
-      volumes:
-        raw_inbox:
-          catalog_name: test_utility
-          schema_name: ${resources.schemas.utility_raw.name}
-          name: inbox
-          volume_type: MANAGED
-          lifecycle:
-            prevent_destroy: true
-        raw_files:
-          catalog_name: test_utility
-          schema_name: ${resources.schemas.utility_raw.name}
-          name: files
-          volume_type: MANAGED
-          lifecycle:
-            prevent_destroy: true
-        bronze_state:
-          catalog_name: test_utility
-          schema_name: ${resources.schemas.utility_bronze.name}
-          name: state
-          volume_type: MANAGED
-          lifecycle:
-            prevent_destroy: true
-        silver_state:
-          catalog_name: test_utility
-          schema_name: ${resources.schemas.utility_silver.name}
-          name: state
-          volume_type: MANAGED
-          lifecycle:
-            prevent_destroy: true
 
   # Work workspaces. Each needs its profile (dev, staging, prod) in
   # ~/.databrickscfg on the machine you deploy from. Dev's schemas and volumes are bundle-managed
@@ -252,43 +159,12 @@ targets:
         fetch_rest:
           git_source:
             git_commit: ${bundle.git.commit}
-      schemas:
-        dev_utility_raw:
-          catalog_name: dev_utility
-          name: raw
-        dev_utility_bronze:
-          catalog_name: dev_utility
-          name: bronze
-        dev_utility_silver:
-          catalog_name: dev_utility
-          name: silver
-      volumes:
-        dev_utility_raw_inbox:
-          catalog_name: dev_utility
-          schema_name: ${resources.schemas.dev_utility_raw.name}
-          name: inbox
-          volume_type: MANAGED
-        dev_utility_raw_files:
-          catalog_name: dev_utility
-          schema_name: ${resources.schemas.dev_utility_raw.name}
-          name: files
-          volume_type: MANAGED
-        dev_utility_bronze_state:
-          catalog_name: dev_utility
-          schema_name: ${resources.schemas.dev_utility_bronze.name}
-          name: state
-          volume_type: MANAGED
-        dev_utility_silver_state:
-          catalog_name: dev_utility
-          schema_name: ${resources.schemas.dev_utility_silver.name}
-          name: state
-          volume_type: MANAGED
 
-  # staging and prod stay commented until they are wanted. Each holds the
-  # jobs and the utility schemas and volumes, but no datasets. To turn one
-  # on: uncomment it, add its profile, and add dataset schemas when wanted
-  # (in each resources/<dataset>.yml, copy dev's block, with this target's
-  # prefix on catalogs and keys).
+  # staging and prod stay commented until they are wanted. To turn one on:
+  # uncomment it here and its utility block in resources/utility.yml, add
+  # its profile, and add dataset schemas when wanted (in each
+  # resources/<dataset>.yml, copy dev's block, with this target's prefix on
+  # catalogs and keys).
 
   # staging:
   #   workspace:
@@ -321,51 +197,6 @@ targets:
   #       fetch_rest:
   #         git_source:
   #           git_commit: ${bundle.git.commit}
-  #     schemas:
-  #       staging_utility_raw:
-  #         catalog_name: staging_utility
-  #         name: raw
-  #         lifecycle:
-  #           prevent_destroy: true
-  #       staging_utility_bronze:
-  #         catalog_name: staging_utility
-  #         name: bronze
-  #         lifecycle:
-  #           prevent_destroy: true
-  #       staging_utility_silver:
-  #         catalog_name: staging_utility
-  #         name: silver
-  #         lifecycle:
-  #           prevent_destroy: true
-  #     volumes:
-  #       staging_utility_raw_inbox:
-  #         catalog_name: staging_utility
-  #         schema_name: ${resources.schemas.staging_utility_raw.name}
-  #         name: inbox
-  #         volume_type: MANAGED
-  #         lifecycle:
-  #           prevent_destroy: true
-  #       staging_utility_raw_files:
-  #         catalog_name: staging_utility
-  #         schema_name: ${resources.schemas.staging_utility_raw.name}
-  #         name: files
-  #         volume_type: MANAGED
-  #         lifecycle:
-  #           prevent_destroy: true
-  #       staging_utility_bronze_state:
-  #         catalog_name: staging_utility
-  #         schema_name: ${resources.schemas.staging_utility_bronze.name}
-  #         name: state
-  #         volume_type: MANAGED
-  #         lifecycle:
-  #           prevent_destroy: true
-  #       staging_utility_silver_state:
-  #         catalog_name: staging_utility
-  #         schema_name: ${resources.schemas.staging_utility_silver.name}
-  #         name: state
-  #         volume_type: MANAGED
-  #         lifecycle:
-  #           prevent_destroy: true
 
   # prod:
   #   workspace:
@@ -398,48 +229,3 @@ targets:
   #       fetch_rest:
   #         git_source:
   #           git_commit: ${bundle.git.commit}
-  #     schemas:
-  #       utility_raw:
-  #         catalog_name: utility
-  #         name: raw
-  #         lifecycle:
-  #           prevent_destroy: true
-  #       utility_bronze:
-  #         catalog_name: utility
-  #         name: bronze
-  #         lifecycle:
-  #           prevent_destroy: true
-  #       utility_silver:
-  #         catalog_name: utility
-  #         name: silver
-  #         lifecycle:
-  #           prevent_destroy: true
-  #     volumes:
-  #       raw_inbox:
-  #         catalog_name: utility
-  #         schema_name: ${resources.schemas.utility_raw.name}
-  #         name: inbox
-  #         volume_type: MANAGED
-  #         lifecycle:
-  #           prevent_destroy: true
-  #       raw_files:
-  #         catalog_name: utility
-  #         schema_name: ${resources.schemas.utility_raw.name}
-  #         name: files
-  #         volume_type: MANAGED
-  #         lifecycle:
-  #           prevent_destroy: true
-  #       bronze_state:
-  #         catalog_name: utility
-  #         schema_name: ${resources.schemas.utility_bronze.name}
-  #         name: state
-  #         volume_type: MANAGED
-  #         lifecycle:
-  #           prevent_destroy: true
-  #       silver_state:
-  #         catalog_name: utility
-  #         schema_name: ${resources.schemas.utility_silver.name}
-  #         name: state
-  #         volume_type: MANAGED
-  #         lifecycle:
-  #           prevent_destroy: true

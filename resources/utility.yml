@@ -1,0 +1,230 @@
+# Utility schemas and volumes: raw (inbox, files), bronze and silver (state).
+targets:
+  free:
+    resources:
+      # Bound to the schemas and volumes made by hand (doc/procedures/bundle_deploy.md
+      # "Bind Existing Schemas and Volumes"). Catalogs stay manual: free's Default Storage catalogs
+      # can only be created in the UI or SQL.
+      schemas:
+        utility_raw:
+          catalog_name: utility
+          name: raw
+          lifecycle:
+            prevent_destroy: true
+        utility_bronze:
+          catalog_name: utility
+          name: bronze
+          lifecycle:
+            prevent_destroy: true
+        utility_silver:
+          catalog_name: utility
+          name: silver
+          lifecycle:
+            prevent_destroy: true
+      volumes:
+        raw_inbox:
+          catalog_name: utility
+          schema_name: ${resources.schemas.utility_raw.name}
+          name: inbox
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
+        raw_files:
+          catalog_name: utility
+          schema_name: ${resources.schemas.utility_raw.name}
+          name: files
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
+        bronze_state:
+          catalog_name: utility
+          schema_name: ${resources.schemas.utility_bronze.name}
+          name: state
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
+        silver_state:
+          catalog_name: utility
+          schema_name: ${resources.schemas.utility_silver.name}
+          name: state
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
+  test:
+    resources:
+      schemas:
+        utility_raw:
+          catalog_name: test_utility
+          name: raw
+          lifecycle:
+            prevent_destroy: true
+        utility_bronze:
+          catalog_name: test_utility
+          name: bronze
+          lifecycle:
+            prevent_destroy: true
+        utility_silver:
+          catalog_name: test_utility
+          name: silver
+          lifecycle:
+            prevent_destroy: true
+      volumes:
+        raw_inbox:
+          catalog_name: test_utility
+          schema_name: ${resources.schemas.utility_raw.name}
+          name: inbox
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
+        raw_files:
+          catalog_name: test_utility
+          schema_name: ${resources.schemas.utility_raw.name}
+          name: files
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
+        bronze_state:
+          catalog_name: test_utility
+          schema_name: ${resources.schemas.utility_bronze.name}
+          name: state
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
+        silver_state:
+          catalog_name: test_utility
+          schema_name: ${resources.schemas.utility_silver.name}
+          name: state
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
+  dev:
+    resources:
+      schemas:
+        dev_utility_raw:
+          catalog_name: dev_utility
+          name: raw
+        dev_utility_bronze:
+          catalog_name: dev_utility
+          name: bronze
+        dev_utility_silver:
+          catalog_name: dev_utility
+          name: silver
+      volumes:
+        dev_utility_raw_inbox:
+          catalog_name: dev_utility
+          schema_name: ${resources.schemas.dev_utility_raw.name}
+          name: inbox
+          volume_type: MANAGED
+        dev_utility_raw_files:
+          catalog_name: dev_utility
+          schema_name: ${resources.schemas.dev_utility_raw.name}
+          name: files
+          volume_type: MANAGED
+        dev_utility_bronze_state:
+          catalog_name: dev_utility
+          schema_name: ${resources.schemas.dev_utility_bronze.name}
+          name: state
+          volume_type: MANAGED
+        dev_utility_silver_state:
+          catalog_name: dev_utility
+          schema_name: ${resources.schemas.dev_utility_silver.name}
+          name: state
+          volume_type: MANAGED
+
+  # staging and prod: uncomment with their targets in databricks.yml.
+
+  # staging:
+  #   resources:
+  #     schemas:
+  #       staging_utility_raw:
+  #         catalog_name: staging_utility
+  #         name: raw
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       staging_utility_bronze:
+  #         catalog_name: staging_utility
+  #         name: bronze
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       staging_utility_silver:
+  #         catalog_name: staging_utility
+  #         name: silver
+  #         lifecycle:
+  #           prevent_destroy: true
+  #     volumes:
+  #       staging_utility_raw_inbox:
+  #         catalog_name: staging_utility
+  #         schema_name: ${resources.schemas.staging_utility_raw.name}
+  #         name: inbox
+  #         volume_type: MANAGED
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       staging_utility_raw_files:
+  #         catalog_name: staging_utility
+  #         schema_name: ${resources.schemas.staging_utility_raw.name}
+  #         name: files
+  #         volume_type: MANAGED
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       staging_utility_bronze_state:
+  #         catalog_name: staging_utility
+  #         schema_name: ${resources.schemas.staging_utility_bronze.name}
+  #         name: state
+  #         volume_type: MANAGED
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       staging_utility_silver_state:
+  #         catalog_name: staging_utility
+  #         schema_name: ${resources.schemas.staging_utility_silver.name}
+  #         name: state
+  #         volume_type: MANAGED
+  #         lifecycle:
+  #           prevent_destroy: true
+
+  # prod:
+  #   resources:
+  #     schemas:
+  #       utility_raw:
+  #         catalog_name: utility
+  #         name: raw
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       utility_bronze:
+  #         catalog_name: utility
+  #         name: bronze
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       utility_silver:
+  #         catalog_name: utility
+  #         name: silver
+  #         lifecycle:
+  #           prevent_destroy: true
+  #     volumes:
+  #       raw_inbox:
+  #         catalog_name: utility
+  #         schema_name: ${resources.schemas.utility_raw.name}
+  #         name: inbox
+  #         volume_type: MANAGED
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       raw_files:
+  #         catalog_name: utility
+  #         schema_name: ${resources.schemas.utility_raw.name}
+  #         name: files
+  #         volume_type: MANAGED
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       bronze_state:
+  #         catalog_name: utility
+  #         schema_name: ${resources.schemas.utility_bronze.name}
+  #         name: state
+  #         volume_type: MANAGED
+  #         lifecycle:
+  #           prevent_destroy: true
+  #       silver_state:
+  #         catalog_name: utility
+  #         schema_name: ${resources.schemas.utility_silver.name}
+  #         name: state
+  #         volume_type: MANAGED
+  #         lifecycle:
+  #           prevent_destroy: true
