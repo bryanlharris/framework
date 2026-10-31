@@ -13,16 +13,3 @@ targets:
           name: silver
           lifecycle:
             prevent_destroy: true
-  test:
-    resources:
-      schemas:
-        fred_bronze:
-          catalog_name: test_fred
-          name: bronze
-          lifecycle:
-            prevent_destroy: true
-        fred_silver:
-          catalog_name: test_fred
-          name: silver
-          lifecycle:
-            prevent_destroy: true

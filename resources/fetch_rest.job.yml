@@ -7,7 +7,7 @@
 resources:
   jobs:
     fetch_rest:
-      name: ${var.job_name_prefix}fetch_rest
+      name: fetch_rest
       max_concurrent_runs: 1
       queue:
         enabled: true

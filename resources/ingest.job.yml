@@ -4,7 +4,7 @@
 resources:
   jobs:
     ingest:
-      name: ${var.job_name_prefix}ingest
+      name: ingest
       max_concurrent_runs: 1
       queue:
         enabled: true

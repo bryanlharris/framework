@@ -18,7 +18,7 @@ framework/
 ```
 
 The bundle defines the jobs (tasks, triggers, parameters, git
-branch or tag), and in free, test and dev the schemas and volumes.
+branch or tag), and in free and dev the schemas and volumes.
 The jobs always pull their code from GitHub when they run.
 Deploying never copies code into the workspace.
 
@@ -34,17 +34,13 @@ Targets:
 | Target  | profile              | catalog_prefix | environment | Git                |
 +---------+----------------------+----------------+-------------+--------------------+
 | free    | DEFAULT              | (empty)        | free        | branch: master     |
-| test    | DEFAULT              | test_          | test        | checked-out branch |
 | dev     | dev                  | dev_           | dev         | deployed tag       |
 | staging | staging (commented)  | staging_       | staging     | deployed tag       |
 | prod    | prod (commented)     | (empty)        | prod        | deployed tag       |
 +---------+----------------------+----------------+-------------+--------------------+
 ```
 
-test is a second target in the free workspace, with its own jobs
-("[test] ...") and test_ catalogs. Its catalogs are made by hand;
-the bundle creates their schemas and volumes (**doc/planning/decisions.md**).
-free's, test's and dev's schemas and volumes are bundle-managed
+free's and dev's schemas and volumes are bundle-managed
 (free's were bound, "Bind Existing Schemas and Volumes"); catalogs are made by hand
 everywhere. staging and prod are commented out. There is no
 default target: every bundle command names one with -t, so a
@@ -111,8 +107,6 @@ GUI or CLI:
 | Deploy                   | GUI (Deployments panel)    | CLI            |
 +--------------------------+----------------------------+----------------+
 | free (master)            | yes: Git folder on master  | yes            |
-+--------------------------+----------------------------+----------------+
-| test (topic)             | yes: Git folder on topic   | yes            |
 +--------------------------+----------------------------+----------------+
 | dev, staging, prod (tag) | no: Git folder can't check | yes            |
 |                          | out tags                   |                |
@@ -256,7 +250,7 @@ databricks bundle deploy -t <target>
 Commit the YAML change like any other change (see
 **git_workflow.md**).
 
-That is for free and test. Dev, staging and prod get a job change
+That is for free. Dev, staging and prod get a job change
 only with a new tag: the change goes through master, then is
 promoted as in **git_workflow.md**, "Promote to Dev" through "Release to Prod". Never deploy them
 from master or a topic: their jobs pull the commit you deploy
@@ -264,27 +258,22 @@ from.
 
 ## Test a Topic Branch in the Free Workspace
 
-(Used by **git_workflow.md**, "Test It in the Test Target" and "Accept It into Master".)
+(Used by **git_workflow.md**, "Test It in Free" and "Accept It into Master".)
 
-Deploy the branch to the test target and leave free alone. Test's
-jobs pull whatever branch is checked out where you deploy from, so
-check out the topic branch (push it first; the jobs pull it from
-GitHub) and deploy:
+Point free's jobs at the branch for a while. Push the branch first
+(the jobs pull it from GitHub), set free's git_branch in
+**databricks.yml** to the branch name (don't commit that), and deploy:
 
 ```
-databricks bundle deploy -t test
+databricks bundle deploy -t free
 ```
 
-or use the panel, with the workspace Git folder on that branch.
-Test's jobs are named "[test] ..." and use the test_ catalogs,
-which must exist first (made by hand: test_utility, test_fred).
-Only settings files that list "test" run there. When done, check
-out master and deploy test again.
+Run the jobs and check them. When done, put free back on master:
 
-If a change needs a source test doesn't have, the fallback is to
-point free at the branch: edit free's git_branch in **databricks.yml**
-(don't commit it), deploy -t free, test, then
-git restore **databricks.yml** and deploy -t free again.
+```
+git restore databricks.yml
+databricks bundle deploy -t free
+```
 
 ## Unbind (Give a Job Back to Hand Management)
 

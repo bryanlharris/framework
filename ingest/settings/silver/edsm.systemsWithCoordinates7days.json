@@ -1,6 +1,6 @@
 {
     "function_path": "lakehouse.silver.ingest.from_table.upsert.without_delete",
-    "environments": ["free", "test", "dev"],
+    "environments": ["free", "dev"],
     "source_table": "${catalog_prefix}edsm.bronze.systemsWithCoordinates7days",
     "destination_table": "${catalog_prefix}edsm.silver.systemsWithCoordinates7days",
     "source_type": "table",

@@ -1,6 +1,6 @@
 {
     "function_path": "lakehouse.bronze.ingest.local.from_file",
-    "environments": ["free", "test"],
+    "environments": ["free"],
     "source_type": "cloudFiles",
     "destination_table": "${catalog_prefix}fred.bronze.fedfunds",
     "readStream_path": "/Volumes/${catalog_prefix}utility/raw/files/fred/",

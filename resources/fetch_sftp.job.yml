@@ -7,7 +7,7 @@
 resources:
   jobs:
     fetch_sftp:
-      name: ${var.job_name_prefix}fetch_sftp
+      name: fetch_sftp
       max_concurrent_runs: 1
       queue:
         enabled: true

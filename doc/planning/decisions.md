@@ -139,3 +139,15 @@ that reaches **raw/files** is one the ingest job expects.
 Cost:
 - One more step per new source: make the folder before the first
 upload or fetch.
+
+## 5. No Test Target (2026-10-31)
+
+Decision:
+- The test target (a second target in the free workspace, with
+"[test]" jobs and test_ catalogs) is removed. Entries above that
+mention it are kept as history.
+
+Why:
+- It was never used. To try a topic branch at home, point free at
+the branch for a while (**procedures/bundle_deploy.md** "Test a
+Topic Branch in the Free Workspace").

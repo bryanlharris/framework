@@ -8,7 +8,7 @@ def _is_silver_table(table: str) -> bool:
     return len(parts) == 3 and parts[1] == "silver"
 
 
-ENVIRONMENTS = ("free", "test", "dev", "staging", "prod")
+ENVIRONMENTS = ("free", "dev", "staging", "prod")
 
 
 def _check_environment(environment: str) -> None:

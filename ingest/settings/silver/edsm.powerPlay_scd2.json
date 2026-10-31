@@ -1,6 +1,6 @@
 {
     "function_path": "lakehouse.silver.ingest.from_table.history.scd2",
-    "environments": ["free", "test", "dev"],
+    "environments": ["free", "dev"],
     "source_table": "${catalog_prefix}edsm.bronze.powerPlay",
     "destination_table": "${catalog_prefix}edsm.silver.powerPlay_scd2",
     "readStream_options": {

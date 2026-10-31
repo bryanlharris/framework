@@ -10,7 +10,7 @@ file_router (inbox trigger)           ->  utility.raw.files/<source>/
 ingest (raw/files trigger)            ->  bronze and silver tables
 ```
 
-The daily schedule is paused in free, test and dev (fetch_pause_status
+The daily schedule is paused in free and dev (fetch_pause_status
 in **databricks.yml**), so there the job runs only when started by hand.
 
 It works like the fetch_url job (**doc/jobs/fetch_url.md**), for a file on an

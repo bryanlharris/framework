@@ -13,19 +13,6 @@ targets:
           name: silver
           lifecycle:
             prevent_destroy: true
-  test:
-    resources:
-      schemas:
-        edsm_bronze:
-          catalog_name: test_edsm
-          name: bronze
-          lifecycle:
-            prevent_destroy: true
-        edsm_silver:
-          catalog_name: test_edsm
-          name: silver
-          lifecycle:
-            prevent_destroy: true
   dev:
     resources:
       schemas:

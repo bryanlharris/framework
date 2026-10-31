@@ -8,7 +8,6 @@ Environments:
 environment   catalog_prefix   used for
 -----------   --------------   ----------------------
 free          (empty)          sandbox free workspace
-test          test_            test copy, in the free workspace
 dev           dev_             dev workspace
 staging       staging_         staging workspace
 prod          (empty)          prod workspace
@@ -22,10 +21,10 @@ Datasets per target:
 
 ```
 dataset   targets
--------   ---------------
-edsm      free, test, dev
-fdic      free, test
-fred      free, test
+-------   ---------
+edsm      free, dev
+fdic      free
+fred      free
 treasury  dev
 ```
 
@@ -53,7 +52,7 @@ dev) and limits itself with its environments list.
 
 ## environment
 
-free, test, dev, staging or prod. Every settings file must list where
+free, dev, staging or prod. Every settings file must list where
 it runs; there is no default:
 
 ```

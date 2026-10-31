@@ -6,15 +6,13 @@ Words used across these docs, especially ones that sound alike.
 
 **workspace**: One Databricks workspace: free (a sandbox), or dev, staging and prod.
 
-**target**: One entry under targets: in **databricks.yml**. Usually one per workspace; test is a second target in the free workspace. Picked with -t **\<target>**.
+**target**: One entry under targets: in **databricks.yml**. Usually one per workspace. Picked with -t **\<target>**.
 
-**environment**: free, test, dev, staging or prod. A job parameter set by the target; picks which settings files run (their "environments" list). **environments.md**.
+**environment**: free, dev, staging or prod. A job parameter set by the target; picks which settings files run (their "environments" list). **environments.md**.
 
-**catalog_prefix**: What every catalog name starts with in a target: dev_, staging_, test_, or empty in free and prod. Makes dev_fred in dev and fred in prod. **environments.md**.
+**catalog_prefix**: What every catalog name starts with in a target: dev_, staging_, or empty in free and prod. Makes dev_fred in dev and fred in prod. **environments.md**.
 
 **free**: The sandbox workspace (Databricks Free Edition), and its target. Runs master.
-
-**test**: A second target in the free workspace: "[test]" jobs, test_ catalogs. Runs the checked-out branch, for trying a topic without touching free.
 
 ## The Bundle
 
@@ -28,7 +26,7 @@ Words used across these docs, especially ones that sound alike.
 
 **code**: The notebooks and Python the jobs run. Pulled from GitHub on every run (git_source), at the target's git ref.
 
-**git ref**: Which code a target's jobs pull: branch: master (free), the checked-out branch (test), or the deployed commit (dev, staging, prod).
+**git ref**: Which code a target's jobs pull: branch: master (free), or the deployed commit (dev, staging, prod).
 
 **bind**: databricks bundle deployment bind: hand an existing job, schema or volume to the bundle, so the deploy updates it instead of making a second one. **procedures/bundle_deploy.md** "First Deploy, Jobs Already Exist" and "Bind Existing Schemas and Volumes". Not the same as a workspace binding.
 
@@ -70,7 +68,7 @@ Words used across these docs, especially ones that sound alike.
 
 **Git folder**: A clone of the repo inside a workspace. Can check out branches only, not tags.
 
-**Deployments panel**: The Deploy button in a Git folder: deploys what the folder has checked out. Works for free and test, not for tag deploys. **procedures/bundle_deploy.md** "GUI or CLI".
+**Deployments panel**: The Deploy button in a Git folder: deploys what the folder has checked out. Works for free, not for tag deploys. **procedures/bundle_deploy.md** "GUI or CLI".
 
 ## Jobs
 
@@ -78,6 +76,6 @@ Words used across these docs, especially ones that sound alike.
 
 **ingest**: Loads raw files into bronze, then silver tables. **jobs/ingest.md**.
 
-**fetch jobs**: fetch_url, fetch_sftp and fetch_rest: daily, put files in the inbox. Paused in free, test and dev. **jobs/fetch_\*.md**.
+**fetch jobs**: fetch_url, fetch_sftp and fetch_rest: daily, put files in the inbox. Paused in free and dev. **jobs/fetch_\*.md**.
 
 **settings file**: One JSON per table (**ingest/settings/**) or per fetch (**fetch_\*/settings/**). **api.md**.

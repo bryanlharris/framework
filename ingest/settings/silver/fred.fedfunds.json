@@ -1,6 +1,6 @@
 {
     "function_path": "lakehouse.silver.ingest.from_table.upsert.without_delete",
-    "environments": ["free", "test"],
+    "environments": ["free"],
     "source_table": "${catalog_prefix}fred.bronze.fedfunds",
     "destination_table": "${catalog_prefix}fred.silver.fedfunds",
     "readStream_options": {

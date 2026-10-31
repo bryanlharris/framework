@@ -5,7 +5,7 @@
 resources:
   jobs:
     file_router:
-      name: ${var.job_name_prefix}file_router
+      name: file_router
       max_concurrent_runs: 1
       timeout_seconds: 0
       performance_target: PERFORMANCE_OPTIMIZED

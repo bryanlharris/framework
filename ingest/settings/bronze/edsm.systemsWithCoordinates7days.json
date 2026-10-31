@@ -1,6 +1,6 @@
 {
     "function_path": "lakehouse.bronze.ingest.local.from_file",
-    "environments": ["free", "test", "dev"],
+    "environments": ["free", "dev"],
     "source_type": "cloudFiles",
     "destination_table": "${catalog_prefix}edsm.bronze.systemsWithCoordinates7days",
     "readStream_path": "/Volumes/${catalog_prefix}utility/raw/files/edsm/",

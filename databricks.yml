@@ -2,14 +2,14 @@
 # fetch_sftp and fetch_rest jobs for every workspace. Deploy with:
 #   databricks bundle deploy -t <target>
 #
-# The bundle creates and updates the jobs and, in free, test and dev,
+# The bundle creates and updates the jobs and, in free and dev,
 # the schemas and volumes; catalogs are always made by hand. The jobs
 # always pull their code from GitHub when they run (git_source), never
 # from this checkout.
 #
 # Each target is one workspace, named by a CLI profile in ~/.databrickscfg
 # (which holds the host, so no host is written here), and states everything
-# that differs there; test is a second target in free's workspace. See
+# that differs there. See
 # doc/environments.md for the prefix and environment table, and
 # doc/procedures/git_workflow.md for branches and tags.
 
@@ -30,14 +30,11 @@ variables:
   catalog_prefix:
     description: Put in front of catalog names. dev_, staging_, or empty in prod and free.
   environment:
-    description: free, test, dev, staging or prod. Selects settings by their "environments" list.
+    description: free, dev, staging or prod. Selects settings by their "environments" list.
   git_provider:
     description: gitHub for github.com, or gitHubEnterprise for a GitHub Enterprise server.
   fetch_pause_status:
     description: PAUSED or UNPAUSED, for the fetch jobs' daily schedules. Paused jobs can still be run by hand.
-  job_name_prefix:
-    description: Put in front of job names. "[test] " in the test target, so its jobs stand apart from free's.
-    default: ""
 
 targets:
 
@@ -68,48 +65,6 @@ targets:
         fetch_rest:
           git_source:
             git_branch: master
-
-  # Test copy of free, in the same workspace: its own jobs ("[test] ..."),
-  # catalogs (test_...) and state. The bundle also creates its schemas and
-  # volumes, to try bundle management safely (doc/planning/decisions.md). Its catalogs
-  # are made by hand: free's Default Storage catalogs can only be created
-  # in the UI (or SQL), not by the bundle.
-  test:
-    workspace:
-      profile: DEFAULT
-    variables:
-      catalog_prefix: test_
-      environment: test
-      job_name_prefix: "[test] "
-      fetch_pause_status: PAUSED
-      git_provider: gitHub
-    resources:
-      # The jobs pull whatever branch is checked out where you deploy from
-      # (local checkout or the workspace Git folder).
-      jobs:
-        ingest:
-          git_source:
-            git_branch: ${bundle.git.branch}
-          # Same path as resources/ingest.job.yml, written as a reference so
-          # the bundle creates the volume before the job (its trigger needs it).
-          trigger:
-            file_arrival:
-              url: /Volumes/${resources.volumes.raw_files.catalog_name}/${resources.volumes.raw_files.schema_name}/${resources.volumes.raw_files.name}/
-        file_router:
-          git_source:
-            git_branch: ${bundle.git.branch}
-          trigger:
-            file_arrival:
-              url: /Volumes/${resources.volumes.raw_inbox.catalog_name}/${resources.volumes.raw_inbox.schema_name}/${resources.volumes.raw_inbox.name}/
-        fetch_url:
-          git_source:
-            git_branch: ${bundle.git.branch}
-        fetch_sftp:
-          git_source:
-            git_branch: ${bundle.git.branch}
-        fetch_rest:
-          git_source:
-            git_branch: ${bundle.git.branch}
 
   # Work workspaces. Each needs its profile (dev, staging, prod) in
   # ~/.databrickscfg on the machine you deploy from. Dev's schemas and volumes are bundle-managed

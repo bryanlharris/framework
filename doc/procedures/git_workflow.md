@@ -10,7 +10,7 @@ every job's code (**ingest/**, **file_router/**, **fetch_url/**, **fetch_sftp/**
 topic branch --merge--> master --tag--> dev_v0.001 --tag--> staging_v0.01 --tag--> prod_v0.1
                           |
                           +--> free workspace pulls master
-                               (test pulls a topic branch while testing it)
+                               (or a topic branch while you test it)
 ```
 
 Only topic branches and master are branches. Dev, staging and prod
@@ -27,8 +27,6 @@ Workspaces:
 | Workspace | Runs                 | Moved by                          |
 +-----------+----------------------+-----------------------------------+
 | free      | branch: master       | merging a topic into master       |
-+-----------+----------------------+-----------------------------------+
-| test      | checked-out branch   | deploying test from a topic       |
 +-----------+----------------------+-----------------------------------+
 | dev       | tag: dev_v0.NNN      | new tag on a master commit,       |
 |           |                      | deployed from that tag            |
@@ -108,28 +106,33 @@ Commit as you go, and push the branch so Databricks can pull it:
 git push -u origin fred-html-guard
 ```
 
-## Test It in the Test Target
+## Test It in Free
 
-Deploy the topic to the test target, in the free workspace. Its
-jobs ("[test] ...", test_ catalogs) pull the branch checked out
-where you deploy from; free's jobs are left alone. Push the branch
-first (the jobs pull it from GitHub), then:
+Point free's jobs at the branch. Push the branch first (the jobs
+pull it from GitHub), set free's git_branch in **databricks.yml**
+to the branch (don't commit that), then:
 
 ```
-databricks bundle deploy -t test
+databricks bundle deploy -t free
 ```
 
-or use the Deployments panel, with the workspace Git folder on
-the branch. No YAML edit. Details: **bundle_deploy.md** "Test a Topic Branch in the Free Workspace".
+Details: **bundle_deploy.md** "Test a Topic Branch in the Free Workspace".
 
-Drop a test file through test_utility's inbox, or click Run now on
-a "[test]" job, and check the run. Only settings files that list
-"test" in their environments run there.
+Drop a file in the inbox, or click Run now on a job, and check the
+run.
 
 Fix and push again as needed; the job pulls the latest commit on
 the branch every run.
 
 ## Accept It into Master
+
+Put free's git_branch back first:
+
+```
+git restore databricks.yml
+```
+
+Then merge:
 
 ```
 git switch master
@@ -138,10 +141,10 @@ git merge fred-html-guard
 git push
 ```
 
-Point the test jobs back at master (deploy test from master):
+Deploy free, so its jobs pull master again:
 
 ```
-databricks bundle deploy -t test
+databricks bundle deploy -t free
 ```
 
 Free's jobs pull master, so they run the change from their next
