@@ -139,6 +139,7 @@ examples/apps                      a Databricks app example
 examples/views                     SQL views over silver tables
 examples/extra                     dashboard SQL and analysis notebooks
 examples/lineage                   external lineage bodies (source URL -> bronze)
+examples/free.local.yml            a free target to copy into resources/
 jobs/                              one doc per job in resources/
 planning/                          decisions, ideas and TODO
 tools/make_docx.py                 turns the docs into Word files:

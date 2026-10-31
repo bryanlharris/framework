@@ -40,7 +40,8 @@ targets:
 
   # No default target: every bundle command names one with -t, so a
   # command can't land on a workspace by accident. Machine-only targets
-  # (free, at home) go in a git-ignored resources/<name>.local.yml.
+  # (free, at home) go in a git-ignored resources/<name>.local.yml;
+  # doc/examples/free.local.yml is an example.
 
   # Work workspaces. Each needs its profile (dev, staging, prod) in
   # ~/.databrickscfg on the machine you deploy from. Dev's schemas and volumes are bundle-managed

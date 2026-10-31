@@ -1,0 +1,77 @@
+# Example free target, for a Databricks Free Edition workspace.
+# Copy it to resources/free.local.yml and deploy with -t free.
+# Git ignores *.local.yml, so your copy stays on your machine.
+targets:
+  free:
+    workspace:
+      profile: DEFAULT
+    variables:
+      catalog_prefix: ""
+      environment: free
+      fetch_pause_status: PAUSED
+      git_provider: gitHub
+    resources:
+      jobs:
+        ingest:
+          git_source:
+            git_branch: master
+        file_router:
+          git_source:
+            git_branch: master
+        fetch_url:
+          git_source:
+            git_branch: master
+        fetch_sftp:
+          git_source:
+            git_branch: master
+        fetch_rest:
+          git_source:
+            git_branch: master
+      # Make the utility catalog by hand first (UI or SQL); the bundle
+      # makes these schemas and volumes. Add a dataset's schemas the same
+      # way, e.g. edsm_bronze with catalog_name: edsm.
+      schemas:
+        utility_raw:
+          catalog_name: utility
+          name: raw
+          lifecycle:
+            prevent_destroy: true
+        utility_bronze:
+          catalog_name: utility
+          name: bronze
+          lifecycle:
+            prevent_destroy: true
+        utility_silver:
+          catalog_name: utility
+          name: silver
+          lifecycle:
+            prevent_destroy: true
+      volumes:
+        raw_inbox:
+          catalog_name: utility
+          schema_name: ${resources.schemas.utility_raw.name}
+          name: inbox
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
+        raw_files:
+          catalog_name: utility
+          schema_name: ${resources.schemas.utility_raw.name}
+          name: files
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
+        bronze_state:
+          catalog_name: utility
+          schema_name: ${resources.schemas.utility_bronze.name}
+          name: state
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
+        silver_state:
+          catalog_name: utility
+          schema_name: ${resources.schemas.utility_silver.name}
+          name: state
+          volume_type: MANAGED
+          lifecycle:
+            prevent_destroy: true
