@@ -262,16 +262,16 @@ from.
 
 Point free's jobs at the branch for a while. Push the branch first
 (the jobs pull it from GitHub), set free's git_branch in
-**databricks.yml** to the branch name (don't commit that), and deploy:
+**resources/free.local.yml** to the branch name, and deploy:
 
 ```
 databricks bundle deploy -t free
 ```
 
-Run the jobs and check them. When done, put free back on master:
+Run the jobs and check them. When done, set git_branch back to
+master and deploy again:
 
 ```
-git restore databricks.yml
 databricks bundle deploy -t free
 ```
 

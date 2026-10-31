@@ -109,8 +109,8 @@ git push -u origin fred-html-guard
 ## Test It in Free
 
 Point free's jobs at the branch. Push the branch first (the jobs
-pull it from GitHub), set free's git_branch in **databricks.yml**
-to the branch (don't commit that), then:
+pull it from GitHub), set free's git_branch in
+**resources/free.local.yml** to the branch, then:
 
 ```
 databricks bundle deploy -t free
@@ -126,13 +126,7 @@ the branch every run.
 
 ## Accept It into Master
 
-Put free's git_branch back first:
-
-```
-git restore databricks.yml
-```
-
-Then merge:
+Set free's git_branch back to master, then merge:
 
 ```
 git switch master

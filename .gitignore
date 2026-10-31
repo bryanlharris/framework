@@ -1,1 +1,4 @@
 __pycache__/
+
+# Machine-only bundle files (the home free target).
+resources/*.local.yml

@@ -1,18 +1,5 @@
 # EDSM schemas
 targets:
-  free:
-    resources:
-      schemas:
-        edsm_bronze:
-          catalog_name: edsm
-          name: bronze
-          lifecycle:
-            prevent_destroy: true
-        edsm_silver:
-          catalog_name: edsm
-          name: silver
-          lifecycle:
-            prevent_destroy: true
   dev:
     resources:
       schemas:
