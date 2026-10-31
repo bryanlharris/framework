@@ -1,0 +1,28 @@
+# FDIC schemas
+targets:
+  free:
+    resources:
+      schemas:
+        fdic_bronze:
+          catalog_name: fdic
+          name: bronze
+          lifecycle:
+            prevent_destroy: true
+        fdic_silver:
+          catalog_name: fdic
+          name: silver
+          lifecycle:
+            prevent_destroy: true
+  test:
+    resources:
+      schemas:
+        fdic_bronze:
+          catalog_name: test_fdic
+          name: bronze
+          lifecycle:
+            prevent_destroy: true
+        fdic_silver:
+          catalog_name: test_fdic
+          name: silver
+          lifecycle:
+            prevent_destroy: true

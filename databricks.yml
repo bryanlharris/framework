@@ -87,36 +87,6 @@ targets:
           name: silver
           lifecycle:
             prevent_destroy: true
-        edsm_bronze:
-          catalog_name: edsm
-          name: bronze
-          lifecycle:
-            prevent_destroy: true
-        edsm_silver:
-          catalog_name: edsm
-          name: silver
-          lifecycle:
-            prevent_destroy: true
-        fdic_bronze:
-          catalog_name: fdic
-          name: bronze
-          lifecycle:
-            prevent_destroy: true
-        fdic_silver:
-          catalog_name: fdic
-          name: silver
-          lifecycle:
-            prevent_destroy: true
-        fred_bronze:
-          catalog_name: fred
-          name: bronze
-          lifecycle:
-            prevent_destroy: true
-        fred_silver:
-          catalog_name: fred
-          name: silver
-          lifecycle:
-            prevent_destroy: true
       volumes:
         raw_inbox:
           catalog_name: utility
@@ -201,36 +171,6 @@ targets:
             prevent_destroy: true
         utility_silver:
           catalog_name: test_utility
-          name: silver
-          lifecycle:
-            prevent_destroy: true
-        edsm_bronze:
-          catalog_name: test_edsm
-          name: bronze
-          lifecycle:
-            prevent_destroy: true
-        edsm_silver:
-          catalog_name: test_edsm
-          name: silver
-          lifecycle:
-            prevent_destroy: true
-        fdic_bronze:
-          catalog_name: test_fdic
-          name: bronze
-          lifecycle:
-            prevent_destroy: true
-        fdic_silver:
-          catalog_name: test_fdic
-          name: silver
-          lifecycle:
-            prevent_destroy: true
-        fred_bronze:
-          catalog_name: test_fred
-          name: bronze
-          lifecycle:
-            prevent_destroy: true
-        fred_silver:
-          catalog_name: test_fred
           name: silver
           lifecycle:
             prevent_destroy: true
@@ -322,12 +262,6 @@ targets:
         dev_utility_silver:
           catalog_name: dev_utility
           name: silver
-        dev_edsm_bronze:
-          catalog_name: dev_edsm
-          name: bronze
-        dev_edsm_silver:
-          catalog_name: dev_edsm
-          name: silver
       volumes:
         dev_utility_raw_inbox:
           catalog_name: dev_utility
@@ -353,7 +287,8 @@ targets:
   # staging and prod stay commented until they are wanted. Each holds the
   # jobs and the utility schemas and volumes, but no datasets. To turn one
   # on: uncomment it, add its profile, and add dataset schemas when wanted
-  # (copy dev's, with this target's prefix on catalogs and keys).
+  # (in each resources/<dataset>.yml, copy dev's block, with this target's
+  # prefix on catalogs and keys).
 
   # staging:
   #   workspace:
